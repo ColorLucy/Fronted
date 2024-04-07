@@ -3,19 +3,23 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import './App.css'
 import AdminLogin from './pages/AdminLogin'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
 
 
   return (
     <div className="App">
+
       <Router>
-        <Routes>
-          <Route Component={AdminLogin} path="/admin/login" />
-        </Routes>
-
-
+        <AuthProvider>
+          <Routes>
+            <Route Component={AdminLogin} path="/admin/login" />
+          </Routes>
+        </AuthProvider>
       </Router>
+
+
     </div>
   )
 }
