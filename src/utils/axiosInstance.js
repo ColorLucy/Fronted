@@ -1,32 +1,44 @@
-import { create, post } from "axios";
-import jwt_decode from "jwt-decode";
+import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
 
-baseURL = "http://127.0.0.1:8000"
+const baseURL = "http://127.0.0.1:8000"
 
 let authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null;
-
-const axiosInstance = create({ baseURL, headers: {
-    Authorization: `Bearer ${authTokens?.access}`
-} })
+const axiosInstance = axios.create({
+    baseURL, headers: {
+        Authorization: `Bearer ${authTokens?.access}`
+    }
+})
 
 axiosInstance.interceptors.request.use(async req => {
-    if(!authTokens){
-        authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')): null
-        req.headers.Authorization = `Bearer ${authTokens?.access}`;
+    authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null;
+    if (!authTokens) {
+        console.log("Fui yo...")
+        window.location.href = '/admin/login?invalid=true';
+        return Promise.reject()
     }
 
-    const user = jwt_decode(authTokens.access)
-    const isExpired = dayjs.unix( user.exp).diff(dayjs()) < 1;
+    const user = jwtDecode(authTokens.access)
+    const isExpired = dayjs.unix(user.exp).diff(dayjs()) < 1;
 
-    if(isExpired){
-        const {data} = await post(`${baseURL}/auth/refresh`, {
+    if (isExpired) {
+        console.log("kk")
+        await axios.post(`${baseURL}/auth/refresh/`, {
             refresh: authTokens.refresh
+        }).then(data => {
+            localStorage.setItem('authTokens', JSON.stringify({ ...authTokens, access: data.access }));
+            req.headers.Authorization = `Bearer ${data.access}`;
+            return req
         })
-        localStorage.setItem('authTokens', JSON.stringify(data));
-        req.headers.Authorization = `Bearer ${data.access}`;
+        localStorage.clear()
+        window.location.href = '/admin/login?invalid=true';
+
+    } else {
+        req.headers.Authorization = `Bearer ${authTokens.access}`;
+        return req
     }
+
     
-    return req
 })
 export default axiosInstance;

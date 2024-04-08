@@ -1,46 +1,79 @@
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import FilledInput from '@mui/material/FilledInput';
 import FormControl from '@mui/material/FormControl';
+import Grow from '@mui/material/Grow';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
+import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
-import React, { useState, useContext } from 'react';
-import Button from '@mui/material/Button';
+import React, { useContext, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Logo from '../components/logo';
-import "./admin.css";
 import AuthContext from '../context/AuthContext';
+import "./admin.css";
 
 
-
+/**
+ * `AdminLogin` is a React component that renders a login form specifically for administrators.
+ * It allows the admin to input their email and password to log in. The password field includes
+ * a toggle to show/hide the password for user convenience.
+ *
+ * Utilizes the AuthContext for login functionality which abstracts the handling of authentication logic.
+ *
+ * @returns {JSX.Element} A JSX element that contains a form with email and password fields, along with a submit button to perform the login action.
+ */
 export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [loginData, setLoginData] = useState({ email: "", password: "" })
   const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const isInvalid = queryParams.get('invalid') === 'true';
+
+  const [showLoginRedirect, setShowLoginRedirect] = useState(isInvalid);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  let { loginUser } = useContext(AuthContext)
+  let { loginUser, logoutUser } = useContext(AuthContext)
+
   return (
     <div className='adminPage'>
+      <Snackbar
+        open={showLoginRedirect}
+        autoHideDuration={5000}
+        TransitionComponent={Grow}
+        onClose={() => {
+          setShowLoginRedirect(false);
+          logoutUser();
+        }}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >Lamentablemente, no pudimos verificar tu identidad. Por tu seguridad, por favor inicia sesión de nuevo.
+        </Alert>
+      </Snackbar>
       <div className='cardLoginAdmin'>
         <Logo />
-        <h2 style={{ color: "black", margin: "0", marginTop: "30px" }}>Hola, bienvenido!</h2>
+        <h2 style={{ color: "black", margin: "0", marginTop: "40px" }}>Hola, bienvenido!</h2>
         <p style={{ color: "grey", fontSize: "10px", margin: "0" }}>Ingresa tus credenciales para continuar</p>
         <Box
           component="form"
           sx={{
-            '& .MuiTextField-root': { m: 1, width: '25ch', display: 'flex', flexDirection: "column", marginTop: "30px" },
+            '& .MuiTextField-root': { m: 1, width: '30ch', display: 'flex', flexDirection: "column", marginTop: "40px", gap: "10px" },
           }}
           noValidate
           autoComplete="off"
         >
           <TextField
             label="Correo electrónico"
-            sx={{ m: 1, width: '25ch' }}
             variant="filled"
             type='email'
             value={loginData.email}
@@ -49,14 +82,13 @@ export default function AdminLogin() {
             required
           />
 
-          <FormControl sx={{ m: 1, width: '25ch' }} variant="filled" fullWidth>
-            <InputLabel htmlFor="filled-adornment-password">Contraseña</InputLabel>
+          <FormControl sx={{ m: 1 }} variant="filled" fullWidth >
+            <InputLabel htmlFor="filled-adornment-password" >Contraseña</InputLabel>
             <FilledInput
               id="filled-adornment-password"
               type={showPassword ? 'text' : 'password'}
               value={loginData.password}
               required
-              fullWidth
               onChange={e => setLoginData({ ...loginData, password: e.target.value })}
               endAdornment={
                 <InputAdornment position="end">
@@ -74,7 +106,7 @@ export default function AdminLogin() {
           </FormControl>
 
 
-          <Button variant="contained" onClick={e => loginUser(e, loginData)} fullWidth style={{ maxWidth: "27ch", marginTop: "10px" }}>Enviar</Button>
+          <Button variant="contained" onClick={e => loginUser(e, loginData)} fullWidth style={{ marginTop: "10px" }}>Enviar</Button>
         </Box>
       </div>
     </div>
