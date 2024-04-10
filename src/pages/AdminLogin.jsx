@@ -80,7 +80,8 @@ export default function AdminLogin() {
         <Box
           component="form"
           sx={{
-            '& .MuiTextField-root': { m: 1, width: '30ch', display: 'flex', flexDirection: "column", marginTop: "40px", gap: "10px" },
+            display: 'flex', flexDirection: "column", gap: "5px", marginTop: "40px", alignItems: "center",
+            '& .MuiFormControl-root': { width: '34ch', margin: "6px" },
           }}
           noValidate
           autoComplete="off"
@@ -119,7 +120,7 @@ export default function AdminLogin() {
           </FormControl>
 
 
-          <Button variant="contained" onClick={e => loginUser(e, loginData)} fullWidth style={{ marginTop: "10px" }}>Enviar</Button>
+          <Button variant="contained" onClick={e => loginUser(e, loginData)} fullWidth style={{ width: '37ch', margin: "15px" }}>Enviar</Button>
         </Box>
       </div>
     </div>
