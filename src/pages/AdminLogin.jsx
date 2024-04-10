@@ -34,13 +34,13 @@ export default function AdminLogin() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const isInvalid = queryParams.get('invalid') === 'true';
-
+  let { loginUser, logoutUser, loginError, setLoginError } = useContext(AuthContext)
   const [showLoginRedirect, setShowLoginRedirect] = useState(isInvalid);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  let { loginUser, logoutUser } = useContext(AuthContext)
+
 
   return (
     <div className='adminPage'>
@@ -58,6 +58,19 @@ export default function AdminLogin() {
           variant="filled"
           sx={{ width: '100%' }}
         >Lamentablemente, no pudimos verificar tu identidad. Por tu seguridad, por favor inicia sesión de nuevo.
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={loginError}
+        autoHideDuration={5000}
+        TransitionComponent={Grow}
+        onClose={() => setLoginError(false)}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >Lo sentimos, ha habido un error. Por favor, inténtalo de nuevo.
         </Alert>
       </Snackbar>
       <div className='cardLoginAdmin'>
