@@ -2,7 +2,7 @@ import axios from 'axios';
 import "jwt-decode";
 import { jwtDecode } from 'jwt-decode';
 import { createContext, useEffect, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 /**
  * `AuthContext` is a context that provides authentication interfaces to the frontend.
@@ -28,14 +28,17 @@ export const AuthProvider = ({ children }) => {
     let [authTokens, setAuthTokens] = useState(() => localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null)
     let [user, setUser] = useState(() => localStorage.getItem('authTokens') ? jwtDecode(JSON.parse(localStorage.getItem('authTokens')).access) : null)
     let [loading, setLoading] = useState(true)
-
-
+    let [loginError, setLoginError] = useState(false)
+    const location = useLocation();
     const navigate = useNavigate()
 
     let loginUser = async (e, data) => {
         localStorage.clear()
         e.preventDefault()
-        const response = await axios.post('http://localhost:8000/auth/login/', data)
+        const response = await axios.post('http://localhost:8000/auth/login/', data).catch((e) => {
+            setLoginError(true);
+        })
+
         if (response.status === 200) {
             setAuthTokens(response.data)
             setUser(jwtDecode(response.data.access))
@@ -63,6 +66,8 @@ export const AuthProvider = ({ children }) => {
         loginUser: loginUser,
         logoutUser: logoutUser,
         triggerLoginRedirect,
+        loginError,
+        setLoginError
     }
 
 
@@ -78,7 +83,7 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <>
-            {!authTokens && <Navigate replace to="/admin/login?invalid=true" />}
+            {!authTokens && location?.pathname !== '/admin/login' && <Navigate replace to="/admin/login?invalid=true" />}
             <AuthContext.Provider value={contextData}>
                 {loading ? null : children}
             </AuthContext.Provider>

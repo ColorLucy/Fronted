@@ -34,13 +34,13 @@ export default function AdminLogin() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const isInvalid = queryParams.get('invalid') === 'true';
-
+  let { loginUser, logoutUser, loginError, setLoginError } = useContext(AuthContext)
   const [showLoginRedirect, setShowLoginRedirect] = useState(isInvalid);
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  let { loginUser, logoutUser } = useContext(AuthContext)
+
 
   return (
     <div className='adminPage'>
@@ -60,6 +60,19 @@ export default function AdminLogin() {
         >Lamentablemente, no pudimos verificar tu identidad. Por tu seguridad, por favor inicia sesión de nuevo.
         </Alert>
       </Snackbar>
+      <Snackbar
+        open={loginError}
+        autoHideDuration={5000}
+        TransitionComponent={Grow}
+        onClose={() => setLoginError(false)}
+      >
+        <Alert
+          severity="error"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >Lo sentimos, ha habido un error. Por favor, inténtalo de nuevo.
+        </Alert>
+      </Snackbar>
       <div className='cardLoginAdmin'>
         <Logo />
         <h2 style={{ color: "black", margin: "0", marginTop: "40px" }}>Hola, bienvenido!</h2>
@@ -67,7 +80,8 @@ export default function AdminLogin() {
         <Box
           component="form"
           sx={{
-            '& .MuiTextField-root': { m: 1, width: '30ch', display: 'flex', flexDirection: "column", marginTop: "40px", gap: "10px" },
+            display: 'flex', flexDirection: "column", gap: "5px", marginTop: "40px", alignItems: "center",
+            '& .MuiFormControl-root': { width: '34ch', margin: "6px" },
           }}
           noValidate
           autoComplete="off"
@@ -106,7 +120,7 @@ export default function AdminLogin() {
           </FormControl>
 
 
-          <Button variant="contained" onClick={e => loginUser(e, loginData)} fullWidth style={{ marginTop: "10px" }}>Enviar</Button>
+          <Button variant="contained" onClick={e => loginUser(e, loginData)} fullWidth style={{ width: '37ch', margin: "15px" }}>Enviar</Button>
         </Box>
       </div>
     </div>

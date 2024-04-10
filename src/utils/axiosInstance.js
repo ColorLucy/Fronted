@@ -13,8 +13,9 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(async req => {
     authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null;
+    console.log("hhhhhhh")
     if (!authTokens) {
-        console.log("Fui yo...")
+        console.alert("Fui yo...")
         window.location.href = '/admin/login?invalid=true';
         return Promise.reject()
     }

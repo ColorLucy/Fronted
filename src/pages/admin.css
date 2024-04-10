@@ -20,16 +20,8 @@
   border-radius: 6px;
   padding: 20px 0px;
 }
-.MuiTextField-root{
-  margin-inline: 0px !important;
-}
-.MuiBox-root {
-  display: flex;
-  flex-direction: column;
-  margin: 10px;
-  width: min-content;
-  align-items: center;
-}
+
+
 
 input[type=password]::-ms-reveal,
 input[type=password]::-ms-clear
