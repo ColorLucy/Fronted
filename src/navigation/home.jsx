@@ -1,13 +1,21 @@
 import React from "react"
 
-function Home() {
-  
 
-//   return (
+
+export default function Home() {
+  
+      
+  return (
     
 
+      
+        <div>
+         <h1 style={{color: 'white'}}>HOLIS BONIS</h1>
+     
+        </div>
+
+
    
-//   )
+  )
 }
 
-export default Home
