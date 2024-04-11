@@ -96,7 +96,7 @@ export default function AdminLogin() {
             required
           />
 
-          <FormControl sx={{ m: 1 }} variant="filled" fullWidth >
+          <FormControl variant="filled" fullWidth >
             <InputLabel htmlFor="filled-adornment-password" >Contraseña</InputLabel>
             <FilledInput
               id="filled-adornment-password"
