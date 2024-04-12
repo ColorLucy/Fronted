@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Button, TextField, Menu, MenuItem, useMediaQuery, ListItemIcon, Popover, CircularProgress, List, ListItem, ListItemText, Collapse } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
 import Commerce from '@chec/commerce.js';
+import Logo from '../components/logo';
 
 const NavigationBar = ({ onSelectCategory }) => {
 
@@ -74,58 +75,58 @@ const NavigationBar = ({ onSelectCategory }) => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
         {!isMobileOrTablet && (
           <>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              ColorLucy
-          </Typography>
-          <Button color="inherit" component={Link} to="/">Inicio</Button>
-          <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
-          <Button
-            color="inherit"
-            aria-haspopup="true"
-            aria-controls="productos-menu"
-            onClick={handleOpenPopover1}
-          >
-            Productos
-          </Button>
-          <Popover
-            open={Boolean(anchorEl1)} anchorEl={anchorEl1} onClose={handleClosePopover1}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left',
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
-            }}
-            style={{ 
-              marginTop: '10px' ,
-              maxHeight: '400px',
-            }}
-          >
-            {loading ? (
-              <CircularProgress style={{ margin: "50px" }}/>
-              ) : (
-                <>
-                <MenuItem onClick={handleClosePopover1} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                  Todos los productos
-                </MenuItem>
-                {categories.map((category) => (
-                  <MenuItem key={category.id} onClick={() => handleCategoryClick(category.slug)} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                    {category.name}
+          <Logo/>
+          <div style={{ display: 'flex', alignItems: 'end' }}>
+            <Button color="inherit" component={Link} to="/">Inicio</Button>
+            <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
+            <Button
+              color="inherit"
+              aria-haspopup="true"
+              aria-controls="productos-menu"
+              onClick={handleOpenPopover1}
+            >
+              Productos
+            </Button>
+            <Popover
+              open={Boolean(anchorEl1)} anchorEl={anchorEl1} onClose={handleClosePopover1}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+              style={{ 
+                marginTop: '10px' ,
+                maxHeight: '400px',
+              }}
+            >
+              {loading ? (
+                <CircularProgress style={{ margin: "50px" }}/>
+                ) : (
+                  <>
+                  <MenuItem onClick={handleClosePopover1} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                    Todos los productos
                   </MenuItem>
-                ))}
-                </>
-                )}
-                </Popover>
-                <TextField variant="standard" placeholder="Buscar" sx={{ mr: 2 }} />
-                <Button color="inherit" component={Link} to="/otra-pagina">
-                  <ListItemIcon>
-                    <ShoppingCartIcon sx={{ color: 'white' }}/>
-                  </ListItemIcon>
-                </Button>
+                  {categories.map((category) => (
+                    <MenuItem key={category.id} onClick={() => handleCategoryClick(category.slug)} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                  </>
+                  )}
+                  </Popover>
+                  <TextField variant="standard" placeholder="Buscar" sx={{ mr: 2 }} />
+                  <Button color="inherit" component={Link} to="/otra-pagina">
+                    <ListItemIcon>
+                      <ShoppingCartIcon sx={{ color: 'white' }}/>
+                    </ListItemIcon>
+                  </Button>
+                </div>
                 </>
                 )}
                 {isMobileOrTablet && (
@@ -180,6 +181,9 @@ const NavigationBar = ({ onSelectCategory }) => {
                         </Collapse>
                       </List>
                     </Popover>
+                    <div style={{margin: 'auto'}}>
+                      <Logo/>
+                    </div>
                     <div style={{ marginLeft: 'auto' }}>
                     <Button color="inherit" component={Link} to="/otra-pagina">
                         <ListItemIcon>
