@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, TextField, Menu, MenuItem, useMediaQuery, ListItemIcon, Popover, CircularProgress, List, ListItem, ListItemText, Collapse } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Button, TextField, Drawer, MenuItem, useMediaQuery, ListItemIcon, Popover, CircularProgress, List, ListItem, ListItemText, Collapse } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import CloseIcon from '@mui/icons-material/Close';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Commerce from '@chec/commerce.js';
 import Logo from '../components/logo';
 
+
 const NavigationBar = ({ onSelectCategory }) => {
 
-  const [anchorEl1, setAnchorEl1] = useState(null);
-  const [anchorEl2, setAnchorEl2] = useState(null);
+  const [drawerOpen1, setdrawerOpen1] = useState(false);
+  const [drawerOpen2, setdrawerOpen2] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openProductos, setOpenProductos] = useState(false);
@@ -38,40 +40,22 @@ const NavigationBar = ({ onSelectCategory }) => {
   const toggleProductos = () => {
     setOpenProductos(!openProductos);
   };
-
-  const handleOpenPopover1 = (event) => {
-    setAnchorEl1(event.currentTarget); 
-  };
     
-  const handleClosePopover1 = () => {
-    setAnchorEl1(null);
-  };
-    
-  const handleOpenPopover2 = (event) => {
-    setAnchorEl2(event.currentTarget); 
-  };
-    
-  const handleClosePopover2 = () => {
-    setAnchorEl2(null);
+  const handleToggleDrawer = () => {
+    setdrawerOpen1(!drawerOpen1);
+    setdrawerOpen2(!drawerOpen2);
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setAnchorEl1(null); 
-      setAnchorEl2(null); 
-    };
-  
-    window.addEventListener('resize', handleResize);
-  
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const handleDrawerClose = () => {
+    setdrawerOpen1(false);
+    setdrawerOpen2(false);
+  };
 
   const handleCategoryClick = (categorySlug) => {
-    onSelectCategory(categorySlug); 
-    handleClosePopover1(null); 
-    handleClosePopover2(null); 
+    onSelectCategory(categorySlug);
+    setdrawerOpen2(false);
   };
-  
+
 
   return (
     <AppBar position="static">
@@ -84,42 +68,37 @@ const NavigationBar = ({ onSelectCategory }) => {
             <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
             <Button
               color="inherit"
-              aria-haspopup="true"
-              aria-controls="productos-menu"
-              onClick={handleOpenPopover1}
+              onClick={handleToggleDrawer}
             >
               Productos
             </Button>
-            <Popover
-              open={Boolean(anchorEl1)} anchorEl={anchorEl1} onClose={handleClosePopover1}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              style={{ 
-                marginTop: '10px' ,
-                maxHeight: '400px',
-              }}
+            <Drawer
+              anchor="left"
+              open={drawerOpen1}
+              onClose={handleToggleDrawer}
             >
-              {loading ? (
-                <CircularProgress style={{ margin: "50px" }}/>
+              <div style={{ display: 'flex', justifyContent: 'flex-end'}}>
+                <IconButton onClick={handleDrawerClose}>
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <div style={{ width: 250 }}>
+                {loading ? (
+                  <CircularProgress style={{ margin: "50px" }} />
                 ) : (
                   <>
-                  <MenuItem onClick={handleClosePopover1} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                    Todos los productos
-                  </MenuItem>
-                  {categories.map((category) => (
-                    <MenuItem key={category.id} onClick={() => handleCategoryClick(category.slug)} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                      {category.name}
+                    <MenuItem onClick={handleToggleDrawer} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                      Todos los productos
                     </MenuItem>
-                  ))}
+                    {categories.map((category) => (
+                      <MenuItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.slug}`} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
                   </>
-                  )}
-                  </Popover>
+                )}
+              </div>
+            </Drawer>           
                   <TextField variant="standard" placeholder="Buscar" sx={{ mr: 2 }} />
                   <Button color="inherit" component={Link} to="/otra-pagina">
                     <ListItemIcon>
@@ -138,50 +117,46 @@ const NavigationBar = ({ onSelectCategory }) => {
                     aria-label="menu"
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
-                    variant="contained" onClick={handleOpenPopover2}
+                    variant="contained" onClick={handleToggleDrawer}
                   >
                     <MenuIcon />
                     </IconButton>
-                    <Popover
-                      open={Boolean(anchorEl2)} anchorEl={anchorEl2} onClose={handleClosePopover2}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                      }}
-                      style={{ 
-                        maxHeight: '400px',
-                      }}
+                    <Drawer
+                      anchor="left"
+                      open={drawerOpen2}
+                      onClose={handleToggleDrawer}
                     >
-                      <List component="nav"> 
-                        <ListItem component={Link} to="/" onClick={handleClosePopover2} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end'}}>
+                      <IconButton onClick={handleDrawerClose}>
+                          <CloseIcon />
+                      </IconButton>
+                      </div>
+                      <List>
+                        <ListItem component={Link} to="/" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                           <ListItemText primary="Inicio" />
                         </ListItem>
-                        <ListItem component={Link} to="/nosotros" onClick={handleClosePopover2} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                          <ListItemText primary="Nosotros"/>
+                        <ListItem component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                          <ListItemText primary="Nosotros" />
                         </ListItem>
-                        <ListItem component={Link} onClick={toggleProductos} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                          <ListItemText primary="Productos" />
+                        <ListItem onClick={toggleProductos} component={Link} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                          <ListItemText primary="Productos"/>
                           {openProductos ? <ExpandLess /> : <ExpandMore />}
                         </ListItem>
                         <Collapse in={openProductos} timeout="auto" unmountOnExit>
                           <List component="div" disablePadding>
-                            <ListItem component={Link} to="/productos" onClick={handleClosePopover2} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                            <ListItem component={Link} to="/productos" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                               <ListItemText primary="Todos los productos" />
                             </ListItem>
                             {categories.map((category) => (
-                            <ListItem key={category.id} onClick={() => handleCategoryClick(category.slug)} component={Link} to={`/productos/${category.slug}`} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                              <ListItemText primary={category.name}/>
-                            </ListItem>
+                              <ListItem key={category.id} onClick={() => handleCategoryClick(category.slug)} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                                <ListItemText primary={category.name} />
+                              </ListItem>
                             ))}
                           </List>
                         </Collapse>
                       </List>
-                    </Popover>
-                    <div style={{margin: 'auto'}}>
+                    </Drawer>
+                    <div className='logoMobile'>
                       <Logo/>
                     </div>
                     <div style={{ marginLeft: 'auto' }}>
@@ -194,6 +169,9 @@ const NavigationBar = ({ onSelectCategory }) => {
                   </>
                 )}
       </Toolbar>
+      {isMobileOrTablet && (          
+        <TextField variant="standard" placeholder=" Buscar" sx={{ backgroundColor: 'rgba(3, 103, 166, 0.9)', margin: '10px', borderRadius: '10px'}} />                  
+      )}
     </AppBar>
     );
 };
