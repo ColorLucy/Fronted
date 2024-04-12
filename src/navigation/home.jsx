@@ -10,7 +10,7 @@ export default function Home() {
 
       
         <div>
-         <h1 style={{color: 'white'}}>HOLIS BONIS</h1>
+         <h1 >HOLIS BONIS</h1>
      
         </div>
 

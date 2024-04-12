@@ -1,5 +1,7 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, TextField, Menu, MenuItem, useMediaQuery, ListItemIcon } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Button, TextField, Menu, MenuItem, useMediaQuery, ListItemIcon,Paper } from '@mui/material';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -21,20 +23,34 @@ const NavigationBar = () => {
 
     return (
 
-        <AppBar position="static">
-            <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <AppBar position="static"  elevation={2}>
+            <Toolbar sx={{  justifyContent: 'space-between',  padding:'0px !important'}} >
                 {!isMobileOrTablet && (
                     <>
                         
                         
-                        <Logo/>
-                        <div style={{ display: 'flex', alignItems: 'end' }}>
+                        <Logo imgSize="50px" />
+                        <Paper 
+                            elevation={0}
+                            component="form"
+                            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
+                            <InputBase
+                                sx={{ ml: 1, flex: 1}}
+                                placeholder="Buscar Producto"
+                                inputProps={{ 'aria-label': 'search product' }}
+                            />
+                            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </Paper>
+                        
+                        <div style={{ display: 'flex', alignItems: 'end', color:'black' }}>
                             <Button color="inherit" component={Link} to="/">Inicio</Button>
                             <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
                             <Button color="inherit" component={Link} to="/productos">Productos</Button>
-                            <TextField variant="standard" placeholder="Buscar" sx={{ mr: 2 }} />
-                            <Button color="inherit" component={Link} to="/otra-pagina">
-                                <ShoppingCartIcon  sx={{ color: 'white' }}/>
+                            
+                            <Button color="inherit" component={Link} to="/carrito">
+                                <ShoppingCartIcon  color='inherit'/>
                             </Button>
                         </div>
                     </>
@@ -43,11 +59,11 @@ const NavigationBar = () => {
                     <>
                         <IconButton
                             size="large"
-                            edge="start"
-                            color="inherit"
+                            edge="end"
                             aria-label="menu"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
+                            sx={{ marginRight:'4px', color:'black'}}
                             onClick={handleMenu}
                         >
                             <MenuIcon />
@@ -70,12 +86,24 @@ const NavigationBar = () => {
                             <MenuItem onClick={handleClose} component={Link} to="/">Inicio</MenuItem>
                             <MenuItem onClick={handleClose} component={Link} to="/nosotros">Nosotros</MenuItem>
                             <MenuItem onClick={handleClose} component={Link} to="/productos">Productos</MenuItem>
-                            <MenuItem onClick={handleClose} component={Link} to="/otra-pagina">
-                            <ListItemIcon>
-                                <ShoppingCartIcon fontSize="small" />
-                            </ListItemIcon>
-                            </MenuItem>
                         </Menu>
+                        
+                        <Paper 
+                            elevation={0}
+                            component="form"
+                            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
+                            <InputBase
+                                sx={{ ml: 1, flex: 1}}
+                                placeholder="Buscar Producto"
+                                inputProps={{ 'aria-label': 'search product' }}
+                            />
+                            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                                <SearchIcon />
+                            </IconButton>
+                        </Paper>
+                        <Button color="inherit" component={Link} to="/carrito">
+                                <ShoppingCartIcon  sx={{ color: 'black' }}/>
+                        </Button>
                     </>
                 )}
             </Toolbar>

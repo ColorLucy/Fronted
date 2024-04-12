@@ -28,22 +28,27 @@ function App() {
 
   const Homepage = () => {
     return (
-      <Routes>
-        <Route Component={Home} path="*" />
-        
-      </Routes>
+      <>
+        <NavigationBar/>
+        <Routes>
+          <Route path="/nosotros" element={<AboutUs />} />
+          <Route path="/productos" element={<Products />} />
+          <Route path="/carrito" element={<ShoppingCar />} />
+          <Route Component={Home} path="*" />
+          
+        </Routes>
+      </>
+      
     )
   }
   return (
     <div className="App">
       <Router>
-        <NavigationBar/>
+        
         <Routes>
           <Route Component={Admin} path="/admin/*" />
           <Route Component={Homepage} path="*" />{/*aqui va el home de color lucy, cambiar por el componente HolaC*/ }
-          <Route path="/nosotros" element={<AboutUs />} />
-          <Route path="/productos" element={<Products />} />
-          <Route path="/carrito" element={<ShoppingCar />} />
+          
         </Routes>
       </Router>
     </div>
