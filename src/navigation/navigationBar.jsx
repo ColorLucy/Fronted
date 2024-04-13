@@ -23,7 +23,7 @@ const NavigationBar = () => {
 
     return (
 
-        <AppBar position="static"  elevation={2} >
+        <AppBar position="fixed"  elevation={2} >
             <Toolbar sx={{  justifyContent: 'space-between',  padding:'0px !important', backgroundColor:'#ffd314'}} >
                 {!isMobileOrTablet && (
                     <>

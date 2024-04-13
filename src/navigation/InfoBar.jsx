@@ -8,13 +8,13 @@ export default function InfoBar() {
   return (
     
     <>
-        <Grid container sx={{backgroundColor: '#2C2E33', display:'flex', height:'100px', position: 'fixed', bottom: 0, left: 0, right: 0}} justifyContent="end" >
+        <Grid container sx={{backgroundColor: '#2C2E33', display:'flex', minHeight:'100px', position: 'static', bottom: 0, left: 0, right: 0, marginTop: '20px'}} justifyContent="center" >
           {/* TItulo */}
           <Grid item   alignContent={'center'} color={'white'}>
             <Typography variant="body1" marginRight={10}>Contáctanos</Typography>
           </Grid>
           {/* Información de contacto */}
-          <Grid item  alignContent={'center'}  marginRight={5} color={'white'}>
+          <Grid item  alignContent={'center'}  marginRight={3} color={'white'}>
             
             <Typography>(315) 5176 725</Typography>
             <Typography>(310) 6813 723</Typography>
@@ -22,7 +22,7 @@ export default function InfoBar() {
             
           </Grid>
           {/* redes sociales */}
-          <Grid item   alignContent={'center'}color={'white'}>
+          <Grid item   alignContent={'center'} color={'white'}>
             <Button color="inherit" 
                 onClick={() => {
                   window.open('https://api.whatsapp.com/send/?phone=%2B573155176725&text&type=phone_number&app_absent=0', '_blank');
