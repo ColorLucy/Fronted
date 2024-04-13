@@ -55,24 +55,24 @@ function generateIntermediateColors(colors, steps) {
  * 
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
-export default function Logo() {
-    const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
+export default function Logo({imgSize}) {
+    const colors = ['#FEE901', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
     const expandedPalette = generateIntermediateColors(colors, 3);
     const wordColor = 'Color'.split('').map((letter, index) => (
-        <span key={index} style={{ color: colors[index] }}>{letter}</span>
+        <span key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
     ));
     return (
         <div>
             <div className='fragmentLogo'>
-                <img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={"60px"} alt="logo" />
+                <img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize?imgSize:'60px'} alt="logo" />
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
-                        position: "relative", top: "-10px", fontFamily: "Pacifico, cursive",
+                        position: "relative", top: "-9px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal"
                     }}>{wordColor} </div>
-                    <span style={{
-                        position: "relative", top: "12px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal"
+                    <span style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                        position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
+                        fontWeight: "400px", fontStyle: "normal", 
                     }}> Lucy</span>
                 </div>
             </div >

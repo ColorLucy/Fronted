@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Button, TextField, Drawer, MenuItem, useMediaQuery, ListItemIcon, Popover, CircularProgress, List, ListItem, ListItemText, Collapse } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Button, Drawer, MenuItem, useMediaQuery, CircularProgress, List, ListItem, ListItemText, Collapse, Box,Paper } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import CloseIcon from '@mui/icons-material/Close';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Commerce from '@chec/commerce.js';
 import Logo from '../components/logo';
 
@@ -58,12 +60,24 @@ const NavigationBar = ({ onSelectCategory }) => {
 
 
   return (
-    <AppBar position="static">
-      <Toolbar sx={{ justifyContent: 'space-between' }}>
+    <AppBar position="fixed"  elevation={2}>
+      <Toolbar sx={{  justifyContent: 'space-between',  padding:'0px !important', backgroundColor:'#ffd314'}}>
         {!isMobileOrTablet && (
           <>
-          <Logo/>
-          <div style={{ display: 'flex', alignItems: 'end' }}>
+          <Logo imgSize="50px"/>
+          <Paper 
+            elevation={1}
+            component="form"
+            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
+              <InputBase
+                sx={{ ml: 1, flex: 1}}
+                placeholder="Buscar Producto"
+                inputProps={{ 'aria-label': 'search product' }} />
+                <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                  <SearchIcon />
+                </IconButton>
+          </Paper>
+          <Box sx={{ display: 'flex', alignItems: 'end', color:'black' }}>
             <Button color="inherit" component={Link} to="/">Inicio</Button>
             <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
             <Button
@@ -98,80 +112,83 @@ const NavigationBar = ({ onSelectCategory }) => {
                   </>
                 )}
               </div>
-            </Drawer>           
-                  <TextField variant="standard" placeholder="Buscar" sx={{ mr: 2 }} />
-                  <Button color="inherit" component={Link} to="/otra-pagina">
-                    <ListItemIcon>
-                      <ShoppingCartIcon sx={{ color: 'white' }}/>
-                    </ListItemIcon>
-                  </Button>
-                </div>
-                </>
-                )}
-                {isMobileOrTablet && (
-                  <>
-                  <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    variant="contained" onClick={handleToggleDrawer}
-                  >
-                    <MenuIcon />
-                    </IconButton>
-                    <Drawer
-                      anchor="left"
-                      open={drawerOpen2}
-                      onClose={handleToggleDrawer}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'flex-end'}}>
-                      <IconButton onClick={handleDrawerClose}>
-                          <CloseIcon />
-                      </IconButton>
-                      </div>
-                      <List>
-                        <ListItem component={Link} to="/" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                          <ListItemText primary="Inicio" />
+            </Drawer>               
+            <Button color="inherit" component={Link} to="/carrito">
+              <ShoppingCartIcon sx={{ color: 'black' }}/>
+            </Button>
+          </Box>      
+          </>
+          )}
+          {isMobileOrTablet && (
+            <>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              sx={{ marginRight:'4px', color:'black'}}
+              variant="contained" onClick={handleToggleDrawer}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Drawer
+              anchor="left"
+              open={drawerOpen2}
+              onClose={handleToggleDrawer}
+            >
+              <div style={{ display: 'flex', justifyContent: 'flex-end'}}>
+                <IconButton onClick={handleDrawerClose}>
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <List>
+                <ListItem component={Link} to="/" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                  <ListItemText primary="Inicio" />
+                </ListItem>
+                <ListItem component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                  <ListItemText primary="Nosotros" />
+                </ListItem>
+                <ListItem onClick={toggleProductos} component={Link} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                  <ListItemText primary="Productos"/>
+                    {openProductos ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openProductos} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                      <ListItem component={Link} to="/productos" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                        <ListItemText primary="Todos los productos" />
+                      </ListItem>
+                      {categories.map((category) => (
+                        <ListItem key={category.id} onClick={() => handleCategoryClick(category.slug)} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                          <ListItemText primary={category.name} />
                         </ListItem>
-                        <ListItem component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                          <ListItemText primary="Nosotros" />
-                        </ListItem>
-                        <ListItem onClick={toggleProductos} component={Link} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                          <ListItemText primary="Productos"/>
-                          {openProductos ? <ExpandLess /> : <ExpandMore />}
-                        </ListItem>
-                        <Collapse in={openProductos} timeout="auto" unmountOnExit>
-                          <List component="div" disablePadding>
-                            <ListItem component={Link} to="/productos" onClick={handleToggleDrawer} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                              <ListItemText primary="Todos los productos" />
-                            </ListItem>
-                            {categories.map((category) => (
-                              <ListItem key={category.id} onClick={() => handleCategoryClick(category.slug)} style={{color:'black'}} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                                <ListItemText primary={category.name} />
-                              </ListItem>
-                            ))}
-                          </List>
-                        </Collapse>
-                      </List>
-                    </Drawer>
-                    <div className='logoMobile'>
-                      <Logo/>
-                    </div>
-                    <div style={{ marginLeft: 'auto' }}>
-                    <Button color="inherit" component={Link} to="/otra-pagina">
-                        <ListItemIcon>
-                        <ShoppingCartIcon sx={{ color: 'white' }}/>
-                        </ListItemIcon>
-                    </Button>
-                    </div>
-                  </>
-                )}
+                      ))}
+                  </List>
+                </Collapse>
+              </List>
+            </Drawer>
+            <div className='logoMobile'>
+              <Logo/>
+            </div>
+            <Paper 
+              elevation={1}
+              component="form"
+              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
+            <InputBase
+              sx={{ ml: 1, flex: 1}}
+              placeholder="Buscar Producto"
+              inputProps={{ 'aria-label': 'search product' }}
+            />
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+              <SearchIcon />
+            </IconButton>
+            </Paper>
+            <Button color="inherit" component={Link} to="/carrito">
+              <ShoppingCartIcon  sx={{ color: 'black' }}/>
+            </Button>
+            </>
+            )}
       </Toolbar>
-      {isMobileOrTablet && (          
-        <TextField variant="standard" placeholder=" Buscar" sx={{ backgroundColor: 'rgba(3, 103, 166, 0.9)', margin: '10px', borderRadius: '10px'}} />                  
-      )}
     </AppBar>
     );
 };
