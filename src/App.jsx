@@ -10,7 +10,7 @@ import Home from './navigation/Home';
 import AboutUs from './navigation/AboutUs';
 import Products from './navigation/Products';
 import ShoppingCar from './navigation/ShoppingCar';
-import NavigationBar from './navigation/navigationBar';
+import NavigationBar from './navigation/NavigationBar';
 
 const Admin = () => {
   {/**
@@ -36,7 +36,6 @@ function App() {
           <Route path="/productos" element={<Products />} />
           <Route path="/carrito" element={<ShoppingCar />} />
           <Route Component={Home} path="*" />
-          
         </Routes>
       </>
       
