@@ -6,7 +6,7 @@ function Products() {
   return (
     
     <div>
-         <h1 style={{color: 'white'}}>MIS PRODUCTOS</h1>
+         <h1 >MIS PRODUCTOS</h1>
      
     </div>
    
