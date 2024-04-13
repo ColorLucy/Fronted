@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton, Button, TextField, Menu, MenuItem, useMediaQuery, ListItemIcon,Paper } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Button, TextField, Menu, MenuItem, useMediaQuery, Box,Paper } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -23,15 +23,15 @@ const NavigationBar = () => {
 
     return (
 
-        <AppBar position="static"  elevation={2}>
-            <Toolbar sx={{  justifyContent: 'space-between',  padding:'0px !important'}} >
+        <AppBar position="static"  elevation={2} >
+            <Toolbar sx={{  justifyContent: 'space-between',  padding:'0px !important', backgroundColor:'#ffd314'}} >
                 {!isMobileOrTablet && (
                     <>
                         
                         
                         <Logo imgSize="50px" />
                         <Paper 
-                            elevation={0}
+                            elevation={1}
                             component="form"
                             sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
                             <InputBase
@@ -44,7 +44,7 @@ const NavigationBar = () => {
                             </IconButton>
                         </Paper>
                         
-                        <div style={{ display: 'flex', alignItems: 'end', color:'black' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'end', color:'black' }}>
                             <Button color="inherit" component={Link} to="/">Inicio</Button>
                             <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
                             <Button color="inherit" component={Link} to="/productos">Productos</Button>
@@ -52,7 +52,7 @@ const NavigationBar = () => {
                             <Button color="inherit" component={Link} to="/carrito">
                                 <ShoppingCartIcon  color='inherit'/>
                             </Button>
-                        </div>
+                        </Box>
                     </>
                 )}
                 {isMobileOrTablet && (
@@ -89,7 +89,7 @@ const NavigationBar = () => {
                         </Menu>
                         
                         <Paper 
-                            elevation={0}
+                            elevation={1}
                             component="form"
                             sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
                             <InputBase
