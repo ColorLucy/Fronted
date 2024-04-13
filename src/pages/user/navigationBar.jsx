@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import Logo from '../components/logo';
+import Logo from '../../components/logo';
 
 const NavigationBar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);

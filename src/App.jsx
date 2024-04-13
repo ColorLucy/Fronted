@@ -4,13 +4,13 @@ import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-route
 
 import './App.css'
 import { AuthProvider } from './context/AuthContext'
-import AdminHome from './pages/AdminHome'
-import AdminLogin from './pages/AdminLogin'
-import Home from './navigation/Home';
-import AboutUs from './navigation/AboutUs';
-import Products from './navigation/Products';
-import ShoppingCar from './navigation/ShoppingCar';
-import NavigationBar from './navigation/NavigationBar';
+import AdminHome from './pages/user/admin/AdminHome'
+import AdminLogin from './pages/user/admin/AdminLogin'
+import Home from './pages/user/home';
+import AboutUs from './pages/user/aboutUs';
+import Products from './pages/user/products';
+import ShoppingCar from './pages/user/shoppingCar';
+import NavigationBar from './pages/user/navigationBar';
 
 const Admin = () => {
   {/**
