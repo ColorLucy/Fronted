@@ -60,7 +60,7 @@ const NavigationBar = ({ onSelectCategory }) => {
 
 
   return (
-    <AppBar position="fixed"  elevation={2}>
+    <AppBar position="fixed"  elevation={2} style={{backgroundColor:'#ffd314'}}> 
       <Toolbar sx={{  justifyContent: 'space-between',  padding:'0px !important', backgroundColor:'#ffd314'}}>
         {!isMobileOrTablet && (
           <>
@@ -167,28 +167,31 @@ const NavigationBar = ({ onSelectCategory }) => {
                 </Collapse>
               </List>
             </Drawer>
-            <div className='logoMobile'>
-              <Logo/>
+            <div>
+              <Logo imgSize="10px"/>
             </div>
-            <Paper 
-              elevation={1}
-              component="form"
-              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
-            <InputBase
-              sx={{ ml: 1, flex: 1}}
-              placeholder="Buscar Producto"
-              inputProps={{ 'aria-label': 'search product' }}
-            />
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-            </Paper>
             <Button color="inherit" component={Link} to="/carrito">
               <ShoppingCartIcon  sx={{ color: 'black' }}/>
             </Button>
             </>
             )}
       </Toolbar>
+      {isMobileOrTablet && (   
+        <Paper 
+          position="fixed"
+          elevation={1}
+          component="form"
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'auto', margin: '10px' }}>
+        <InputBase
+          sx={{ ml: 1, flex: 1, alignItems: 'center', minWidth:'200px'}}
+          placeholder="Buscar Producto"
+          inputProps={{ 'aria-label': 'search product' }}
+        />
+        <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+          <SearchIcon />
+        </IconButton>
+        </Paper>                             
+      )}
     </AppBar>
     );
 };

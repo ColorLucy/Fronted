@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { useMediaQuery } from '@mui/material';
 import logo from "/logoTemp.webp"
 import "./components.css"
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
@@ -55,41 +56,43 @@ function generateIntermediateColors(colors, steps) {
  * 
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
-export default function Logo({imgSize}) {
-    const colors = ['#FEE901', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
-    const expandedPalette = generateIntermediateColors(colors, 3);
+export default function Logo({ imgSize }) {
+    
     const wordColor = 'Color'.split('').map((letter, index) => (
         <span key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
     ));
+    const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+    const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1:3);
+    
     return (
-        <div>
-            <div className='fragmentLogo'>
-                <img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize?imgSize:'60px'} alt="logo" />
+        <div className='fondo'>
+            <div className='fragmentLogo'  style={isMobileOrTablet ?{margin:'0px', marginTop:'10px'}:{}}>
+                {!isMobileOrTablet && < img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />}
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
                         position: "relative", top: "-9px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal"
                     }}>{wordColor} </div>
-                    <span style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                    <span style={{
+                        textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
                         position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal", 
+                        fontWeight: "400px", fontStyle: "normal",
                     }}> Lucy</span>
                 </div>
-            </div >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            </div>
+            <div className='colorBlocks'>
                 {expandedPalette.map((color, index) => (
                     <div
                         key={index}
                         style={{
                             backgroundColor: color,
-                            width: '15px', 
-                            height: '4px', 
-                            marginRight: '2px', 
+                            width: '15px',
+                            height: '4px',
+                            marginRight: '2px',
                         }}
                     />
                 ))}
             </div>
-        </div >
-
+        </div>
     )
 }

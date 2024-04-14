@@ -1,9 +1,37 @@
+.responsiveLogo {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .fragmentLogo {
   height: fit-content;
-  margin: 10px;
   display: flex;
   align-items: center;
   justify-content: space-around;
+  margin: 10px;
   max-height: 80px;
-
 }
+
+.colorBlocks {
+  display: flex;
+  align-items: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .fragmentLogo {
+      font-size: 24px;
+  }
+
+  .colorBlocks {
+      flex-wrap: wrap;
+  }
+
+  .colorBlocks > div {
+      margin-bottom: 2px;
+  }
+}
+
+/* Add more media queries as needed */
+
