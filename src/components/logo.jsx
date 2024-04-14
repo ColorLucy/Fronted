@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react'
+import { useMediaQuery } from '@mui/material';
 import logo from "/logoTemp.webp"
+import { motion } from "framer-motion";
 import "./components.css"
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
@@ -19,11 +21,11 @@ function generateIntermediateColors(colors, steps) {
         const b = parseInt(hex.slice(5, 7), 16);
         return [r, g, b];
     }
-    
+
     function rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
     }
-    
+
     function interpolateColor(color1, color2, factor) {
         let result = color1.slice();
         for (let i = 0; i < 3; i++) {
@@ -46,7 +48,25 @@ function generateIntermediateColors(colors, steps) {
     return intermediateColors;
 }
 
+const container = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            delayChildren: 0.1,
+            staggerChildren: 0.01
+        }
+    }
+};
 
+const item = {
+    hidden: { x: 2, opacity: 0 },
+    visible: {
+        x: 0,
+        opacity: 1
+    }
+};
 
 /**
  * Logo component that renders a stylized logo using a palette of colors.
@@ -55,41 +75,48 @@ function generateIntermediateColors(colors, steps) {
  * 
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
-export default function Logo() {
-    const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
-    const expandedPalette = generateIntermediateColors(colors, 3);
+export default function Logo({ imgSize }) {
+    
     const wordColor = 'Color'.split('').map((letter, index) => (
-        <span key={index} style={{ color: colors[index] }}>{letter}</span>
+        <span key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
     ));
+    const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+    const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1:3);
+    
     return (
         <div>
-            <div className='fragmentLogo'>
-                <img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={"60px"} alt="logo" />
+            <div className='fragmentLogo'  style={isMobileOrTablet ?{margin:'0px', marginTop:'10px'}:{}}>
+                {!isMobileOrTablet && < img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />}
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
-                        position: "relative", top: "-10px", fontFamily: "Pacifico, cursive",
+                        position: "relative", top: "-9px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal"
                     }}>{wordColor} </div>
                     <span style={{
-                        position: "relative", top: "12px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal"
+                        textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                        position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
+                        fontWeight: "400px", fontStyle: "normal",
                     }}> Lucy</span>
                 </div>
-            </div >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            </div>
+            <div className='colorBlocks'>
+            <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
+                initial="hidden"
+                animate="visible">
                 {expandedPalette.map((color, index) => (
-                    <div
+                    <motion.div
                         key={index}
+                        variants={item}
                         style={{
                             backgroundColor: color,
-                            width: '15px', 
-                            height: '4px', 
-                            marginRight: '2px', 
+                            width: '15px',
+                            height: '4px',
+                            marginRight: '2px',
                         }}
                     />
                 ))}
+            </motion.div>
             </div>
-        </div >
-
+        </div>
     )
 }

@@ -1,20 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Route,
-  BrowserRouter as Router,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
 import "./App.css";
 import { AuthProvider } from "./context/AuthContext";
-import AdminHome from "./pages/AdminHome";
-import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
-import AdminLogin from "./pages/AdminLogin";
-import Home from "./navigation/Home";
-import AboutUs from "./navigation/AboutUs";
-import Products from "./navigation/Products";
-import ShoppingCar from "./navigation/ShoppingCar";
-import NavigationBar from "./navigation/NavigationBar";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AboutUs from "./pages/user/AboutUs";
+import Home from "./pages/user/Home";
+import NavigationBar from "./components/NavigationBar";
+import Products from "./pages/user/Products";
+import ShoppingCar from "./pages/user/ShoppingCar";
 
 const Admin = () => {
   {
@@ -49,7 +43,6 @@ function App() {
           <Route path="/nosotros" element={<AboutUs />} />
           <Route path="/productos" element={<Products />} />
           <Route path="/carrito" element={<ShoppingCar />} />
-          <Route path="/dashboard" element={<AdminDashboard />} />
         </Routes>
       </Router>
     </div>

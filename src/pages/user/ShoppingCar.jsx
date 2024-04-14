@@ -6,7 +6,7 @@ function ShoppingCar() {
   return (
     
     <div>
-    <h1 style={{color: 'white'}}>CARRITO</h1>
+    <h1 style={{color: 'black'}}>CARRITO</h1>
 
 </div>
    

@@ -1,12 +1,13 @@
 import React from "react"
 
-function AboutUs() {
+
+function AboutUs() {s
   
 
   return (
     
     <div>
-        <h1 style={{color: 'white'}}>SOBRE NOSOTROS</h1>
+      <h1 style={{color: 'black'}}>SOBRE NOSOTROS</h1>
 
     </div>
    
