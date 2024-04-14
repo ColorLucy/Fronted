@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import { useMediaQuery } from '@mui/material';
 import logo from "/logoTemp.webp"
+import { motion } from "framer-motion";
 import "./components.css"
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
@@ -20,11 +21,11 @@ function generateIntermediateColors(colors, steps) {
         const b = parseInt(hex.slice(5, 7), 16);
         return [r, g, b];
     }
-    
+
     function rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
     }
-    
+
     function interpolateColor(color1, color2, factor) {
         let result = color1.slice();
         for (let i = 0; i < 3; i++) {
@@ -47,7 +48,25 @@ function generateIntermediateColors(colors, steps) {
     return intermediateColors;
 }
 
+const container = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            delayChildren: 0.1,
+            staggerChildren: 0.01
+        }
+    }
+};
 
+const item = {
+    hidden: { x: 2, opacity: 0 },
+    visible: {
+        x: 0,
+        opacity: 1
+    }
+};
 
 /**
  * Logo component that renders a stylized logo using a palette of colors.
@@ -81,9 +100,13 @@ export default function Logo({ imgSize }) {
                 </div>
             </div>
             <div className='colorBlocks'>
+            <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
+                initial="hidden"
+                animate="visible">
                 {expandedPalette.map((color, index) => (
-                    <div
+                    <motion.div
                         key={index}
+                        variants={item}
                         style={{
                             backgroundColor: color,
                             width: '15px',
@@ -92,6 +115,7 @@ export default function Logo({ imgSize }) {
                         }}
                     />
                 ))}
+            </motion.div>
             </div>
         </div>
     )
