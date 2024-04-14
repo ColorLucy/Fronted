@@ -1,14 +1,12 @@
 import React from "react"
-import NavigationBar from './navigationBar';
 
 
-function AboutUs() {
+function AboutUs() {s
   
 
   return (
     
     <div>
-      <NavigationBar />
       <h1 style={{color: 'black'}}>SOBRE NOSOTROS</h1>
 
     </div>

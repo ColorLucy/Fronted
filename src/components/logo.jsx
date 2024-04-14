@@ -65,7 +65,7 @@ export default function Logo({ imgSize }) {
     const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1:3);
     
     return (
-        <div className='fondo'>
+        <div>
             <div className='fragmentLogo'  style={isMobileOrTablet ?{margin:'0px', marginTop:'10px'}:{}}>
                 {!isMobileOrTablet && < img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />}
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import axiosInstance from '../utils/axiosInstance'
+import axiosInstance from '../../utils/axiosInstance'
 function AdminHome() {
   
   useEffect(() => {

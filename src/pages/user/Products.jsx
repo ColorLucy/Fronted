@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Commerce from "@chec/commerce.js";
-import NavigationBar from "./navigationBar";
+import NavigationBar from "../../components/NavigationBar";
 import "./products.css";
 
 function Products() {
@@ -33,7 +33,7 @@ function Products() {
 
   return (
     <div className="productsPage">
-      <NavigationBar onSelectCategory={setSelectedCategory} />
+      {/* <NavigationBar onSelectCategory={setSelectedCategory} /> */}
       <h5 style={{ marginTop: "10px", marginBottom: "10px", marginLeft: "10px"}}>Productos</h5>
       <div className="productsContainer">
         {loading ? (
