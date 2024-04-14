@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import logo from "/logoTemp.webp"
+import { motion } from "framer-motion";
 import "./components.css"
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
@@ -19,11 +20,11 @@ function generateIntermediateColors(colors, steps) {
         const b = parseInt(hex.slice(5, 7), 16);
         return [r, g, b];
     }
-    
+
     function rgbToHex(r, g, b) {
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
     }
-    
+
     function interpolateColor(color1, color2, factor) {
         let result = color1.slice();
         for (let i = 0; i < 3; i++) {
@@ -46,7 +47,25 @@ function generateIntermediateColors(colors, steps) {
     return intermediateColors;
 }
 
+const container = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            delayChildren: 0.1,
+            staggerChildren: 0.01
+        }
+    }
+};
 
+const item = {
+    hidden: { x: 2, opacity: 0 },
+    visible: {
+        x: 0,
+        opacity: 1
+    }
+};
 
 /**
  * Logo component that renders a stylized logo using a palette of colors.
@@ -55,7 +74,7 @@ function generateIntermediateColors(colors, steps) {
  * 
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
-export default function Logo({imgSize}) {
+export default function Logo({ imgSize }) {
     const colors = ['#FEE901', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
     const expandedPalette = generateIntermediateColors(colors, 3);
     const wordColor = 'Color'.split('').map((letter, index) => (
@@ -64,31 +83,36 @@ export default function Logo({imgSize}) {
     return (
         <div>
             <div className='fragmentLogo'>
-                <img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize?imgSize:'60px'} alt="logo" />
+                <img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
                         position: "relative", top: "-9px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal"
                     }}>{wordColor} </div>
-                    <span style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                    <span style={{
+                        textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
                         position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal", 
+                        fontWeight: "400px", fontStyle: "normal",
                     }}> Lucy</span>
                 </div>
             </div >
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
+                initial="hidden"
+                animate="visible">
                 {expandedPalette.map((color, index) => (
-                    <div
+                    <motion.div
                         key={index}
+                        variants={item}
                         style={{
                             backgroundColor: color,
-                            width: '15px', 
-                            height: '4px', 
-                            marginRight: '2px', 
+                            width: '15px',
+                            height: '4px',
+                            marginRight: '2px',
                         }}
+
                     />
                 ))}
-            </div>
+            </motion.div>
         </div >
 
     )
