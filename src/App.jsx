@@ -1,16 +1,15 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Route, BrowserRouter as Router, Routes, useLocation } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 
 import './App.css'
 import { AuthProvider } from './context/AuthContext'
-import AdminHome from './pages/user/admin/AdminHome'
-import AdminLogin from './pages/user/admin/AdminLogin'
-import Home from './pages/user/home';
-import AboutUs from './pages/user/aboutUs';
-import Products from './pages/user/products';
-import ShoppingCar from './pages/user/shoppingCar';
-import NavigationBar from './pages/user/navigationBar';
+import AdminLogin from './pages/admin/AdminLogin'
+import AboutUs from './pages/user/AboutUs'
+import Home from './pages/user/Home'
+import NavigationBar from './components/NavigationBar'
+import Products from './pages/user/Products'
+import ShoppingCar from './pages/user/ShoppingCar'
 
 const Admin = () => {
   {/**
@@ -30,7 +29,7 @@ function App() {
   const Homepage = () => {
     return (
       <>
-        <NavigationBar/>
+        <NavigationBar />
         <Routes>
           <Route path="/nosotros" element={<AboutUs />} />
           <Route path="/productos" element={<Products />} />
@@ -38,20 +37,20 @@ function App() {
           <Route Component={Home} path="*" />
         </Routes>
       </>
-      
+
     )
   }
   return (
     <div className="App">
       <Router>
-        
+
         <Routes>
           <Route Component={Admin} path="/admin/*" />
-          <Route Component={Homepage} path="*" />{/*aqui va el home de color lucy, cambiar por el componente HolaC*/ }
-          
+          <Route Component={Homepage} path="*" />{/*aqui va el home de color lucy, cambiar por el componente HolaC*/}
+
         </Routes>
       </Router>
-      
+
 
     </div>
   )

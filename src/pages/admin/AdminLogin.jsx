@@ -13,8 +13,8 @@ import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import React, { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Logo from '../../../components/logo';
-import AuthContext from '../../../context/AuthContext';
+import Logo from '../../components/logo';
+import AuthContext from '../../context/AuthContext';
 import "./admin.css";
 
 
