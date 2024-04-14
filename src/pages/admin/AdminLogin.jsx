@@ -13,8 +13,8 @@ import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import React, { useContext, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Logo from '../components/logo';
-import AuthContext from '../context/AuthContext';
+import Logo from '../../components/logo';
+import AuthContext from '../../context/AuthContext';
 import "./admin.css";
 
 
@@ -96,7 +96,7 @@ export default function AdminLogin() {
             required
           />
 
-          <FormControl sx={{ m: 1 }} variant="filled" fullWidth >
+          <FormControl variant="filled" fullWidth >
             <InputLabel htmlFor="filled-adornment-password" >Contraseña</InputLabel>
             <FilledInput
               id="filled-adornment-password"

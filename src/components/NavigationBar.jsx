@@ -1,11 +1,11 @@
-import React from 'react';
-import { AppBar, Toolbar, IconButton, Button, Menu, MenuItem, useMediaQuery, Box,Paper } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import Logo from '../components/logo';
+import { AppBar, Box, Button, IconButton, Menu, MenuItem, Paper, Toolbar, useMediaQuery } from '@mui/material';
+import InputBase from '@mui/material/InputBase';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Logo from './logo';
 
 const NavigationBar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
