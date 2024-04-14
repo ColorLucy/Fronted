@@ -1,0 +1,6 @@
+.productImage {
+    height: auto;
+    width: auto;
+    max-width: 100px;
+    border-radius: 100%;
+}
