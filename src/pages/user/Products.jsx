@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Commerce from "@chec/commerce.js";
 import NavigationBar from "../../components/NavigationBar";
+import WhatsApp from "../../components/WhatsApp"; 
+import InfoBar from "./InfoBar";
 import "./products.css";
 
 function Products() {
@@ -56,6 +58,8 @@ function Products() {
           ))
         )}
       </div>
+      <WhatsApp />
+      <InfoBar />
     </div>
   );
 }
