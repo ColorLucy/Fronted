@@ -1,3 +1,13 @@
+.dashboardTitle {
+    color: #0AA64D;
+    margin-top: 1rem;
+    vertical-align: middle;
+}
+
+.addProduct {
+    color: white;
+}
+
 .productImage {
     height: auto;
     width: auto;
