@@ -1,29 +1,30 @@
-import React from "react";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
+  Box,
+  Button,
+  IconButton,
+  Menu, MenuItem,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
   TablePagination,
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  InputAdornment,
+  TableRow,
+  styled
 } from "@mui/material";
-import { styled, Paper, Menu, MenuItem } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import styles from "./TableDashboard.module.css";
+import InputBase from '@mui/material/InputBase';
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "../../styles/Theme";
-import { consultarDetalles } from "../../api/Products";
+import React from "react";
+import { consultarDetalles } from "../../utils/products";
+import Logo from "../../components/logo";
+import { theme } from "../../styles/theme";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -58,21 +59,10 @@ const TableDashboard = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
-  console.log(search);
   const open = Boolean(anchorEl);
 
   async function obtenerProductos() {
-    const config = {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: window.localStorage.loginUser,
-      },
-      // body: JSON.stringify(data)
-    };
-    // console.log("config:", config)
-    const datos = await consultarDetalles(config);
-    console.log("Productos:", datos);
+    const datos = await consultarDetalles();
 
     let productosProcesados = [];
     for (let i = 0; i < datos.length; i++) {
@@ -83,17 +73,16 @@ const TableDashboard = () => {
         color: datos[i].color,
       });
     }
-    console.log("Productos Procesados:", productosProcesados);
     setData(productosProcesados);
   }
 
   const results = !search
     ? data
     : data.filter(
-        (product) =>
-          product.producto.toLowerCase().includes(search.toLocaleLowerCase()) ||
-          product.unidad.toLowerCase().includes(search.toLocaleLowerCase())
-      );
+      (product) =>
+        product.producto.toLowerCase().includes(search.toLocaleLowerCase()) ||
+        product.unidad.toLowerCase().includes(search.toLocaleLowerCase())
+    );
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -137,33 +126,36 @@ const TableDashboard = () => {
       <Box
         sx={{
           display: "flex",
+          margin: "10px",
+          alignItems: "center",
           justifyContent: "space-between",
-          padding: "1rem",
+          paddingInline: "10px"
         }}
       >
-        <h3 className={`${styles.dashboardTitle}`}>Dashboard</h3>
-        <TextField
-          color="lucy_yellow"
-          label="Search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          placeholder={"Buscar"}
-          onChange={(e) => setSearch(e.target.value)}
-        ></TextField>
+        <>
+        </>
+        <Logo imgSize={40} minLen={true} />
+        <Paper
+          elevation={1}
+          component="form"
+          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, height: "50px" }}>
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            placeholder="Buscar Producto"
+            inputProps={{ 'aria-label': 'search product' }}
+            onChange={(e) => setSearch(e.target.value)} />
+          <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+            <SearchIcon />
+          </IconButton>
+        </Paper>
         <Button
           sx={{
-            backgroundColor: "#C63CA2",
-            color: "white",
             fontFamily: "Roboto",
+            padding: "10px"
           }}
           startIcon={<AddIcon />}
           onClick={handleAddProduct}
+          variant="contained"
         >
           Añadir Producto
         </Button>
@@ -202,7 +194,7 @@ const TableDashboard = () => {
                     Color
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
-                    Menu
+                    
                   </StyledHeaderTableCell>
                 </StyledTableRow>
               </TableHead>
@@ -234,6 +226,7 @@ const TableDashboard = () => {
                           <MenuIcon />
                         </IconButton>
                         <Menu
+                          id="basic-menu"
                           anchorEl={anchorEl}
                           open={open}
                           onClose={handleClose}
@@ -259,16 +252,14 @@ const TableDashboard = () => {
           </TableContainer>
           <TablePagination
             sx={{
-              ".MuiTablePagination-toolbar": {
-                backgroundColor: "#D7194A",
-              },
+
               ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows":
-                {
-                  color: "white",
-                  fontFamily: "Roboto",
-                  fontWeight: "bold",
-                  marginTop: "1rem",
-                },
+              {
+                color: "white",
+                fontFamily: "Roboto",
+                fontWeight: "bold",
+                marginTop: "1rem",
+              },
               ".MuiTablePagination-select, .MuiTablePagination-actions": {
                 fontFamily: "Roboto",
                 borderRadius: "5px",
