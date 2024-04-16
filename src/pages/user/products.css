@@ -1,159 +1,122 @@
 .productsPage {
-    width: 100vw;
-    height: 100vh;
-    background-color: #ffffff; 
+  background-color: #ffffff;
 }
 
 .productsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    margin-top: 60px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  min-height: calc(100vh - 244px);
+  gap: 15px;
 }
 
 .productItem {
-    position: relative;
-    width: calc(50% - 10px);
-    margin-bottom: 20px;
-    box-sizing: border-box;
-    /* border: 1px solid #ccc; */
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 274px;
-    max-height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-  
+
 .productContent {
-    flex: 1; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-  
+
 .productButtons {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
 }
-  
-.productItem img {
-    height: 120px;
-    width: 100px;
-}
-  
+
 .productItem h6 {
-    margin-top: 10px;
+  margin-top: 10px;
 }
-  
-.productItem p {
-    margin-top: 10px;
-}
-  
+
 .productButtons button {
-    width: calc(100% - 20px);
-    margin-bottom: 10px;
+  width: calc(100% - 20px);
+  margin-bottom: 10px;
 }
 
 .buttonAddCar {
-    background-color: transparent;
-    margin-bottom: 10px;
-    border: 2px solid #0367A6;
-    color: #0367A6;
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    border-radius: 10px;
-    min-width: 212px; 
-    min-height: 20px;
-    bottom: 0;
+  background-color: transparent;
+  margin-bottom: 10px;
+  border: 2px solid #0367a6;
+  color: #0367a6;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 10px;
+  min-width: 212px;
+  min-height: 20px;
+  bottom: 0;
 }
 
 .buttonAddCar:hover {
-    background-color: rgb(3, 103, 166);
-    color: #fff;
+  background-color: rgb(3, 103, 166);
+  color: #fff;
 }
 
 .buttonOrder {
-    background-color: transparent;
-    border: 2px solid #29A71A;
-    color: #29A71A;
-    padding: 10px 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-    border-radius: 10px;
-    min-width: 212px; 
-    min-height: 20px;
+  background-color: transparent;
+  border: 2px solid #29a71a;
+  color: #29a71a;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 10px;
+  min-width: 212px;
+  min-height: 20px;
 }
 
 .buttonOrder:hover {
-    background-color: #29A71A;
-    color: #fff;
+  background-color: #29a71a;
+  color: #fff;
 }
 
 .logoMobile {
-    width: 220px;
-    height: auto;
-    margin: auto;
+  width: 220px;
+  height: auto;
+  margin: auto;
 }
 
 @media (min-width: 320px) {
-    .productItem {
-        width: calc(50% - 10px); 
-    }
-    .buttonAddCar {
-        font-size: 10px; 
-        padding: 3px 6px; 
-        min-width: 150px; 
-        min-height: 10px; 
-    }
+  .buttonAddCar {
+    font-size: 10px;
+    padding: 3px 6px;
+    min-width: 150px;
+    min-height: 10px;
+  }
 
-    .buttonOrder {
-        font-size: 10px; 
-        padding: 5px 10px; 
-        min-width: 150px; 
-        min-height: 20px; 
-    }
-
-    .productsContainer{
-        margin-top: 110px;
-    }
+  .buttonOrder {
+    font-size: 10px;
+    padding: 5px 10px;
+    min-width: 150px;
+    min-height: 20px;
+  }
 }
-  
+
 @media (min-width: 768px) {
-    .productItem {
-      width: calc(25% - 10px); 
-    }
+  .buttonAddCar {
+    font-size: 14px;
+    padding: 10px 20px;
+    min-width: 212px;
+    min-height: 20px;
+  }
 
-    .buttonAddCar {
-        font-size: 14px; 
-        padding: 10px 20px; 
-        min-width: 212px; 
-        min-height: 20px; 
-    }
-
-    .buttonOrder {
-        font-size: 14px; 
-        padding: 10px 20px; 
-        min-width: 212px; 
-        min-height: 20px;  
-    }
-
-    .productsContainer{
-        margin-top: 110px;
-    }
+  .buttonOrder {
+    font-size: 14px;
+    padding: 10px 20px;
+    min-width: 212px;
+    min-height: 20px;
+  }
 }
 
 @media (min-width: 992px) {
   .productItem {
-     width: calc(25% - 15px); 
-   }
-
-   .productsContainer{
-        margin-top: 60px;
-   }
+    width: calc(25% - 15px);
+  }
 }
