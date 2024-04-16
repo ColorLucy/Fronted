@@ -1,6 +1,6 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import dayjs from "dayjs";
+import { jwtDecode } from "jwt-decode";
 
 const baseURL = "http://127.0.0.1:8000"
 
@@ -24,7 +24,6 @@ axiosInstance.interceptors.request.use(async req => {
         await axios.post(`${baseURL}/auth/refresh/`, {
             refresh: authTokens.refresh
         }).then(({ data }) => {
-            console.log(data)
             localStorage.setItem('authTokens', JSON.stringify({ ...authTokens, access: data.access }));
             req.headers.Authorization = `Bearer ${data.access}`;
             return req
@@ -32,8 +31,6 @@ axiosInstance.interceptors.request.use(async req => {
             localStorage.clear()
             window.location.href = '/admin/login?invalid=true';
         })
-
-
     } else {
         req.headers.Authorization = `Bearer ${authTokens.access}`;
         return req

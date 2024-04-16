@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from 'react-router-dom';
-import WhatsApp from "../../components/WhatsApp";
-import InfoBar from "./InfoBar";
-import "./products.css";
 import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useParams } from 'react-router-dom';
+import InfoBar from "../../components/InfoBar";
 import ProductCard from "../../components/ProductCard";
+import WhatsApp from "../../components/WhatsApp";
+import "./products.css";
 
 function Products() {
   const [productos, setProductos] = useState([]);
@@ -41,9 +41,9 @@ function Products() {
         ) : !productos ? (
           <p>No hay productos en esta categoría.</p>
         ) : (
-          productos.map((producto) => (
-            <div key={producto.id} className="productItem">
-              <ProductCard product={producto} />
+          productos.map((producto, index) => (
+            <div key={index} className="productItem">
+              <ProductCard product={producto} key={producto.id}/>
             </div>
           ))
         )}

@@ -19,7 +19,7 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
-        <Route Component={AdminDashboard} path="dashboard/" />
+        <Route Component={AdminDashboard} path="/" />
       </Routes>
     </AuthProvider>
   );

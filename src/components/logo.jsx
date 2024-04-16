@@ -3,6 +3,7 @@ import { useMediaQuery } from '@mui/material';
 import logo from "/logoTemp.webp"
 import { motion } from "framer-motion";
 import "./components.css"
+import { useNavigate } from 'react-router-dom';
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
 
@@ -76,16 +77,17 @@ const item = {
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
 export default function Logo({ imgSize, minLen }) {
-    
+
     const wordColor = 'Color'.split('').map((letter, index) => (
         <span key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
     ));
     const isMobileOrTablet = useMediaQuery('(max-width: 960px)') || minLen;
-    const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1:3);
-    
+    const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1 : 3);
+    const navigate = useNavigate();
+
     return (
-        <div>
-            <div className='fragmentLogo'  style={isMobileOrTablet ?{margin:'0px', marginTop:'10px'}:{}}>
+        <div onClick={() => navigate("/")}>
+            <div className='fragmentLogo' style={isMobileOrTablet ? { margin: '0px', marginTop: '10px' } : {}}>
                 {!isMobileOrTablet && < img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />}
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
@@ -100,22 +102,22 @@ export default function Logo({ imgSize, minLen }) {
                 </div>
             </div>
             <div className='colorBlocks'>
-            <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
-                initial="hidden"
-                animate="visible">
-                {expandedPalette.map((color, index) => (
-                    <motion.div
-                        key={index}
-                        variants={item}
-                        style={{
-                            backgroundColor: color,
-                            width: '15px',
-                            height: '4px',
-                            marginRight: '2px',
-                        }}
-                    />
-                ))}
-            </motion.div>
+                <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
+                    initial="hidden"
+                    animate="visible">
+                    {expandedPalette.map((color, index) => (
+                        <motion.div
+                            key={index}
+                            variants={item}
+                            style={{
+                                backgroundColor: color,
+                                width: '15px',
+                                height: '4px',
+                                marginRight: '2px',
+                            }}
+                        />
+                    ))}
+                </motion.div>
             </div>
         </div>
     )

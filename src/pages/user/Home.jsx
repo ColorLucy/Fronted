@@ -1,21 +1,17 @@
-import { Box, Button, Card, CardMedia, Grid, Typography } from '@mui/material';
-import { useMediaQuery } from '@mui/material';
+import { Box, Button, Card, CardMedia, Grid, Typography, useMediaQuery } from '@mui/material';
 import React from "react";
 import { Link } from "react-router-dom";
-import InfoBar from "./InfoBar";
+import InfoBar from "../../components/InfoBar";
 import WhatsApp from "../../components/WhatsApp";
 
 export default function Home() {
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-
-
   return (
-
     <Box  >
       <Grid container spacing={2} justifyContent="end" alignItems="center" paddingTop={12} style={isMobileOrTablet ? { paddingLeft: '20px', paddingRight: '20px', marginTop: '40px' } : {}}>
         {/* Informacion empresa, a inicio de página, lado izquierdo */}
         <Grid item xs={12} md={5} alignContent={'center'}>
-          <Typography sx={{ color: 'black', fontSize: isMobileOrTablet ? '30px' : '50px', fontStyle: 'italic'}}> Empresa de pintura automotriz</Typography>
+          <Typography sx={{ color: 'black', fontSize: isMobileOrTablet ? '30px' : '50px', fontStyle: 'italic' }}> Empresa de pintura automotriz</Typography>
           <Typography sx={{ color: 'black', fontSize: isMobileOrTablet ? '15px' : '20px' }}> Nos especializamos en combinaciones de pinturas.
           </Typography>
           <Typography sx={{ color: 'black', fontSize: isMobileOrTablet ? '12px' : '15px' }}> ¡Realizamos domicilios en Cali y sus alrededores!
@@ -110,21 +106,11 @@ export default function Home() {
           </Grid>
 
         </Grid>
-
-
-
         {/* Barra inferior con información de contacto  */}
         <InfoBar />
         <WhatsApp />
-
       </Grid>
-
-
     </Box>
-
-
-
-
 
   )
 }
