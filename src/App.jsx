@@ -19,7 +19,7 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
-        <Route Component={AdminDashboard} path="/" />
+        <Route Component={AdminDashboard} path="dashboard/" />
       </Routes>
     </AuthProvider>
   );
@@ -27,7 +27,7 @@ const Admin = () => {
 
 /**
  * Vista del cliente
- * @returns 
+ * @returns
  */
 const Homepage = () => {
   return (
@@ -40,7 +40,6 @@ const Homepage = () => {
         <Route Component={Home} path="/" />
       </Routes>
     </>
-
   );
 };
 

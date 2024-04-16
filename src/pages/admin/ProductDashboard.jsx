@@ -1,30 +1,33 @@
+import React from "react";
+import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
 import AddIcon from "@mui/icons-material/Add";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
-import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
-  Box,
-  Button,
-  IconButton,
-  Menu, MenuItem,
-  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
-  styled
+  TablePagination,
+  Box,
+  Button,
+  IconButton,
+  TextField,
+  InputAdornment,
+  styled,
+  Paper,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import InputBase from '@mui/material/InputBase';
+import styles from "./ProductDashboard.module.css";
 import { ThemeProvider } from "@mui/material/styles";
-import React from "react";
+import { theme } from "../../styles/theme";
 import { consultarDetalles } from "../../utils/products";
 import Logo from "../../components/logo";
-import { theme } from "../../styles/theme";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -52,40 +55,37 @@ function createData(imagen, producto, precio, unidad, color) {
   };
 }
 
-const TableDashboard = () => {
+const ProductDashboard = () => {
   const [data, setData] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [page, setPage] = React.useState(0);
+  const [productCount, setProductCount] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
-  const open = Boolean(anchorEl);
 
   async function obtenerProductos() {
     const datos = await consultarDetalles();
+    const productos = datos;
+    setProductCount(datos.length);
+    // console.log("Productos:", productos);
 
     let productosProcesados = [];
-    for (let i = 0; i < datos.length; i++) {
+    for (let i = 0; i < productos.length; i++) {
       productosProcesados.push({
-        producto: datos[i].nombre,
-        precio: datos[i].precio,
-        unidad: datos[i].unidad,
-        color: datos[i].color,
+        id_detalle: productos[i].id_detalle,
+        producto: productos[i].nombre,
+        precio: productos[i].precio,
+        unidad: productos[i].unidad,
+        color: productos[i].color,
       });
     }
+    // console.log("Productos Procesados:", productosProcesados);
     setData(productosProcesados);
   }
 
-  const results = !search
-    ? data
-    : data.filter(
-      (product) =>
-        product.producto.toLowerCase().includes(search.toLocaleLowerCase()) ||
-        product.unidad.toLowerCase().includes(search.toLocaleLowerCase())
-    );
-
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleMenuClick = (index, event) => {
+    setAnchorEl({ [index]: event.currentTarget });
   };
 
   const handleClose = () => {
@@ -114,6 +114,7 @@ const TableDashboard = () => {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    // obtenerProductos();
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -126,36 +127,38 @@ const TableDashboard = () => {
       <Box
         sx={{
           display: "flex",
-          margin: "10px",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingInline: "10px"
+          padding: "1rem 2rem",
         }}
       >
-        <>
-        </>
         <Logo imgSize={40} minLen={true} />
-        <Paper
-          elevation={1}
-          component="form"
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, height: "50px" }}>
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Buscar Producto"
-            inputProps={{ 'aria-label': 'search product' }}
-            onChange={(e) => setSearch(e.target.value)} />
-          <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </Paper>
+        <h3 className={`${styles.dashboardTitle}`}>Dashboard</h3>
+        <TextField
+          color="lucy_yellow"
+          label="Search"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+          variant="outlined"
+          placeholder={"Buscar"}
+          onChange={(e) => setSearch(e.target.value)}
+        ></TextField>
         <Button
           sx={{
+            backgroundColor: "#C63CA2",
+            color: "white",
             fontFamily: "Roboto",
-            padding: "10px"
+            "&:hover": {
+              backgroundColor: "#D7194A",
+            },
           }}
           startIcon={<AddIcon />}
           onClick={handleAddProduct}
-          variant="contained"
         >
           Añadir Producto
         </Button>
@@ -169,14 +172,14 @@ const TableDashboard = () => {
           {setLoading(false)}
         </>
       ) : (
-        <Box sx={{ margin: "0 1rem" }} component={Paper}>
+        <Box sx={{ margin: "0 2rem" }} component={Paper}>
           <TableContainer
             sx={{ overflowX: "auto", borderRadius: "0.25rem" }}
             component={Paper}
           >
             <Table
               sx={{ minWidth: "auto" }}
-              size="medium"
+              size="small"
               aria-label="products table"
             >
               <TableHead>
@@ -194,16 +197,21 @@ const TableDashboard = () => {
                     Color
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
-                    
+                    Menu
                   </StyledHeaderTableCell>
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {results
+                {data
+                  .filter((row) => {
+                    return search.toLowerCase() === ""
+                      ? row
+                      : row.producto.toLowerCase().includes(search);
+                  })
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <TableRow key={row.producto}>
-                      <StyledBodyTableCell align="center">
+                  .map((row, index) => (
+                    <TableRow key={row.id_detalle}>
+                      <StyledBodyTableCell component="th" align="center">
                         {row.producto}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
@@ -218,7 +226,7 @@ const TableDashboard = () => {
                       <StyledBodyTableCell align="center">
                         <IconButton
                           id="options-button"
-                          onClick={handleMenuClick}
+                          onClick={(event) => handleMenuClick(index, event)}
                           aria-controls={open ? "basic-menu" : undefined}
                           aria-haspopup="true"
                           aria-expanded={open ? "true" : undefined}
@@ -226,9 +234,8 @@ const TableDashboard = () => {
                           <MenuIcon />
                         </IconButton>
                         <Menu
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={open}
+                          anchorEl={anchorEl && anchorEl[index]}
+                          open={Boolean(anchorEl) && Boolean(anchorEl[index])}
                           onClose={handleClose}
                           MenuListProps={{
                             "aria-labelledby": "basic-button",
@@ -252,23 +259,32 @@ const TableDashboard = () => {
           </TableContainer>
           <TablePagination
             sx={{
-
-              ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows":
-              {
-                color: "white",
-                fontFamily: "Roboto",
-                fontWeight: "bold",
-                marginTop: "1rem",
+              ".MuiTablePagination-toolbar": {
+                backgroundColor: "#D7194A",
               },
+              ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows":
+                {
+                  color: "white",
+                  fontFamily: "Roboto",
+                  fontWeight: "bold",
+                  marginTop: "1rem",
+                },
               ".MuiTablePagination-select, .MuiTablePagination-actions": {
                 fontFamily: "Roboto",
                 borderRadius: "5px",
                 backgroundColor: "white",
               },
             }}
-            rowsPerPageOptions={[10, 25, 50, 100, -1]}
-            component={Box}
-            count={results.length}
+            rowsPerPageOptions={[
+              5,
+              10,
+              25,
+              50,
+              100,
+              { label: "All", value: -1 },
+            ]}
+            component={"div"}
+            count={productCount}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -280,4 +296,4 @@ const TableDashboard = () => {
   );
 };
 
-export default TableDashboard;
+export default ProductDashboard;
