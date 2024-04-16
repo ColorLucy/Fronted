@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
     let [loading, setLoading] = useState(true)
     let [loginError, setLoginError] = useState(false)
     const location = useLocation();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     let loginUser = async (e, data) => {
         localStorage.clear()

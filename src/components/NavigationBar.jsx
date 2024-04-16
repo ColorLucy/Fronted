@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { AppBar, Toolbar, IconButton, Button, Drawer, MenuItem, useMediaQuery, CircularProgress, List, ListItem, ListItemText, Collapse, Box, Paper } from '@mui/material';
+import Commerce from '@chec/commerce.js';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import CloseIcon from '@mui/icons-material/Close';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Commerce from '@chec/commerce.js';
+import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Paper, Toolbar, useMediaQuery } from '@mui/material';
+import InputBase from '@mui/material/InputBase';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Logo from '../components/logo';
 
 const NavigationBar = ({ onSelectCategory }) => {
