@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import TableDashboard from "./TableDashboard";
+import TableDashboard from "./ProductDashboard";
 
 const AdminDashboard = () => {
   return (

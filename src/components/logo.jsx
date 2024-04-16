@@ -54,7 +54,7 @@ const container = {
         opacity: 1,
         scale: 1,
         transition: {
-            delayChildren: 0.1,
+            delayChildren: 0.2,
             staggerChildren: 0.01
         }
     }
@@ -75,12 +75,12 @@ const item = {
  * 
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
-export default function Logo({ imgSize }) {
+export default function Logo({ imgSize, minLen }) {
     
     const wordColor = 'Color'.split('').map((letter, index) => (
         <span key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
     ));
-    const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+    const isMobileOrTablet = useMediaQuery('(max-width: 960px)') || minLen;
     const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1:3);
     
     return (
