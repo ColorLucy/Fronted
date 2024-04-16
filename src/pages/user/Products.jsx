@@ -4,6 +4,7 @@ import WhatsApp from "../../components/WhatsApp";
 import InfoBar from "./InfoBar";
 import "./products.css";
 import axios from 'axios';
+import ProductCard from "../../components/ProductCard";
 
 function Products() {
   const [productos, setProductos] = useState([]);
@@ -42,15 +43,7 @@ function Products() {
         ) : (
           productos.map((producto) => (
             <div key={producto.id} className="productItem">
-              <div className="productContent">
-                <img src={producto.imagenes[0]} />
-                <h6>{producto.nombre}</h6>
-                <p>${producto.precio}</p>
-              </div>
-              <div className="productButtons">
-                <button className="buttonAddCar">AÑADIR AL CARRITO</button>
-                <button className="buttonOrder">ORDENAR VÍA WHATSAPP</button>
-              </div>
+              <ProductCard product={producto} />
             </div>
           ))
         )}
