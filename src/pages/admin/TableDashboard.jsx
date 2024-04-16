@@ -71,7 +71,7 @@ const TableDashboard = () => {
     const datos = await consultarDetalles(config);
     const productos = datos;
     setProductCount(datos.length);
-    console.log("Productos:", productos);
+    // console.log("Productos:", productos);
 
     let productosProcesados = [];
     for (let i = 0; i < productos.length; i++) {
@@ -83,7 +83,7 @@ const TableDashboard = () => {
         color: productos[i].color,
       });
     }
-    console.log("Productos Procesados:", productosProcesados);
+    // console.log("Productos Procesados:", productosProcesados);
     setData(productosProcesados);
   }
 
