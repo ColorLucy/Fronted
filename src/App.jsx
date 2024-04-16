@@ -9,7 +9,7 @@ import Home from "./pages/user/Home";
 import NavigationBar from "./components/NavigationBar";
 import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
-import AdminDashboard from "./pages/AdminDashboard/AdminDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 
 const Admin = () => {
   {
