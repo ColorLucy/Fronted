@@ -3,6 +3,7 @@ import { useMediaQuery } from '@mui/material';
 import React from "react";
 import { Link } from "react-router-dom";
 import InfoBar from "./InfoBar";
+import WhatsApp from "../../components/WhatsApp";
 
 export default function Home() {
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
@@ -114,6 +115,7 @@ export default function Home() {
 
         {/* Barra inferior con información de contacto  */}
         <InfoBar />
+        <WhatsApp />
 
       </Grid>
 
