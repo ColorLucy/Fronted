@@ -1,15 +1,33 @@
-import axiosInstance from "../utils/axiosInstance"
+import axiosInstance from "../utils/axiosInstance";
+
 export async function consultarProductos() {
-  const { data } = await axiosInstance.get(`/products/view-products/`)
-  return data
+  try {
+    const { data } = await axiosInstance.get(`/products/view-products/`);
+    // console.log(response);
+    return data;
+  } catch (error) {
+    console.error("Error fetching products: ", error);
+  }
 }
 
 export async function consultarDetalles() {
-  const { data } = await axiosInstance.get(`/products/view-details/`)
-  return data
+  try {
+    const { data } = await axiosInstance.get(`/products/view-details/`);
+    // console.log(response);
+    return data;
+  } catch (error) {
+    console.error("Error fetching product details: ", error);
+  }
 }
 
-export async function consultarImagenes() {
-  const { data } = await axiosInstance.get(`/products/view-products/`)
-  return data
+export async function consultarTrozosDetalles(page) {
+  try {
+    const { data } = await axiosInstance.get(
+      `/products/view-sliced-details/?page=${page}`
+    );
+    // console.log(data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching product details: ", error);
+  }
 }
