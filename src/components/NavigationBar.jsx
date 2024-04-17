@@ -5,10 +5,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Paper, Toolbar, useMediaQuery } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Logo from '../components/logo';
 import axios from 'axios';
+import { motion } from "framer-motion";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import Logo, { generateIntermediateColors } from '../components/logo';
+import "./components.css";
+const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
 const NavigationBar = () => {
 
@@ -17,8 +20,26 @@ const NavigationBar = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openProductos, setOpenProductos] = useState(false);
-
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+  const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 14 : 20);
+  const container = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        delayChildren: 0.2,
+        staggerChildren: 0.01
+      }
+    }
+  };
+  const item = {
+    hidden: { x: 2, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1
+    }
+  };
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/products/view-categories/')
@@ -48,8 +69,8 @@ const NavigationBar = () => {
   };
 
   return (
-    <AppBar position="sticky" elevation={2} style={{ backgroundColor: '#ffd314' }}>
-      <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important', backgroundColor: '#ffd314' }}>
+    <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
+      <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
         {!isMobileOrTablet && (
           <>
             <Logo imgSize="50px" />
@@ -94,7 +115,7 @@ const NavigationBar = () => {
                       </MenuItem>
                       {categories.map((category) => (
                         <MenuItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
-                        {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
+                          {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
                         </MenuItem>
                       ))}
                     </>
@@ -180,6 +201,22 @@ const NavigationBar = () => {
           </IconButton>
         </Paper>
       )}
+      <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
+        initial="hidden"
+        animate="visible">
+        {expandedPalette.map((color, index) => (
+          <motion.div
+            key={index}
+            variants={item}
+            style={{
+              backgroundColor: color,
+              width: '15px',
+              height: '4px',
+              marginRight: '2px',
+            }}
+          />
+        ))}
+      </motion.div>
     </AppBar>
   );
 };
