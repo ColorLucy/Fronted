@@ -36,6 +36,7 @@ const Homepage = () => {
       <Routes>
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/productos" element={<Products />} />
+        <Route path="/productos/:categoria?" element={<Products />} />
         <Route path="/carrito" element={<ShoppingCar />} />
         <Route Component={Home} path="/" />
       </Routes>
