@@ -53,7 +53,7 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(response.data);
       setUser(jwtDecode(response.data.access));
       localStorage.setItem("authTokens", JSON.stringify(response.data));
-      navigate("/admin/dashboard");
+      navigate("/admin");
     }
   };
 

@@ -146,7 +146,7 @@ const ProductDashboard = () => {
           }}
           variant="outlined"
           placeholder={"Buscar"}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setSearch(e.target.value.toLowerCase())}
         ></TextField>
         <Button
           sx={{
