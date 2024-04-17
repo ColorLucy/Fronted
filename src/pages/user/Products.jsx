@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
+import { CircularProgress } from '@mui/material';
 import InfoBar from "../../components/InfoBar";
 import ProductCard from "../../components/ProductCard";
 import WhatsApp from "../../components/WhatsApp";
@@ -17,7 +18,8 @@ function Products() {
       try {
         let response;
         if (categoria) {
-          response = await axios.get("http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/");
+          console.log('categoria:', categoria);
+          response = await axios.get(`http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/`);
         } else {
           response = await axios.get('http://localhost:8000/products/view-details-products/');
         }
@@ -33,11 +35,13 @@ function Products() {
 
   return (
     <div className="productsPage">
-      {/* <NavigationBar onSelectCategory={setSelectedCategory} /> */}
       <h5 style={{ marginTop: "10px", marginBottom: "10px", marginLeft: "10px" }}>Productos</h5>
       <div className="productsContainer">
         {loading ? (
-          <p>Cargando productos...</p>
+          <div style={{textAlign: "center"}}>
+            <CircularProgress style={{ margin: "100px" }} />
+            <p>Cargando productos...</p>
+          </div>
         ) : !productos ? (
           <p>No hay productos en esta categoría.</p>
         ) : (

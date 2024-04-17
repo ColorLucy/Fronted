@@ -1,4 +1,3 @@
-import Commerce from '@chec/commerce.js';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -9,8 +8,9 @@ import InputBase from '@mui/material/InputBase';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/logo';
+import axios from 'axios';
 
-const NavigationBar = ({ onSelectCategory }) => {
+const NavigationBar = () => {
 
   const [drawerOpen1, setdrawerOpen1] = useState(false);
   const [drawerOpen2, setdrawerOpen2] = useState(false);
@@ -20,22 +20,17 @@ const NavigationBar = ({ onSelectCategory }) => {
 
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
 
-  const commerce = new Commerce('pk_5672597a83b6b6dc1f2710eab13845691c6bbfade188b');
-
-  const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const { data: categoriesData } = await commerce.categories.list();
-      setCategories(categoriesData);
-    } catch (error) {
-      console.error('Error al cargar categorías:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchCategories();
+    axios.get('http://127.0.0.1:8000/products/view-categories/')
+      .then(response => {
+        setCategories(response.data);
+        setLoading(false);
+        console.log('Categorias:', response.data);
+      })
+      .catch(error => {
+        setLoading(true);
+        console.error('Error al obtener los datos de categorias:', error);
+      });
   }, []);
 
   const toggleProductos = () => {
@@ -51,12 +46,6 @@ const NavigationBar = ({ onSelectCategory }) => {
     setdrawerOpen1(false);
     setdrawerOpen2(false);
   };
-
-  const handleCategoryClick = (categorySlug) => {
-    onSelectCategory(categorySlug);
-    setdrawerOpen2(false);
-  };
-
 
   return (
     <AppBar position="sticky" elevation={2} style={{ backgroundColor: '#ffd314' }}>
@@ -104,8 +93,8 @@ const NavigationBar = ({ onSelectCategory }) => {
                         Todos los productos
                       </MenuItem>
                       {categories.map((category) => (
-                        <MenuItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.slug}`} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                          {category.name}
+                        <MenuItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
+                        {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
                         </MenuItem>
                       ))}
                     </>
@@ -158,8 +147,8 @@ const NavigationBar = ({ onSelectCategory }) => {
                       <ListItemText primary="Todos los productos" />
                     </ListItem>
                     {categories.map((category) => (
-                      <ListItem key={category.id} onClick={() => handleCategoryClick(category.slug)} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                        <ListItemText primary={category.name} />
+                      <ListItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                        <ListItemText primary={category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()} />
                       </ListItem>
                     ))}
                   </List>
