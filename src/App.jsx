@@ -10,6 +10,7 @@ import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
+import EditCard from "./pages/admin/editCard";
 
 /**
  * Vista del admin
@@ -19,6 +20,7 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
+        <Route Component={EditCard} path="edit/:id_product" /> 
         <Route Component={AdminDashboard} path="/" />
       </Routes>
     </AuthProvider>
@@ -39,6 +41,7 @@ const Homepage = () => {
         <Route path="/productos/:categoria?" element={<Products />} />
         <Route path="/carrito" element={<ShoppingCar />} />
         <Route Component={Home} path="/" />
+        
       </Routes>
     </>
   );

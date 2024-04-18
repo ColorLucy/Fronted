@@ -26,8 +26,9 @@ import {
 import styles from "./ProductDashboard.module.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
-import { consultarDetalles } from "../../utils/products";
+import { consultarDetalles, consultarProductos } from "../../utils/products";
 import Logo from "../../components/logo";
+import { useNavigate } from "react-router-dom";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -63,25 +64,12 @@ const ProductDashboard = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
+  const navigate = useNavigate()
 
   async function obtenerProductos() {
-    const datos = await consultarDetalles();
-    const productos = datos;
-    setProductCount(datos.length);
-    // console.log("Productos:", productos);
-
-    let productosProcesados = [];
-    for (let i = 0; i < productos.length; i++) {
-      productosProcesados.push({
-        id_detalle: productos[i].id_detalle,
-        producto: productos[i].nombre,
-        precio: productos[i].precio,
-        unidad: productos[i].unidad,
-        color: productos[i].color,
-      });
-    }
-    // console.log("Productos Procesados:", productosProcesados);
-    setData(productosProcesados);
+    const datos = await consultarProductos();
+    setProductCount(datos.length);    
+    setData(datos);
   }
 
   const handleMenuClick = (index, event) => {
@@ -102,8 +90,8 @@ const ProductDashboard = () => {
     handleClose();
   };
 
-  const handleEditProduct = () => {
-    window.open("http://localhost:5173", "_blank");
+  const handleEditProduct = (id) => {
+    navigate("/admin/edit/"+id);
     handleClose();
   };
 
@@ -188,13 +176,13 @@ const ProductDashboard = () => {
                     Producto
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
-                    Precio
+                    Fabricante
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
-                    Unidad
+                    Descripción
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
-                    Color
+                    Categoría
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
                     Menu
@@ -210,18 +198,19 @@ const ProductDashboard = () => {
                   })
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <TableRow key={row.id_detalle}>
+                    
+                    <TableRow key={index}>
                       <StyledBodyTableCell component="th" align="center">
-                        {row.producto}
+                        {row.id_producto}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
-                        {row.precio}
+                        {row.fabricante}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
-                        {row.unidad}
+                        {row.descripcion}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
-                        {row.color}
+                        {row.categoria}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
                         <IconButton
@@ -244,7 +233,7 @@ const ProductDashboard = () => {
                           <MenuItem onClick={() => handleViewProduct()}>
                             <VisibilityIcon sx={{ mr: "0.5rem" }} /> Ver
                           </MenuItem>
-                          <MenuItem onClick={() => handleEditProduct()}>
+                          <MenuItem onClick={() => {handleEditProduct(row.id_producto)}}>
                             <EditIcon sx={{ mr: "0.5rem" }} /> Editar
                           </MenuItem>
                           <MenuItem onClick={() => handleDeleteProduct()}>
