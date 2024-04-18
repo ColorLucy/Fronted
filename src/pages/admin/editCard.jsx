@@ -1,50 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import DeleteIcon from '@mui/icons-material/Delete';
+import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
+import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import { useParams } from 'react-router-dom';
-import Typography from '@mui/material/Typography';
-import { Grid } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import IconButton from '@mui/material/IconButton';
-import LoopOutlinedIcon from '@mui/icons-material/LoopOutlined';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
-import CustomCarousel from './imagesSlider';
-import ProductDetails from './detailsProduct';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
-
+import CustomCarousel from './imagesSlider';
 const EditCard = () => {
     const { id_product } = useParams();
     const [productId, setProductId] = useState('');
     const [autoPlay, setAutoPlay] = useState(false)
     const [selectedImageIndex, setSelectedImageIndex] = useState(null)
-    const [productImages, setProductImages] = useState(['/src/components/2.jpeg', '/src/components/1.jpg', '/src/components/3.jpg']);
     const [detailImages, setDetailImages] = useState([])
     const [requestData, setRequestData] = useState()
     const [categories, setCategories] = useState([]);
     const [categorySelected, setCategorySelected] = useState('')
-    let product = {}
     const [numberDetail, setNumberDetail] = useState(0)
     const [productData, setProductData] = useState({
         producer: '',
         description: '',
         category: '',
+
     });
-    const [detailtData, setDetailData] = useState({
+    const [detailData, setDetailData] = useState({
         name: '',
         price: '',
         unit: '',
         color: '',
         detail: '',
     });
-    
-
+    const [detailsImages, setDetailsImages] = useState([])
+    const [details, setDetails] = useState([])
     const productImagesTemp = [
         {
             id: 71,
@@ -130,7 +127,7 @@ const EditCard = () => {
             ],
             "imagenes": imagesData
         })
-        
+
     }
 
     function updateDataRequest() {
@@ -156,7 +153,6 @@ const EditCard = () => {
             ],
             "imagenes": imagesData
         })
-//        console.log("data actualiza", requestData)
     }
 
     const handleCancel = () => {
@@ -178,6 +174,15 @@ const EditCard = () => {
             console.error('Error getting categories:', error);
         }
     };
+    const getDetailImages = (detail_id) => {
+        let imgUrl = []
+        detailsImages.forEach((img) => {
+            if (img.detalle === detail_id) {
+                imgUrl.push(img.url)
+            }
+        })
+        return imgUrl
+    }
 
     /**
      * handles the retrieval of data from an existing product in the database
@@ -189,7 +194,6 @@ const EditCard = () => {
             const responseAllProductData = await axiosInstance.get(`/products/view-product/?pk=${id_product}`);
             const responseData = responseAllProductData.data;
             const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
-            product = responseData
             setProductData({
                 producer: responseData.product.fabricante,
                 description: responseData.product.descripcion,
@@ -200,11 +204,19 @@ const EditCard = () => {
                 price: firstDetail.precio,
                 unit: firstDetail.unidad,
                 color: firstDetail.color,
-                detail: firstDetail.id_detalle
             })
+            setDetails(responseData.details)
+            setDetailsImages(responseData.images)
 
-            console.log("obtener", responseData)
-            //console.log("images", detailImages)
+
+            let imgUrl = []
+            responseData.images.forEach((img) => {
+                if (img.detalle === firstDetail.id_detalle) {
+                    imgUrl.push(img.url)
+                }
+                setDetailImages(imgUrl)
+            })
+            //console.log("images", responseData.images, firstDetail.id_detalle)
         } catch (error) {
             console.error('Error fetching product data:', error);
         }
@@ -261,8 +273,17 @@ const EditCard = () => {
         }
     }
 
-    useEffect(() => {console.log(id_product) ; fetchData(id_product)}, [id_product])
-
+    useEffect(() => { fetchData(id_product) }, [id_product])
+    const changeDetalleIndex = (newIndex) => {
+        setDetailData({
+            name: details[newIndex].nombre,
+            price: details[newIndex].precio,
+            unit: details[newIndex].unidad,
+            color: details[newIndex].color,
+        })
+        setDetailImages(getDetailImages(details[newIndex].id_detalle))
+        setNumberDetail(newIndex)
+    }
     return (
         <Box
             sx={{
@@ -298,7 +319,7 @@ const EditCard = () => {
                                     fullWidth
                                     label="Descripción"
                                     name="description"
-                                    value={productData.description}
+                                    value={productData.description ? productData.description : ""}
                                     onChange={handleInputChange}
                                     variant="outlined"
                                     sx={{ marginBottom: 2 }}
@@ -320,11 +341,19 @@ const EditCard = () => {
                                 <Typography variant="h5" component="div" gutterBottom marginBottom={1} marginTop={2}>
                                     Detalles del producto
                                 </Typography>
-                                {console.log(product)}
                                 <Grid container spacing={1.5}>
-                                    {product?.details.map((detail) => (
-                                        <Button size='small' color='inherit'> {detail.name}</Button>
-                                    ))}
+                                    {details.map((detail, index) => {
+                                        return (
+                                            <ButtonGroup
+                                                orientation="vertical"
+                                                aria-label="Vertical button group"
+                                                variant="contained"
+                                                key={index}
+                                            ><Button onClick={(e) => changeDetalleIndex(index)}>Detalle {detail.nombre}
+                                                </Button>
+                                            </ButtonGroup>)
+
+                                    })}
                                 </Grid>
                             </Grid>
                             <Grid item xs={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -344,7 +373,7 @@ const EditCard = () => {
                                     fullWidth
                                     label="Precio"
                                     name="price"
-                                    value={productData.price}
+                                    value={detailData.price}
                                     onChange={handleInputChange}
                                     variant="outlined"
                                     sx={{ marginBottom: 2 }}
@@ -353,7 +382,7 @@ const EditCard = () => {
                                     fullWidth
                                     label="Cantidad"
                                     name="unit"
-                                    value={productData.unit}
+                                    value={detailData.unit}
                                     onChange={handleInputChange}
                                     variant="outlined"
                                     sx={{ marginBottom: 2 }}
@@ -362,7 +391,7 @@ const EditCard = () => {
                                     fullWidth
                                     label="Color"
                                     name="color"
-                                    value={productData.color}
+                                    value={detailData.color}
                                     onChange={handleInputChange}
                                     variant="outlined"
                                     sx={{ marginBottom: 2 }}
@@ -371,7 +400,7 @@ const EditCard = () => {
                                     <div style={{ width: '300px', height: '300px', marginBottom: '5px' }}>
                                         {detailImages.length > 0 ? (
                                             <CustomCarousel autoPlay={autoPlay} onImageChange={handleImageChange}>
-                                                {productImages.map((image, index) => (
+                                                {detailImages.map((image, index) => (
                                                     <img
                                                         key={index}
                                                         src={image}
@@ -422,7 +451,7 @@ const EditCard = () => {
                     </div>
                 </CardContent>
             </Card>
-        </Box>
+        </Box >
     );
 };
 
