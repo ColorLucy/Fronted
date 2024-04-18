@@ -68,7 +68,7 @@ const ProductDashboard = () => {
     const datos = await consultarDetalles();
     const productos = datos;
     setProductCount(datos.length);
-    // console.log("Productos:", productos);
+    //console.log("Productos:", productos);
 
     let productosProcesados = [];
     for (let i = 0; i < productos.length; i++) {
@@ -210,7 +210,7 @@ const ProductDashboard = () => {
                   })
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    <TableRow key={row.id_detalle}>
+                    <TableRow key={index}>
                       <StyledBodyTableCell component="th" align="center">
                         {row.producto}
                       </StyledBodyTableCell>
