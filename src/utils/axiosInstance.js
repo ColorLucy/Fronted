@@ -10,7 +10,6 @@ const axiosInstance = axios.create({
         Authorization: `Bearer ${authTokens?.access}`
     }
 })
-
 axiosInstance.interceptors.request.use(async req => {
     authTokens = localStorage.getItem('authTokens') ? JSON.parse(localStorage.getItem('authTokens')) : null;
     if (!authTokens) {
@@ -24,18 +23,16 @@ axiosInstance.interceptors.request.use(async req => {
         await axios.post(`${baseURL}/auth/refresh/`, {
             refresh: authTokens.refresh
         }).then(({ data }) => {
-            localStorage.setItem('authTokens', JSON.stringify({ ...authTokens, access: data.access }));
+            console.log(data)
             req.headers.Authorization = `Bearer ${data.access}`;
-            return req
+            localStorage.setItem('authTokens', JSON.stringify({ ...authTokens, access: data.access }));
         }).catch(e => {
             localStorage.clear()
             window.location.href = '/admin/login?invalid=true';
         })
     } else {
         req.headers.Authorization = `Bearer ${authTokens.access}`;
-        return req
     }
-
-
+    return req
 })
 export default axiosInstance;
