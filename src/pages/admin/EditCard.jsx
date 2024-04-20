@@ -74,7 +74,7 @@ const EditCard = () => {
   };
 
   const handleAddImage = () => {
-    alert("añadir imagen"); // XXXXXXXXXXXXXXXXXXXXXXX
+    alert("añadir imagen"); 
   };
 
   const handleRemoveImage = (index) => {
@@ -84,7 +84,7 @@ const EditCard = () => {
   };
 
   const handleAddDetail = () => {
-    alert("agregar detalle"); // XXXXXXXXXXXXXXXXXXXXXXXXX
+    alert("agregar detalle"); 
   }
 
   const handleRemoveDetail = (index) => {
@@ -248,9 +248,10 @@ const EditCard = () => {
    */
   async function handleDelete(e) {
     e.preventDefault();
-    const response = await deleteProduct(productId)
-    if(response){
+    const response = await deleteProduct(id_product)
+    if(!response){
       alert("El producto ha sido eliminado exitosamente");
+      navigate("/admin/");
       cleanTextFields();
     } else {
       alert("Producto no eliminado, vuelve a intentarlo")
