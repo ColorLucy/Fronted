@@ -23,7 +23,6 @@ axiosInstance.interceptors.request.use(async req => {
         await axios.post(`${baseURL}/auth/refresh/`, {
             refresh: authTokens.refresh
         }).then(({ data }) => {
-            console.log(data)
             req.headers.Authorization = `Bearer ${data.access}`;
             localStorage.setItem('authTokens', JSON.stringify({ ...authTokens, access: data.access }));
         }).catch(e => {
