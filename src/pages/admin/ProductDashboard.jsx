@@ -198,7 +198,6 @@ const ProductDashboard = () => {
                   })
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    
                     <TableRow key={index}>
                       <StyledBodyTableCell component="th" align="center">
                         {row.id_producto}

@@ -11,13 +11,8 @@ export async function consultarProductos() {
 }
 
 export async function consultarDetalles() {
-  try {
-    const { data } = await axiosInstance.get(`/products/view-details/`);
-    // console.log(response);
-    return data;
-  } catch (error) {
-    console.error("Error fetching product details: ", error);
-  }
+  const { data } = await axiosInstance.get(`/products/view-details/`);
+  return data;
 }
 
 export async function consultarTrozosDetalles(page) {
@@ -25,7 +20,6 @@ export async function consultarTrozosDetalles(page) {
     const { data } = await axiosInstance.get(
       `/products/view-sliced-details/?page=${page}`
     );
-    // console.log(data);
     return data;
   } catch (error) {
     console.error("Error fetching product details: ", error);
