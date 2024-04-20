@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Grid, IconButton, Button } from '@mui/material';
+import { Grid, IconButton, Button } from "@mui/material";
 import "./imagesSlider.css";
 
 function CustomCarousel({ children, autoPlay, onImageChange }) {
@@ -21,7 +21,7 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
 
   useEffect(() => {
     onImageChange(activeIndex);
-}, [activeIndex, onImageChange]);
+  }, [activeIndex, onImageChange]);
 
   const slideNext = () => {
     setActiveIndex((val) => {
@@ -98,6 +98,15 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
           e.preventDefault();
           slideNext();
         }}
+        style={{
+          backgroundColor: "transparent",
+          color: "ButtonShadow",
+          border: "none",
+          padding: "15px 6px",
+          borderRadius: "5px",
+          cursor: "pointer",
+          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+        }}
       >
         {">"}
       </button>
@@ -106,6 +115,15 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
         onClick={(e) => {
           e.preventDefault();
           slidePrev();
+        }}
+        style={{
+          backgroundColor: "transparent",
+          color: "ButtonShadow",
+          border: "none",
+          padding: "15px 6px",
+          borderRadius: "5px",
+          cursor: "pointer",
+          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
         }}
       >
         {"<"}

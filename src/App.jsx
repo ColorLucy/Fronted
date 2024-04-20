@@ -10,7 +10,7 @@ import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
-import EditCard from "./pages/admin/editCard";
+import EditCard from "./pages/admin/EditCard";
 
 /**
  * Vista del admin
