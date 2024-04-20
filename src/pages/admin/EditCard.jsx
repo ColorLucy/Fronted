@@ -23,7 +23,7 @@ const EditCard = () => {
   const [productId, setProductId] = useState("");
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
-  const [requestData, setRequestData] = useState();
+  const [requestData, setRequestData] = useState({});
   const [categories, setCategories] = useState([]);
   const [detailImages, setDetailImages] = useState([]);
   const [detailsImages, setDetailsImages] = useState([]);
@@ -32,6 +32,7 @@ const EditCard = () => {
   const [numberDetail, setNumberDetail] = useState(0);
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
+    nameProduct:"",
     producer: "",
     description: "",
     category: "",
@@ -99,6 +100,7 @@ const EditCard = () => {
 
   function cleanTextFields() {
     setProductData({
+      nameProduct: "",
       producer: "",
       description: "",
       category: "",
@@ -134,6 +136,7 @@ const EditCard = () => {
     const imagesData = productImagesTemp.map((imageUrl) => ({ url: imageUrl }));
     setRequestData({
       producto: {
+        nombre: productData.nameProduct,
         fabricante: productData.producer,
         descripcion: productData.description,
         categoria: parseInt(productData.category),
@@ -158,6 +161,7 @@ const EditCard = () => {
     }));
     setRequestData({
       producto: {
+        nombre: productData.nameProduct,
         fabricante: productData.producer,
         descripcion: productData.description,
         categoria: parseInt(productData.category),
@@ -187,7 +191,9 @@ const EditCard = () => {
   async function fetchData(id_product) {
     const responseData = await getProduct(id_product)
     const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
+    setProductId(responseData.product.id_producto)
     setProductData({
+      nameProduct: responseData.product.nombre,
       producer: responseData.product.fabricante,
       description: responseData.product.descripcion,
       category: responseData.product.categoria,
@@ -208,7 +214,7 @@ const EditCard = () => {
       }
       setDetailImages(imgUrl);
     });
-  };
+  }
 
   /**
    * handles the creation of a new product by sending a POST request to the server
@@ -224,7 +230,7 @@ const EditCard = () => {
     } else {
       alert("No se ha podido crear el producto");
     }
-  };
+  }
 
   /**
    * handles the update of an existing product by sending a PUT request to the server
@@ -233,14 +239,16 @@ const EditCard = () => {
    */
   async function handleUpdate(e) {
     e.preventDefault();
+    console.log("id", id_product)
+    console.log("rd", requestData)
     updateDataRequest();
-    const response = await updateProduct(productId, requestData)
+    const response = await updateProduct(id_product, requestData)
     if(response){
       alert("El producto ha sido actualizado correctamente");
     } else {
       alert("La actualización del producto ha fallado, vuelve a intentarlo")
     }
-  };
+  }
 
   /**
    * handles the deletion of an existing product by sending a DELETE request to the server
@@ -256,7 +264,7 @@ const EditCard = () => {
     } else {
       alert("Producto no eliminado, vuelve a intentarlo")
     }
-  };
+  }
 
   /**
    * handles the retrieval of all categories and product data
@@ -271,7 +279,7 @@ const EditCard = () => {
   async function fetchCategories() {
     const response = await getCategories();
     setCategories(response);
-  };
+  }
 
   const getDetailImages = (detail_id) => {
     let imgUrl = [];
@@ -327,6 +335,15 @@ const EditCard = () => {
             <Typography variant="h5" component="div" gutterBottom>
               Producto
             </Typography>
+            <TextField
+                fullWidth
+                label="Nombre del producto"
+                name="nameProduct"
+                value={productData.nameProduct}
+                onChange={handleInputChange}
+                variant="outlined"
+                sx={{ marginBottom: 2 }}
+            />
               <TextField
                 fullWidth
                 label="Fabricante"
@@ -497,7 +514,6 @@ const EditCard = () => {
                     xs={6}
                     sx={{
                       display: "flex",
-                      display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
@@ -597,3 +613,4 @@ const EditCard = () => {
 };
 
 export default EditCard;
+
