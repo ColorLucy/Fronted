@@ -3,11 +3,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Paper, Toolbar, useMediaQuery } from '@mui/material';
+import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Paper, Toolbar, useMediaQuery, Popper, Typography, Fade } from '@mui/material';
 import InputBase from '@mui/material/InputBase';
 import axios from 'axios';
 import { motion } from "framer-motion";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import "./components.css";
@@ -19,9 +19,33 @@ const NavigationBar = () => {
   const [drawerOpen2, setdrawerOpen2] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingSearch, setLoadingSearch] = useState(false);
   const [openProductos, setOpenProductos] = useState(false);
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
   const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 14 : 20);
+  const invertedPalette = expandedPalette.reverse();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState();
+
+  const handleClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', handleClosePopper);
+
+    return () => {
+      window.removeEventListener('resize', handleClosePopper);
+    };
+  }, []);
+
+  let typingTimer;
+
   const container = {
     hidden: { opacity: 1, scale: 0 },
     visible: {
@@ -68,8 +92,36 @@ const NavigationBar = () => {
     setdrawerOpen2(false);
   };
 
+  const handleClosePopper = () => {
+    setOpen(false);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    performSearch(event.target.value);
+
+    // clearTimeout(typingTimer);
+    // typingTimer = setTimeout(() => {
+    //   performSearch(event.target.value);
+    // }, 300); // Espera 300 ms antes de realizar la búsqueda
+  };
+
+  const performSearch = async (value) => {
+    setLoadingSearch(true);
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/products/search/?q=${value}`);
+      setSearchResults(response.data);
+      setLoadingSearch(false);
+      console.log(value)
+      console.log(response.data)
+    } catch (error) {
+      setLoadingSearch(false);
+      console.error('Error al buscar productos:', error);
+    }
+  };;
+
   return (
-    <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
+    <AppBar position="sticky" elevation={2} style={{ backgroundImage: "linear-gradient(to right,rgba(255,255,255), rgba(3, 103, 166, 0.75))"}}>
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
         {!isMobileOrTablet && (
           <>
@@ -77,16 +129,51 @@ const NavigationBar = () => {
             <Paper
               elevation={1}
               component="form"
-              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
+              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+              onClick={handleClick('bottom')}>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
                 placeholder="Buscar Producto"
-                inputProps={{ 'aria-label': 'search product' }} />
+                inputProps={{ 'aria-label': 'search product' }}
+                value={searchTerm}
+                onChange={handleSearchChange}
+                />
               <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                 <SearchIcon />
               </IconButton>
+              <Popper
+                // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
+                sx={{ zIndex: 1200 }}
+                open={open}
+                anchorEl={anchorEl}
+                placement={placement}
+                transition
+              >
+                {({ TransitionProps }) => (
+                  <Fade {...TransitionProps} timeout={400}>
+                    <Paper sx={{ marginTop: '3px', width: '400px', maxHeight:'400px', overflowY: 'auto' }}>
+                      {loading ? ( // Mostrar indicador de progreso si está cargando
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px' }}>
+                          <CircularProgress />
+                        </div>
+                      ) : (
+                        <div> {/* Mostrar resultados de búsqueda */}
+                          {searchResults.map((result) => (
+                            <ListItem key={result.id} component={Link} to={`/productos/${result.id}`} onClick={handleClosePopper} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                              <Typography key={result.id} sx={{ p: 2 }}>{result.nombre}</Typography>
+                            </ListItem>
+                          ))}
+                          {searchResults.length === 0 && (
+                            <Typography sx={{ p: 2 }}>No se encontraron resultados.</Typography>
+                          )}
+                        </div>
+                      )}
+                    </Paper>
+                  </Fade>
+                )}
+              </Popper>
             </Paper>
-            <Box sx={{ display: 'flex', alignItems: 'end', color: 'black' }}>
+            <Box sx={{ display: 'flex', alignItems: 'end', color: 'white' }}>
               <Button color="inherit" component={Link} to="/">Inicio</Button>
               <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
               <Button
@@ -123,7 +210,7 @@ const NavigationBar = () => {
                 </div>
               </Drawer>
               <Button color="inherit" component={Link} to="/carrito">
-                <ShoppingCartIcon sx={{ color: 'black' }} />
+                <ShoppingCartIcon sx={{ color: 'white' }} />
               </Button>
             </Box>
           </>
