@@ -23,7 +23,6 @@ const NavigationBar = () => {
   const [openProductos, setOpenProductos] = useState(false);
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
   const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 14 : 20);
-  const invertedPalette = expandedPalette.reverse();
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -43,8 +42,6 @@ const NavigationBar = () => {
       window.removeEventListener('resize', handleClosePopper);
     };
   }, []);
-
-  let typingTimer;
 
   const container = {
     hidden: { opacity: 1, scale: 0 },
@@ -99,11 +96,6 @@ const NavigationBar = () => {
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     performSearch(event.target.value);
-
-    // clearTimeout(typingTimer);
-    // typingTimer = setTimeout(() => {
-    //   performSearch(event.target.value);
-    // }, 300); // Espera 300 ms antes de realizar la búsqueda
   };
 
   const performSearch = async (value) => {
@@ -121,7 +113,7 @@ const NavigationBar = () => {
   };;
 
   return (
-    <AppBar position="sticky" elevation={2} style={{ backgroundImage: "linear-gradient(to right,rgba(255,255,255), rgba(3, 103, 166, 0.75))"}}>
+    <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
         {!isMobileOrTablet && (
           <>
@@ -142,7 +134,6 @@ const NavigationBar = () => {
                 <SearchIcon />
               </IconButton>
               <Popper
-                // Note: The following zIndex style is specifically for documentation purposes and may not be necessary in your application.
                 sx={{ zIndex: 1200 }}
                 open={open}
                 anchorEl={anchorEl}
@@ -173,7 +164,7 @@ const NavigationBar = () => {
                 )}
               </Popper>
             </Paper>
-            <Box sx={{ display: 'flex', alignItems: 'end', color: 'white' }}>
+            <Box sx={{ display: 'flex', alignItems: 'end', color: 'black' }}>
               <Button color="inherit" component={Link} to="/">Inicio</Button>
               <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
               <Button
@@ -210,7 +201,7 @@ const NavigationBar = () => {
                 </div>
               </Drawer>
               <Button color="inherit" component={Link} to="/carrito">
-                <ShoppingCartIcon sx={{ color: 'white' }} />
+                <ShoppingCartIcon sx={{ color: 'black' }} />
               </Button>
             </Box>
           </>
