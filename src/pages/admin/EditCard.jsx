@@ -25,11 +25,12 @@ const EditCard = () => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [requestData, setRequestData] = useState();
   const [categories, setCategories] = useState([]);
-  const [detailImages, setDetailImages] = useState([]);
-  const [detailsImages, setDetailsImages] = useState([]);
+  const [detailImagesInterface, setDetailImagesInterface] = useState([]);
+  const [detailImagesSaved, setDetailImagesSaved] = useState([]);
   const [details, setDetails] = useState([]);
   const [categorySelected, setCategorySelected] = useState("");
   const [numberDetail, setNumberDetail] = useState(0);
+  const [uploadImages, setUploadImages] = useState([])
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
     producer: "",
@@ -37,11 +38,12 @@ const EditCard = () => {
     category: "",
   });
   const [detailData, setDetailData] = useState({
+    id_detail: "",
     name: "",
     price: "",
     unit: "",
     color: "",
-    detail: "",
+    product: "",
   });
   const productImagesTemp = [
     {
@@ -78,12 +80,13 @@ const EditCard = () => {
   };
 
   const handleRemoveImage = (index) => {
-    const updatedImages = [...detailImages];
+    const updatedImages = [...detailImagesInterface];
     updatedImages.splice(index, 1);
-    setDetailImages(updatedImages);
+    setDetailImagesInterface(updatedImages);
   };
 
   const handleAddDetail = () => {
+    console.log(productData, detailData)
     alert("agregar detalle"); 
   }
 
@@ -107,7 +110,7 @@ const EditCard = () => {
       unit: "",
       color: "",
     });
-    setDetailImages([]);
+    setDetailImagesInterface([]);
   }
 
   function TabPanel(props) {
@@ -122,16 +125,16 @@ const EditCard = () => {
         {...other}
       >
         {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
+          <div>
+            {children}
+          </div>         
         )}
       </div>
     );
   }
 
-  function createDataRequest() {
-    const imagesData = productImagesTemp.map((imageUrl) => ({ url: imageUrl }));
+  function createDataRequest() { 
+    const imagesData = uploadImages.map((imageUrl) => ({ url: imageUrl }));
     setRequestData({
       producto: {
         fabricante: productData.producer,
@@ -150,9 +153,9 @@ const EditCard = () => {
     });
   }
 
-  function updateDataRequest() {
-    const imagesData = productImagesTemp.map((image) => ({
-      ...(image.id ? { id_imagen: image.id } : {}),
+  function updateDataRequest() { 
+    const imagesToSave = productImagesTemp.map((image) => ({...(
+      image.id ? { id_imagen: image.id } : {}),
       url: image.url,
       detalle: image.detalleId,
     }));
@@ -169,9 +172,10 @@ const EditCard = () => {
           precio: parseFloat(productData.price),
           unidad: productData.unit,
           color: productData.color,
+          producto: id_product
         },
       ],
-      imagenes: imagesData,
+      imagenes: detailImagesSaved //ToDo
     });
   }
 
@@ -186,6 +190,7 @@ const EditCard = () => {
    */
   async function fetchData(id_product) {
     const responseData = await getProduct(id_product)
+    console.log(responseData)
     const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
     setProductData({
       producer: responseData.product.fabricante,
@@ -199,14 +204,14 @@ const EditCard = () => {
       color: firstDetail.color,
     });
     setDetails(responseData.details);
-    setDetailsImages(responseData.images);
+    setDetailImagesSaved(responseData.images);
 
     let imgUrl = [];
     responseData.images.forEach((img) => {
       if (img.detalle === firstDetail.id_detalle) {
         imgUrl.push(img.url);
       }
-      setDetailImages(imgUrl);
+      setDetailImagesInterface(imgUrl);
     });
   };
 
@@ -234,7 +239,7 @@ const EditCard = () => {
   async function handleUpdate(e) {
     e.preventDefault();
     updateDataRequest();
-    const response = await updateProduct(productId, requestData)
+    const response = await updateProduct(id_product, requestData)
     if(response){
       alert("El producto ha sido actualizado correctamente");
     } else {
@@ -275,7 +280,7 @@ const EditCard = () => {
 
   const getDetailImages = (detail_id) => {
     let imgUrl = [];
-    detailsImages.forEach((img) => {
+    detailImagesSaved.forEach((img) => {
       if (img.detalle === detail_id) {
         imgUrl.push(img.url);
       }
@@ -289,7 +294,7 @@ const EditCard = () => {
       unit: details[newIndex].unidad,
       color: details[newIndex].color,
     });
-    setDetailImages(getDetailImages(details[newIndex].id_detalle));
+    setDetailImagesInterface(getDetailImages(details[newIndex].id_detalle));
     setNumberDetail(newIndex);
   };
   function a11yProps(index) {
@@ -497,7 +502,6 @@ const EditCard = () => {
                     xs={6}
                     sx={{
                       display: "flex",
-                      display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
@@ -510,12 +514,12 @@ const EditCard = () => {
                         marginBottom: "5px",
                       }}
                     >
-                      {detailImages.length > 0 ? (
+                      {detailImagesInterface.length > 0 ? (
                         <CustomCarousel
                           autoPlay={autoPlay}
                           onImageChange={handleImageChange}
                         >
-                          {detailImages.map((image, index) => (
+                          {detailImagesInterface.map((image, index) => (
                             <img
                               key={index}
                               src={image}
