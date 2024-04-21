@@ -11,6 +11,7 @@ import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
 import EditCard from "./pages/admin/EditCard";
+import Orders from "./pages/admin/Orders";
 
 /**
  * Vista del admin
@@ -40,6 +41,7 @@ const Homepage = () => {
         <Route path="/productos" element={<Products />} />
         <Route path="/productos/:categoria?" element={<Products />} />
         <Route path="/carrito" element={<ShoppingCar />} />
+        <Route path="/pedidos" element={<Orders />} /> {/** POR AHORA */}
         <Route Component={Home} path="/" />
         
       </Routes>
