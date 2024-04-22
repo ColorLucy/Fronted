@@ -7,8 +7,8 @@ import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, Li
 import InputBase from '@mui/material/InputBase';
 import axios from 'axios';
 import { motion } from "framer-motion";
-import { useEffect, useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState,  useRef} from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import "./components.css";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
@@ -21,8 +21,10 @@ const NavigationBar = () => {
   const [loading, setLoading] = useState(true);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [openProductos, setOpenProductos] = useState(false);
+  const { pathname } = useLocation();
+  const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-  const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 14 : 20);
+  const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 5 : 15);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -67,7 +69,6 @@ const NavigationBar = () => {
       .then(response => {
         setCategories(response.data);
         setLoading(false);
-        console.log('Categorias:', response.data);
       })
       .catch(error => {
         setLoading(true);
@@ -165,10 +166,10 @@ const NavigationBar = () => {
               </Popper>
             </Paper>
             <Box sx={{ display: 'flex', alignItems: 'end', color: 'black' }}>
-              <Button color="inherit" component={Link} to="/">Inicio</Button>
-              <Button color="inherit" component={Link} to="/nosotros">Nosotros</Button>
+              <Button variant={locationPath === "" ? "contained" : ""} component={Link} to="/">Inicio</Button>
+              <Button variant={locationPath === "nosotros" ? "contained" : ""} component={Link} to="/nosotros">Nosotros</Button>
               <Button
-                color="inherit"
+                variant={locationPath === "productos" ? "contained" : ""}
                 onClick={handleToggleDrawer}
               >
                 Productos
@@ -191,8 +192,8 @@ const NavigationBar = () => {
                       <MenuItem onClick={handleToggleDrawer} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                         Todos los productos
                       </MenuItem>
-                      {categories.map((category) => (
-                        <MenuItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
+                      {categories.map((category, index) => (
+                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
                           {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
                         </MenuItem>
                       ))}
@@ -230,13 +231,13 @@ const NavigationBar = () => {
                 </IconButton>
               </div>
               <List>
-                <ListItem component={Link} to="/" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                <ListItem selected={locationPath === ""} component={Link} to="/" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                   <ListItemText primary="Inicio" />
                 </ListItem>
-                <ListItem component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                <ListItem selected={locationPath === "nosotros"} component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                   <ListItemText primary="Nosotros" />
                 </ListItem>
-                <ListItem onClick={toggleProductos} component={Link} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                <ListItem selected={locationPath === "productos"} onClick={toggleProductos} component={Link} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                   <ListItemText primary="Productos" />
                   {openProductos ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
@@ -246,7 +247,7 @@ const NavigationBar = () => {
                       <ListItemText primary="Todos los productos" />
                     </ListItem>
                     {categories.map((category) => (
-                      <ListItem key={category.id} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                      <ListItem key={category.id_categoria} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
                         <ListItemText primary={category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()} />
                       </ListItem>
                     ))}
@@ -279,7 +280,7 @@ const NavigationBar = () => {
           </IconButton>
         </Paper>
       )}
-      <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
+      <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", marginRight: "-5px" }} variants={container}
         initial="hidden"
         animate="visible">
         {expandedPalette.map((color, index) => (
@@ -288,7 +289,7 @@ const NavigationBar = () => {
             variants={item}
             style={{
               backgroundColor: color,
-              width: '15px',
+              width: '100%',
               height: '4px',
               marginRight: '2px',
             }}

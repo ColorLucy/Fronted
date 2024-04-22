@@ -92,10 +92,11 @@ export default function Logo({ imgSize, minLen, img }) {
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
                         position: "relative", top: "-9px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal"
+                        fontWeight: "400px", fontStyle: "normal", userSelect: "none"
                     }}>{wordColor} </div>
                     <span style={{
                         textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                        userSelect: "none",
                         position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal",
                     }}> Lucy</span>

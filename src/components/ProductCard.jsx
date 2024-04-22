@@ -10,16 +10,17 @@ import React from 'react';
 import numeral from 'numeral';
 
 function ProductCard({ product }) {
-    const formattedPrice = numeral(product.precio).format('$0,0.00');
+    const formattedPrice = numeral(product?.detalles[0]?.precio).format('$0,0.00');
 
     return (
-        <Card >
+        <Card sx={{ width: "260px" }}>
             <CardActionArea>
                 <CardMedia
                     component="img"
-                    height="200"
-                    src={product?.imagenes[0]}
-                    alt={product.nombre}
+                    height="210"
+                    src={product?.detalles[0]?.imagenes.length > 0 ? product?.detalles[0]?.imagenes[0].url : "homeColorLucy1.png"}
+                    loading='lazy'
+                    alt={product?.detalles[0]?.nombre}
                     sx={{ objectFit: "contain" }}
                 />
                 <CardContent sx={{ paddingBlock: "2px" }}>
@@ -27,13 +28,11 @@ function ProductCard({ product }) {
                         {formattedPrice}
                     </Typography>
                     <Typography sx={{}} color="text.secondary">
-                        {product.producto.fabricante}
+                        {product?.fabricante}
                     </Typography>
-                    <Typography sx={{ fontSize: 16 }} >
-                        {product.nombre}
+                    <Typography noWrap sx={{ fontSize: 16, height: "24px" }} >
+                        {product?.detalles[0]?.nombre}
                     </Typography>
-
-
                 </CardContent>
             </CardActionArea>
             <CardActions>
