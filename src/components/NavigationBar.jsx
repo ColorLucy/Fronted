@@ -7,7 +7,8 @@ import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, Li
 import InputBase from '@mui/material/InputBase';
 import axios from 'axios';
 import { motion } from "framer-motion";
-import { useEffect, useState,  useRef} from 'react';
+import { useEffect, useState} from 'react';
+import numeral from 'numeral';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import "./components.css";
@@ -94,24 +95,42 @@ const NavigationBar = () => {
     setOpen(false);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
-    performSearch(event.target.value);
-  };
-
-  const performSearch = async (value) => {
-    setLoadingSearch(true);
-    try {
-      const response = await axios.get(`http://127.0.0.1:8000/products/search/?q=${value}`);
-      setSearchResults(response.data);
-      setLoadingSearch(false);
-      console.log(value)
-      console.log(response.data)
-    } catch (error) {
-      setLoadingSearch(false);
-      console.error('Error al buscar productos:', error);
-    }
-  };;
+  useEffect(() => {
+    let cancel;
+    const getSearchResults = async () => {
+      if (searchTerm !== '') {
+        setLoadingSearch(true);
+        try {
+          const response = await axios.get(`http://127.0.0.1:8000/products/search/?q=${searchTerm}`, {
+            cancelToken: new axios.CancelToken((c) => {
+              cancel = c;
+            })
+          }); console.log(response.data)
+          setSearchResults(response.data);
+          setLoadingSearch(false);
+        } catch (error) {
+          if (axios.isCancel(error)) {
+            console.log('Solicitud cancelada:', error.message);
+          } else {
+            console.error('Error al obtener los resultados de búsqueda:', error);
+            setLoadingSearch(false);
+          }
+        }
+      } else {
+        setSearchResults([]);
+        setLoadingSearch(false);
+      }
+    };
+  
+    getSearchResults();
+  
+    return () => {
+      // Cancelar la solicitud cuando el componente se desmonta o se actualiza
+      if (cancel) {
+        cancel();
+      }
+    };
+  }, [searchTerm]);
 
   return (
     <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
@@ -122,14 +141,16 @@ const NavigationBar = () => {
             <Paper
               elevation={1}
               component="form"
-              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 600 }}
               onClick={handleClick('bottom')}>
               <InputBase
                 sx={{ ml: 1, flex: 1 }}
                 placeholder="Buscar Producto"
                 inputProps={{ 'aria-label': 'search product' }}
+                type='text'
                 value={searchTerm}
-                onChange={handleSearchChange}
+                name='searchTerm'
+                onChange={(e) => setSearchTerm(e.target.value)}
                 />
               <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
                 <SearchIcon />
@@ -143,25 +164,47 @@ const NavigationBar = () => {
               >
                 {({ TransitionProps }) => (
                   <Fade {...TransitionProps} timeout={400}>
-                    <Paper sx={{ marginTop: '3px', width: '400px', maxHeight:'400px', overflowY: 'auto' }}>
-                      {loading ? ( // Mostrar indicador de progreso si está cargando
-                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px' }}>
-                          <CircularProgress />
-                        </div>
-                      ) : (
-                        <div> {/* Mostrar resultados de búsqueda */}
-                          {searchResults.map((result) => (
-                            <ListItem key={result.id} component={Link} to={`/productos/${result.id}`} onClick={handleClosePopper} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                              <Typography key={result.id} sx={{ p: 2 }}>{result.nombre}</Typography>
-                            </ListItem>
-                          ))}
-                          {searchResults.length === 0 && (
-                            <Typography sx={{ p: 2 }}>No se encontraron resultados.</Typography>
+                  <Paper sx={{ marginTop: '3px', width: '600px', maxHeight:'400px', overflowY: 'auto' }}>
+                    {loadingSearch ? ( 
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px' }}>
+                        <CircularProgress />
+                      </div>
+                    ) : (
+                      <div> 
+                        {searchResults.map((result) => (
+                          <ListItem
+                          key={result.id}
+                          component={Link}
+                          to={`/productos/${result.producto.id_producto}`}
+                          onClick={handleClosePopper}
+                          sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }} 
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center' }}> 
+                          {result.imagenes.length > 0 ? (
+                            <img
+                              src={result.imagenes[0]}
+                              alt={result.nombre}
+                              style={{ width: "50px", height: "50px", marginRight: "10px" }}
+                            />
+                          ) : (
+                            <img
+                              src="homeColorLucy1.png"
+                              alt="Imagen por defecto"
+                              style={{ width: "50px", height: "50px", marginRight: "10px" }}
+                            />
                           )}
-                        </div>
-                      )}
-                    </Paper>
-                  </Fade>
+                            <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>{result.nombre}</Typography>
+                          </div>
+                          <Typography variant="subtitle1" fontWeight="bold">{numeral(result.precio).format('$0,0.00')}</Typography> 
+                        </ListItem>
+                        ))}
+                        {searchResults.length === 0 && searchTerm !== '' && (
+                          <Typography sx={{ p: 2 }}>No se encontraron resultados.</Typography>
+                        )}
+                      </div>
+                    )}
+                  </Paper>
+                </Fade>
                 )}
               </Popper>
             </Paper>
