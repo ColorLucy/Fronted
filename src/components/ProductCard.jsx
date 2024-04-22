@@ -7,8 +7,10 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import { green } from '@mui/material/colors';
 import React from 'react';
-import CurrencyFormat from 'react-currency-format';
+import numeral from 'numeral';
+
 function ProductCard({ product }) {
+    const formattedPrice = numeral(product?.detalles[0]?.precio).format('$0,0.00');
 
     return (
         <Card sx={{ width: "260px" }}>
@@ -23,7 +25,7 @@ function ProductCard({ product }) {
                 />
                 <CardContent sx={{ paddingBlock: "2px" }}>
                     <Typography gutterBottom variant="h5" component="div">
-                        <CurrencyFormat value={product?.detalles[0]?.precio} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                        {formattedPrice}
                     </Typography>
                     <Typography sx={{}} color="text.secondary">
                         {product?.fabricante}
@@ -45,4 +47,4 @@ function ProductCard({ product }) {
     )
 }
 
-export default ProductCard
+export default ProductCard;
