@@ -6,7 +6,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  min-height: calc(100vh - 244px);
+  min-height: calc(100vh - 275px);
   gap: 15px;
 }
 

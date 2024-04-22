@@ -9,28 +9,28 @@ import { green } from '@mui/material/colors';
 import React from 'react';
 import CurrencyFormat from 'react-currency-format';
 function ProductCard({ product }) {
+
     return (
-        <Card >
+        <Card sx={{ width: "260px" }}>
             <CardActionArea>
                 <CardMedia
                     component="img"
-                    height="200"
-                    src={product?.imagenes[0]}
-                    alt={product.nombre}
+                    height="210"
+                    src={product?.detalles[0]?.imagenes.length > 0 ? product?.detalles[0]?.imagenes[0].url : "homeColorLucy1.png"}
+                    loading='lazy'
+                    alt={product?.detalles[0]?.nombre}
                     sx={{ objectFit: "contain" }}
                 />
                 <CardContent sx={{ paddingBlock: "2px" }}>
                     <Typography gutterBottom variant="h5" component="div">
-                        <CurrencyFormat value={product.precio} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                        <CurrencyFormat value={product?.detalles[0]?.precio} displayType={'text'} thousandSeparator={true} prefix={'$'} />
                     </Typography>
                     <Typography sx={{}} color="text.secondary">
-                        {product.producto.fabricante}
+                        {product?.fabricante}
                     </Typography>
-                    <Typography sx={{ fontSize: 16 }} >
-                        {product.nombre}
+                    <Typography noWrap sx={{ fontSize: 16, height: "24px" }} >
+                        {product?.detalles[0]?.nombre}
                     </Typography>
-
-
                 </CardContent>
             </CardActionArea>
             <CardActions>
