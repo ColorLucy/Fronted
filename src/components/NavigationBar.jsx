@@ -25,7 +25,7 @@ const NavigationBar = () => {
   const { pathname } = useLocation();
   const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-  const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 5 : 15);
+  const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 5 : 14);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -236,7 +236,7 @@ const NavigationBar = () => {
                         Todos los productos
                       </MenuItem>
                       {categories.map((category, index) => (
-                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
+                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoria=${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
                           {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
                         </MenuItem>
                       ))}
@@ -323,7 +323,7 @@ const NavigationBar = () => {
           </IconButton>
         </Paper>
       )}
-      <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", marginRight: "-5px" }} variants={container}
+      <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }} variants={container}
         initial="hidden"
         animate="visible">
         {expandedPalette.map((color, index) => (
