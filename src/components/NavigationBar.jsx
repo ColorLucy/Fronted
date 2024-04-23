@@ -12,6 +12,7 @@ import numeral from 'numeral';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import "./components.css";
+import Productos from '../pages/user/Products';
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
 const NavigationBar = () => {
@@ -106,7 +107,7 @@ const NavigationBar = () => {
               cancel = c;
             })
           }); console.log(response.data)
-          setSearchResults(response.data);
+          setSearchResults(response.data.results);
           setLoadingSearch(false);
         } catch (error) {
           if (axios.isCancel(error)) {
@@ -132,6 +133,13 @@ const NavigationBar = () => {
     };
   }, [searchTerm]);
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleClosePopper;
+      window.location.href = `/productos/?q=${searchTerm}`;
+    }
+  };
+
   return (
     <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
@@ -151,9 +159,17 @@ const NavigationBar = () => {
                 value={searchTerm}
                 name='searchTerm'
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyUp={handleKeyPress}
                 />
-              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                <SearchIcon />
+              <IconButton 
+                type="button" sx={{ p: '10px' }} aria-label="search"
+                onClick={() => {
+                setSearchTerm(searchTerm); 
+                handleClosePopper; 
+                }}
+                component={Link} 
+                to={`/productos/?q=${searchTerm}`}>
+                <SearchIcon/>
               </IconButton>
               <Popper
                 sx={{ zIndex: 1200 }}
@@ -172,31 +188,35 @@ const NavigationBar = () => {
                     ) : (
                       <div> 
                         {searchResults.map((result) => (
-                          <ListItem
-                          key={result.id}
-                          component={Link}
-                          to={`/productos/${result.producto.id_producto}`}
-                          onClick={handleClosePopper}
-                          sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }} 
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center' }}> 
-                          {result.imagenes.length > 0 ? (
-                            <img
-                              src={result.imagenes[0]}
-                              alt={result.nombre}
-                              style={{ width: "50px", height: "50px", marginRight: "10px" }}
-                            />
-                          ) : (
-                            <img
-                              src="homeColorLucy1.png"
-                              alt="Imagen por defecto"
-                              style={{ width: "50px", height: "50px", marginRight: "10px" }}
-                            />
-                          )}
-                            <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>{result.nombre}</Typography>
+                          <div key={result.id_producto}>
+                            {result.detalles.length > 0 ? (
+                              <ListItem
+                                key={result.detalles[0].id_detalle} 
+                                component={Link}
+                                to={`/productos/${result.id_producto}`}
+                                onClick={handleClosePopper}
+                                sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }} 
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center' }}> 
+                                  {result.detalles[0].imagenes.length > 0 ? (
+                                    <img
+                                      src={result.detalles[0].imagenes[0].url} 
+                                      alt={result.detalles[0].nombre}
+                                      style={{ width: "50px", height: "50px", marginRight: "10px" }}
+                                    />
+                                  ) : (
+                                    <img
+                                      src="homeColorLucy1.png"
+                                      alt="Imagen por defecto"
+                                      style={{ width: "50px", height: "50px", marginRight: "10px" }}
+                                    />
+                                  )}
+                                  <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>{result.detalles[0].nombre}</Typography> 
+                                </div>
+                                <Typography variant="subtitle1" fontWeight="bold">{numeral(result.detalles[0].precio).format('$0,0.00')}</Typography> 
+                              </ListItem>
+                            ) : null}
                           </div>
-                          <Typography variant="subtitle1" fontWeight="bold">{numeral(result.precio).format('$0,0.00')}</Typography> 
-                        </ListItem>
                         ))}
                         {searchResults.length === 0 && searchTerm !== '' && (
                           <Typography sx={{ p: 2 }}>No se encontraron resultados.</Typography>

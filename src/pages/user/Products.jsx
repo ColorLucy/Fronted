@@ -18,36 +18,30 @@ function Products() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
-
-
+  const searchTerm = query.get('q');
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (categoria) {
-          const { data } = await axios.get(`http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/`);
-          setProductos(data.results);
-        } else {
-          const { data } = await axios.get(`http://localhost:8000/products/product-details/?page=${page}`);
-          setProductos(data.results);
-          setPagesProducts({ ...pagesProducts, [page]: data.results });
-          setPagesCount(Math.ceil(data.count / 20))
+        let url = `http://localhost:8000/products/product-details/?page=${page}`;
+        if (searchTerm) {
+          url = `http://127.0.0.1:8000/products/search/?q=${searchTerm}`;
+        } else if (categoria) {
+          url = `http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/`;
         }
-
-
+        const { data } = await axios.get(url);
+        setProductos(data.results);
+        setPagesCount(Math.ceil(data.count / 20));
+        setPagesProducts({ ...pagesProducts, [page]: data.results });
       } catch (error) {
         console.error('Error al obtener los datos de productos:', error);
       }
       setLoading(false);
     };
-    if (!pagesProducts.hasOwnProperty(page)) {
-      fetchData();
-    } else {
-      setProductos(pagesProducts[page]);
-    }
 
-  }, [categoria, page]);
+    fetchData();
+  }, [categoria, page, searchTerm]);
 
   return (
     <div className="productsPage">
@@ -59,7 +53,7 @@ function Products() {
               <CircularProgress style={{ margin: "100px" }} />
               <p>Cargando productos...</p>
             </div>
-          ) : !productos ? (
+          ) : productos.length === 0 ? (
             <p>No hay productos en esta categoría.</p>
           ) : (
             productos.map((producto, index) => (
