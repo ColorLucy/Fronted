@@ -15,7 +15,7 @@ const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
  * @param {number} steps - The number of intermediate colors desired between each color in the input array.
  * @returns {string[]} An expanded array of hex color strings including the original colors and the generated intermediate colors.
  */
-function generateIntermediateColors(colors, steps) {
+export function generateIntermediateColors(colors, steps) {
     function hexToRgb(hex) {
         const r = parseInt(hex.slice(1, 3), 16);
         const g = parseInt(hex.slice(3, 5), 16);
@@ -76,49 +76,33 @@ const item = {
  * 
  * @returns {JSX.Element} A JSX element representing the company logo with colored text and a line of color blocks.
  */
-export default function Logo({ imgSize, minLen }) {
+export default function Logo({ imgSize, minLen, img }) {
 
     const wordColor = 'Color'.split('').map((letter, index) => (
         <span key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
     ));
     const isMobileOrTablet = useMediaQuery('(max-width: 960px)') || minLen;
-    const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1 : 3);
+    const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1 : 2);
     const navigate = useNavigate();
 
     return (
         <div onClick={() => navigate("/")}>
             <div className='fragmentLogo' style={isMobileOrTablet ? { margin: '0px', marginTop: '10px' } : {}}>
-                {!isMobileOrTablet && < img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />}
+                {img && !isMobileOrTablet && < img src={logo} loading='lazy' style={{ borderRadius: "6px" }} height={imgSize ? imgSize : '60px'} alt="logo" />}
                 <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', fontSize: '32px' }}>
                     <div style={{
                         position: "relative", top: "-9px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal"
+                        fontWeight: "400px", fontStyle: "normal", userSelect: "none"
                     }}>{wordColor} </div>
                     <span style={{
                         textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                        userSelect: "none",
                         position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal",
                     }}> Lucy</span>
                 </div>
             </div>
-            <div className='colorBlocks'>
-                <motion.div style={{ display: 'flex', alignItems: 'center' }} variants={container}
-                    initial="hidden"
-                    animate="visible">
-                    {expandedPalette.map((color, index) => (
-                        <motion.div
-                            key={index}
-                            variants={item}
-                            style={{
-                                backgroundColor: color,
-                                width: '15px',
-                                height: '4px',
-                                marginRight: '2px',
-                            }}
-                        />
-                    ))}
-                </motion.div>
-            </div>
+
         </div>
     )
 }

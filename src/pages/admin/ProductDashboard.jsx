@@ -173,6 +173,9 @@ const ProductDashboard = () => {
               <TableHead>
                 <StyledTableRow>
                   <StyledHeaderTableCell align="center">
+                    ID
+                  </StyledHeaderTableCell>
+                  <StyledHeaderTableCell align="center">
                     Producto
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
@@ -180,9 +183,6 @@ const ProductDashboard = () => {
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
                     Descripción
-                  </StyledHeaderTableCell>
-                  <StyledHeaderTableCell align="center">
-                    Categoría
                   </StyledHeaderTableCell>
                   <StyledHeaderTableCell align="center">
                     Menu
@@ -194,23 +194,22 @@ const ProductDashboard = () => {
                   .filter((row) => {
                     return search.toLowerCase() === ""
                       ? row
-                      : row.producto.toLowerCase().includes(search);
+                      : row.nombre.toLowerCase().includes(search);
                   })
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => (
-                    
                     <TableRow key={index}>
                       <StyledBodyTableCell component="th" align="center">
                         {row.id_producto}
+                      </StyledBodyTableCell>
+                      <StyledBodyTableCell align="center">
+                        {row.nombre}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
                         {row.fabricante}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
                         {row.descripcion}
-                      </StyledBodyTableCell>
-                      <StyledBodyTableCell align="center">
-                        {row.categoria}
                       </StyledBodyTableCell>
                       <StyledBodyTableCell align="center">
                         <IconButton
