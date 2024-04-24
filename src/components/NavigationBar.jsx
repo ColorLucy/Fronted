@@ -1,16 +1,14 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Paper, Toolbar, useMediaQuery, Popper, Typography, Fade } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
+import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import { motion } from "framer-motion";
 import { useEffect, useState} from 'react';
-import numeral from 'numeral';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
+import Search from '../components/searchBar';
 import "./components.css";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
@@ -20,31 +18,11 @@ const NavigationBar = () => {
   const [drawerOpen2, setdrawerOpen2] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [loadingSearch, setLoadingSearch] = useState(false);
   const [openProductos, setOpenProductos] = useState(false);
   const { pathname } = useLocation();
   const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
   const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 5 : 14);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [open, setOpen] = useState(false);
-  const [placement, setPlacement] = useState();
-
-  const handleClick = (newPlacement) => (event) => {
-    setAnchorEl(event.currentTarget);
-    setOpen((prev) => placement !== newPlacement || !prev);
-    setPlacement(newPlacement);
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleClosePopper);
-
-    return () => {
-      window.removeEventListener('resize', handleClosePopper);
-    };
-  }, []);
 
   const container = {
     hidden: { opacity: 1, scale: 0 },
@@ -91,123 +69,13 @@ const NavigationBar = () => {
     setdrawerOpen2(false);
   };
 
-  const handleClosePopper = () => {
-    setOpen(false);
-  };
-
-  useEffect(() => {
-    let cancel;
-    const getSearchResults = async () => {
-      if (searchTerm !== '') {
-        setLoadingSearch(true);
-        try {
-          const response = await axios.get(`http://127.0.0.1:8000/products/search/?q=${searchTerm}`, {
-            cancelToken: new axios.CancelToken((c) => {
-              cancel = c;
-            })
-          }); console.log(response.data)
-          setSearchResults(response.data);
-          setLoadingSearch(false);
-        } catch (error) {
-          if (axios.isCancel(error)) {
-            console.log('Solicitud cancelada:', error.message);
-          } else {
-            console.error('Error al obtener los resultados de búsqueda:', error);
-            setLoadingSearch(false);
-          }
-        }
-      } else {
-        setSearchResults([]);
-        setLoadingSearch(false);
-      }
-    };
-  
-    getSearchResults();
-  
-    return () => {
-      // Cancelar la solicitud cuando el componente se desmonta o se actualiza
-      if (cancel) {
-        cancel();
-      }
-    };
-  }, [searchTerm]);
-
   return (
     <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
         {!isMobileOrTablet && (
-          <>
+          <>          
             <Logo imgSize="50px" />
-            <Paper
-              elevation={1}
-              component="form"
-              sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 600 }}
-              onClick={handleClick('bottom')}>
-              <InputBase
-                sx={{ ml: 1, flex: 1 }}
-                placeholder="Buscar Producto"
-                inputProps={{ 'aria-label': 'search product' }}
-                type='text'
-                value={searchTerm}
-                name='searchTerm'
-                onChange={(e) => setSearchTerm(e.target.value)}
-                />
-              <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-                <SearchIcon />
-              </IconButton>
-              <Popper
-                sx={{ zIndex: 1200 }}
-                open={open}
-                anchorEl={anchorEl}
-                placement={placement}
-                transition
-              >
-                {({ TransitionProps }) => (
-                  <Fade {...TransitionProps} timeout={400}>
-                  <Paper sx={{ marginTop: '3px', width: '600px', maxHeight:'400px', overflowY: 'auto' }}>
-                    {loadingSearch ? ( 
-                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px' }}>
-                        <CircularProgress />
-                      </div>
-                    ) : (
-                      <div> 
-                        {searchResults.map((result) => (
-                          <ListItem
-                          key={result.id}
-                          component={Link}
-                          to={`/productos/${result.producto.id_producto}`}
-                          onClick={handleClosePopper}
-                          sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }} 
-                        >
-                          <div style={{ display: 'flex', alignItems: 'center' }}> 
-                          {result.imagenes.length > 0 ? (
-                            <img
-                              src={result.imagenes[0]}
-                              alt={result.nombre}
-                              style={{ width: "50px", height: "50px", marginRight: "10px" }}
-                            />
-                          ) : (
-                            <img
-                              src="homeColorLucy1.png"
-                              alt="Imagen por defecto"
-                              style={{ width: "50px", height: "50px", marginRight: "10px" }}
-                            />
-                          )}
-                            <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>{result.nombre}</Typography>
-                          </div>
-                          <Typography variant="subtitle1" fontWeight="bold">{numeral(result.precio).format('$0,0.00')}</Typography> 
-                        </ListItem>
-                        ))}
-                        {searchResults.length === 0 && searchTerm !== '' && (
-                          <Typography sx={{ p: 2 }}>No se encontraron resultados.</Typography>
-                        )}
-                      </div>
-                    )}
-                  </Paper>
-                </Fade>
-                )}
-              </Popper>
-            </Paper>
+            <Search />    
             <Box sx={{ display: 'flex', alignItems: 'end', color: 'black' }}>
               <Button variant={locationPath === "" ? "contained" : ""} component={Link} to="/">Inicio</Button>
               <Button variant={locationPath === "nosotros" ? "contained" : ""} component={Link} to="/nosotros">Nosotros</Button>
@@ -308,20 +176,7 @@ const NavigationBar = () => {
         )}
       </Toolbar>
       {isMobileOrTablet && (
-        <Paper
-          position="fixed"
-          elevation={1}
-          component="form"
-          sx={{ p: '2px 4px', display: 'flex', alignItems: 'auto', margin: '10px' }}>
-          <InputBase
-            sx={{ ml: 1, flex: 1, alignItems: 'center', minWidth: '200px' }}
-            placeholder="Buscar Producto"
-            inputProps={{ 'aria-label': 'search product' }}
-          />
-          <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-            <SearchIcon />
-          </IconButton>
-        </Paper>
+        <Search />
       )}
       <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }} variants={container}
         initial="hidden"
