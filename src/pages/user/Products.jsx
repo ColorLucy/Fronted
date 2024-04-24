@@ -14,45 +14,46 @@ function Products() {
   const [pagesProducts, setPagesProducts] = useState({});
   const [pagesCount, setPagesCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const { categoria } = useParams();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
-
-
-
+  const categoria = parseInt(query.get('categoria') || 0, 10);
   useEffect(() => {
+    let bandera = false;
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (categoria) {
-          const { data } = await axios.get(`http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/`);
+        if (categoria !== 0) {
+          const { data } = await axios.get(`http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/?page=${page}`);
           setProductos(data.results);
+          setPagesProducts({ ...pagesProducts, [page]: data.results });
+          setPagesCount(Math.ceil(data.count / 20))
+          console.log(data)
         } else {
           const { data } = await axios.get(`http://localhost:8000/products/product-details/?page=${page}`);
           setProductos(data.results);
           setPagesProducts({ ...pagesProducts, [page]: data.results });
           setPagesCount(Math.ceil(data.count / 20))
-        }
-
-
+        };
+        bandera = true;
       } catch (error) {
         console.error('Error al obtener los datos de productos:', error);
       }
       setLoading(false);
     };
-    if (!pagesProducts.hasOwnProperty(page)) {
+    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera)) {
       fetchData();
-    } else {
-      setProductos(pagesProducts[page]);
     }
+    else {
+      setProductos(pagesProducts[page]);
+    };
 
   }, [categoria, page]);
 
   return (
     <div className="productsPage">
       <h5 style={{ marginTop: "10px", marginBottom: "10px", marginLeft: "10px" }}>Productos</h5>
-      <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
+      <div style={{ display: 'flex', flexDirection: "column", alignItems: "center", gap: "10px" }}>
         <div className="productsContainer">
           {loading ? (
             <div style={{ textAlign: "center" }}>
