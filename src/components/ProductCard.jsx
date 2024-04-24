@@ -38,11 +38,12 @@ const convertirColor = (colorEnEspanol) => {
 
     };
 
-    return mapaDeColores[colorEnEspanol.toUpperCase()] || null; // Devuelve el color correspondiente o null si no está definido
+    return mapaDeColores[colorEnEspanol.toUpperCase()] || null;
 }
 
 function ProductCard({ product }) {
-    const { detalles, fabricante, id_producto } = product
+    console.log(product)
+    const { detalles, fabricante, id_producto, nombre } = product
     const formattedPrice = numeral(detalles[0].precio).format('$0,0.00');
     const coloresDetalles = obtenerColoresDeProducto(detalles);
     const coloresHtml = coloresDetalles.map(convertirColor);
@@ -55,12 +56,12 @@ function ProductCard({ product }) {
                     weight="260px !important"
                     src={detalles[0].imagenes.length > 0 ? detalles[0].imagenes[0].url : homeColorLucyImg}
                     loading='lazy'
-                    alt={detalles[0]?.nombre}
+                    alt={nombre}
                     sx={{ objectFit: "contain" }}
                 />
                 <CardContent sx={{ paddingBlock: "2px", width: "260px" }}>
                     <Typography noWrap sx={{ fontSize: 14, height: "24px" }} >
-                        {detalles[0]?.nombre}
+                        {nombre}
                     </Typography>
                     <div style={{ display: "flex" }}>
                         <AvatarGroup max={4}>
