@@ -17,13 +17,13 @@ function Products() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
-  const categoria = parseInt(query.get('categoria') || '1', 10);
+  const categoria = parseInt(query.get('categoria') || 0, 10);
   useEffect(() => {
     let bandera = false;
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (categoria) {
+        if (categoria !== 0) {
           const { data } = await axios.get(`http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/?page=${page}`);
           setProductos(data.results);
           setPagesProducts({ ...pagesProducts, [page]: data.results });
@@ -36,13 +36,12 @@ function Products() {
           setPagesCount(Math.ceil(data.count / 20))
         };
         bandera = true;
-
       } catch (error) {
         console.error('Error al obtener los datos de productos:', error);
       }
       setLoading(false);
     };
-    if (!pagesProducts.hasOwnProperty(page) || (categoria && !bandera)) {
+    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera)) {
       fetchData();
     }
     else {

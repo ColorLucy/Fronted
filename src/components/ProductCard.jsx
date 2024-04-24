@@ -48,16 +48,17 @@ function ProductCard({ product }) {
     const coloresHtml = coloresDetalles.map(convertirColor);
     return (
         <Card sx={{ width: "260px" }}>
-            <CardActionArea>
+            <CardActionArea href={"/productos/" + id_producto}>
                 <CardMedia
                     component="img"
                     height="210"
+                    weight="260px !important"
                     src={detalles[0].imagenes.length > 0 ? detalles[0].imagenes[0].url : homeColorLucyImg}
                     loading='lazy'
                     alt={detalles[0]?.nombre}
                     sx={{ objectFit: "contain" }}
                 />
-                <CardContent sx={{ paddingBlock: "2px" }}>
+                <CardContent sx={{ paddingBlock: "2px", width: "260px" }}>
                     <Typography noWrap sx={{ fontSize: 14, height: "24px" }} >
                         {detalles[0]?.nombre}
                     </Typography>
@@ -65,7 +66,8 @@ function ProductCard({ product }) {
                         <AvatarGroup max={4}>
                             {coloresHtml ? coloresHtml.map((colorHtml, index) => {
                                 return (
-                                    <Avatar key={index} sx={{ bgcolor: colorHtml, width: 16, height: 16 }}><></></Avatar>
+                                    <Avatar key={index} sx={{ bgcolor: colorHtml, width: 16, height: 16 }}>
+                                        <></></Avatar>
                                 )
                             }) : <></>}
                         </AvatarGroup>
@@ -86,7 +88,7 @@ function ProductCard({ product }) {
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button variant="contained" sx={{ paddingInline: "10px", }} startIcon={<AddShoppingCartIcon />} fullWidth href={"/productos/"+id_producto}>
+                <Button variant="contained" sx={{ paddingInline: "10px", width: "260px" }} startIcon={<AddShoppingCartIcon />} fullWidth>
                     AÑADIR AL CARRITO
                 </Button>
             </CardActions>

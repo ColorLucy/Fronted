@@ -8,6 +8,7 @@
   justify-content: space-evenly;
   min-height: calc(100vh - 286px);
   gap: 15px;
+  min-width: 80%;
 }
 
 .productItem {
