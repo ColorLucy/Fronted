@@ -27,6 +27,7 @@ import styles from "./ProductDashboard.module.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
 import { consultarDetalles, consultarProductos } from "../../utils/products";
+import { deleteProduct } from "../../utils/crudProducts";
 import Logo from "../../components/logo";
 import { useNavigate } from "react-router-dom";
 
@@ -95,8 +96,14 @@ const ProductDashboard = () => {
     handleClose();
   };
 
-  const handleDeleteProduct = () => {
-    window.open("http://localhost:5173", "_blank");
+  async function handleDeleteProduct(id){
+    const response = await deleteProduct(id)
+    if(!response){
+      alert("El producto ha sido eliminado exitosamente")
+      location.reload()
+    } else {
+      alert("Producto no eliminado, vuelve a intentarlo")
+    }
     handleClose();
   };
 
@@ -235,7 +242,7 @@ const ProductDashboard = () => {
                           <MenuItem onClick={() => {handleEditProduct(row.id_producto)}}>
                             <EditIcon sx={{ mr: "0.5rem" }} /> Editar
                           </MenuItem>
-                          <MenuItem onClick={() => handleDeleteProduct()}>
+                          <MenuItem onClick={() => handleDeleteProduct(row.id_producto)}>
                             <DeleteForeverIcon sx={{ mr: "0.5rem" }} /> Eliminar
                           </MenuItem>
                         </Menu>
