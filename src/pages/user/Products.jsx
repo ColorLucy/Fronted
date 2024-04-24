@@ -14,26 +14,30 @@ function Products() {
   const [pagesProducts, setPagesProducts] = useState({});
   const [pagesCount, setPagesCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const { categoria } = useParams();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
+  const categoria = parseInt(query.get('categoria') || 0, 10);
   const searchTerm = query.get('q');
 
   useEffect(() => {
+    let bandera = false;
     const fetchData = async () => {
       setLoading(true);
       try {
-        let url = `http://localhost:8000/products/product-details/?page=${page}`;
-        if (searchTerm) {
-          url = `http://127.0.0.1:8000/products/search/?q=${searchTerm}`;
-        } else if (categoria) {
-          url = `http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/`;
+        let url;
+        if (categoria !== 0) {
+          url = `http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/?page=${page}`;
+        } else if (searchTerm) {
+          url = `http://127.0.0.1:8000/products/search/?q=${searchTerm}&page=${page}`;
+        } else {
+          url = `http://localhost:8000/products/product-details/?page=${page}`;
         }
         const { data } = await axios.get(url);
         setProductos(data.results);
-        setPagesCount(Math.ceil(data.count / 20));
         setPagesProducts({ ...pagesProducts, [page]: data.results });
+        setPagesCount(Math.ceil(data.count / 20));
+        bandera = true;
       } catch (error) {
         console.error('Error al obtener los datos de productos:', error);
       }
@@ -46,14 +50,14 @@ function Products() {
   return (
     <div className="productsPage">
       <h5 style={{ marginTop: "10px", marginBottom: "10px", marginLeft: "10px" }}>Productos</h5>
-      <div style={{ display: 'flex', flexDirection: "column", alignItems: "center" }}>
+      <div style={{ display: 'flex', flexDirection: "column", alignItems: "center", gap: "10px" }}>
         <div className="productsContainer">
           {loading ? (
             <div style={{ textAlign: "center" }}>
               <CircularProgress style={{ margin: "100px" }} />
               <p>Cargando productos...</p>
             </div>
-          ) : productos.length === 0 ? (
+          ) : !productos ? (
             <p>No hay productos en esta categoría.</p>
           ) : (
             productos.map((producto, index) => (
@@ -76,7 +80,6 @@ function Products() {
           )}
         />
       </div>
-
       <WhatsApp />
       <InfoBar />
     </div>

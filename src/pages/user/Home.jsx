@@ -23,10 +23,8 @@ export default function Home() {
 
           <Card sx={{ maxWidth: 600, maxHeight: 400, marginTop: '10px' }}>
             <CardMedia
-
               component='img'
               image="homeColorLucy1.png"
-
             />
           </Card>
         </Grid>

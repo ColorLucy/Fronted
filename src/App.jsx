@@ -12,6 +12,7 @@ import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
 import EditCard from "./pages/admin/EditCard";
 import Orders from "./pages/admin/Orders";
+import Product from "./pages/user/Product";
 
 /**
  * Vista del admin
@@ -39,7 +40,8 @@ const Homepage = () => {
       <Routes>
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/productos" element={<Products />} />
-        <Route path="/productos/:categoria?" element={<Products />} />
+        <Route path="/productos/:id_producto" element={<Product />} />
+        <Route path="/productos/:searchTerm" element={<Product />} />
         <Route path="/carrito" element={<ShoppingCar />} />
         <Route path="/pedidos" element={<Orders />} /> {/** POR AHORA */}
         <Route Component={Home} path="/" />
