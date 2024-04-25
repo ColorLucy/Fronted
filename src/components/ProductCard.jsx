@@ -28,7 +28,7 @@ function ProductCard({ product }) {
     const coloresHtml = coloresDetalles.map(convertirColor);
     return (
         <Card sx={{ width: "260px" }}>
-            <CardActionArea href={"/productos/" + id_producto}>
+            <CardActionArea href={`/productos/${encodeURIComponent(nombre)}-${id_producto}`}>
                 <CardMedia
                     component="img"
                     height="210"

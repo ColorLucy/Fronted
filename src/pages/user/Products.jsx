@@ -3,7 +3,7 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import InfoBar from "../../components/InfoBar";
 import ProductCard from "../../components/ProductCard";
 import WhatsApp from "../../components/WhatsApp";
@@ -28,7 +28,6 @@ function Products() {
           setProductos(data.results);
           setPagesProducts({ ...pagesProducts, [page]: data.results });
           setPagesCount(Math.ceil(data.count / 20))
-          console.log(data)
         } else {
           const { data } = await axios.get(`http://localhost:8000/products/product-details/?page=${page}`);
           setProductos(data.results);

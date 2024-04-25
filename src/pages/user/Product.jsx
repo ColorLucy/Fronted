@@ -1,7 +1,10 @@
+import { WhatsApp } from '@mui/icons-material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Box, Button, Grid, Paper, Radio } from '@mui/material';
+import { Box, Button, Grid, Paper, Radio, useMediaQuery } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
+import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
@@ -14,9 +17,18 @@ import axios from 'axios';
 import numeral from 'numeral';
 import { default as React, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { convertirColor } from '../../utils/colors';
 
+/**
+ * `Bread_crumb` is a React component that renders a breadcrumb trail. It facilitates navigation by providing links to the product page and the current category. Additionally, it displays the current product name along with the manufacturer's name.
+ *
+ * @param {object} props - The props passed to the component.
+ * @param {object} props.categoria - An object containing information about the product's category.
+ * @param {string} props.nombreProducto - The name of the current product.
+ * @param {string} props.fabricanteProducto - The manufacturer of the current product.
+ * @returns {JSX.Element} A JSX element containing the breadcrumb navigation links.
+ */
 const Bread_crumb = ({ categoria, nombreProducto, fabricanteProducto }) => {
   return (
     <Breadcrumbs
@@ -40,6 +52,13 @@ const Bread_crumb = ({ categoria, nombreProducto, fabricanteProducto }) => {
     </Breadcrumbs>
   )
 }
+/**
+ * `colorsAvailable` is a function that filters and returns unique colors available for a specific unit. It excludes colors marked as not available ("NA") and duplicates.
+ *
+ * @param {Array} details - The list of product details, each containing a color and unit attribute.
+ * @param {string} unity - The selected unit to filter corresponding colors for.
+ * @returns {Array} A list of unique available colors for the provided unit.
+ */
 const colorsAvailable = (details, unity) => {
   const colorsUnity = details
     .filter((detail) => detail.unidad === unity)
@@ -47,8 +66,26 @@ const colorsAvailable = (details, unity) => {
     .filter((value, index, array) => value !== "NA" && (array.indexOf(value) === index))
   return colorsUnity
 }
+
+const urlDetail = (detail) => {
+  if (detail.color === "NA") {
+    return `?unidad=${encodeURIComponent(detail.unidad)}}`
+  } else {
+    return `?unidad=${encodeURIComponent(detail.unidad)}&color=${encodeURIComponent(detail.color)}`
+  }
+}
+
+/**
+ * `Product` is a React component that renders the product details page. It displays an image carousel, unit and color options for the product, and allows adding products to the cart. The states and effects handle the selection logic and retrieval of product detail data.
+ *
+ * It uses React Router for handling navigation and URL parameters.
+ *
+ * @returns {JSX.Element} A JSX element containing the UI for product details.
+ */
 const Product = () => {
-  let { id_producto } = useParams();
+  const { info_producto } = useParams();
+  const id_producto = info_producto.split('-')[1]
+  const nombre_producto = decodeURIComponent(info_producto.split('-')[0])
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -64,13 +101,12 @@ const Product = () => {
   const [detailsColors, setDetailsColors] = useState([]);
   const [detailsColorsHTML, setDetailsColorsHTML] = useState([]);
   const [detailsUnityColors, setDetailsUnityColors] = useState([]);
-
+  const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
   useEffect(() => {
     const fetchProducto = async () => {
       try {
         const { data } = await axios.get(`http://localhost:8000/products/product-details/${id_producto}/`);
         setProduct(data);
-        console.log(data)
         setDetails(data.detalles);
         const detailsUnitys = data.detalles
           .map(detalle => detalle.unidad)
@@ -84,10 +120,12 @@ const Product = () => {
         setDetailsColorsHTML(colorsText.map(colorText => convertirColor(colorText)))
         setDetailsUnityColors(colorsAvailable(data.detalles, detailsUnitys.includes(unityURL) ? unityURL : data.detalles[0].unidad))
         setColor(colorsText.includes(colorURL) ? colorURL : data.detalles[0].color)
-        setSelectedDetail(detailsUnitys.includes(unityURL) ?
+        const detailSelected = detailsUnitys.includes(unityURL) ?
           colorsText.includes(colorURL) ? data.detalles.find(detail => detail.unidad === unityURL && detail.color === colorURL)
             : data.detalles.find(detail => detail.unidad === unityURL)
-          : data.detalles[0]);
+          : data.detalles[0]
+        setSelectedDetail(detailSelected);
+        navigate(urlDetail(detailSelected))
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
@@ -96,7 +134,10 @@ const Product = () => {
   }, [id_producto]);
 
   if (!product) {
-    return <Typography>Loading product details...</Typography>;
+    return (<div style={{ textAlign: "center", height: "100%" }}>
+      <CircularProgress style={{ margin: "100px" }} />
+      <Typography>Cargando la informacion del producto {nombre_producto}...</Typography>
+    </div>);
   }
 
   const handleDetailSelect = (detail) => {
@@ -156,7 +197,7 @@ const Product = () => {
             onChange={handleStepChange}
           >
             {selectedDetail.imagenes.map((imgDetalle, index) => (
-              <Paper key={index} elevation={0} sx={{ position: 'relative', height: 550 }}>
+              <Paper key={index} elevation={0} sx={{ position: 'relative', height: isMobileOrTablet ? 300 : 550 }}>
                 <img src={imgDetalle.url} alt={selectedDetail.nombre}
                   style={{
                     width: "100%", maxHeight: "100%", objectFit: 'contain',
@@ -166,61 +207,62 @@ const Product = () => {
             ))}
           </Carousel>
         </Grid>
-        <Grid item xs={12} md={5}>
-          <Typography variant="h4">{selectedDetail.nombre}</Typography>
-          <Typography variant="h6" color="text.secondary">{product.fabricante}</Typography>
+        <Grid item xs={12} md={5} gap={"10px"} display={"flex"} flexDirection={"column"} justifyContent={"center"} component={Paper} sx={{ maxWidth: "400px !important", padding: "16px", margin: "auto" }}>
+          <Typography variant="h3" >{selectedDetail.nombre} </Typography>
+          <Typography variant="h5" color="text.secondary">{product.fabricante}</Typography>
+          <Typography variant="h4" sx={{ my: 2 }}>{numeral(selectedDetail.precio).format('$0,0.00')}</Typography>
           <Typography variant="body1">{selectedDetail.descripcion}</Typography>
-          <Typography variant="h5" sx={{ my: 2 }}>{numeral(selectedDetail.precio).format('$0,0.00')}</Typography>
-          <Grid container spacing={2}>
-            <Box display="flex" flexDirection="column" margin={"10px"}>
-              <Typography variant="h7" color="text.secondary">Presentación: {selectedDetail.unidad}</Typography>
-              <ToggleButtonGroup
-                value={unity}
-                size="small"
-                exclusive
-                onChange={handleUnityChange}
-                aria-label="Unidad"
+          <Box display="flex" flexDirection="column" margin={"10px"}>
+            <Typography variant="h7" color="text.secondary">Presentación: {selectedDetail.unidad}</Typography>
+            <ToggleButtonGroup
+              value={unity}
+              size="medium"
+              exclusive
+              onChange={handleUnityChange}
+              aria-label="Unidad"
+            >
+              {detailsUnity.map((detailUnity, index) => {
+                return (
+                  <ToggleButton key={index} value={detailUnity} aria-label={"Presentacion " + detailUnity}>
+                    {detailUnity}
+                  </ToggleButton>)
+              })}
+            </ToggleButtonGroup>
+          </Box>
+          {detailsColors.length !== 0 && <Box margin={"10px"}>
+            <FormControl>
+              <FormLabel disabled>Color: {selectedDetail.color}</FormLabel>
+              <RadioGroup
+                row
+                name="radio-buttons-group"
+                value={color}
               >
-                {detailsUnity.map((detailUnity, index) => {
-                  return (
-                    <ToggleButton key={index} value={detailUnity} aria-label={"Presentacion " + detailUnity}>
-                      {detailUnity}
-                    </ToggleButton>)
-                })}
-              </ToggleButtonGroup>
-            </Box>
-            {detailsColors.length !== 0 && <Box margin={"10px"}>
-
-              <FormControl>
-                <FormLabel disabled>Color: {selectedDetail.color}</FormLabel>
-                <RadioGroup
-                  row
-                  name="radio-buttons-group"
-                  value={color}
-                >
-                  {
-                    detailsColors.map((detailsColor, index) => {
-                      return (<FormControlLabel key={index} value={detailsColor}
-                        control={<Radio
-                          checked={detailsColor === color}
-                          onChange={handleColorChange}
-                          disabled={!detailsUnityColors.includes(detailsColor)}
-                          sx={{
+                {
+                  detailsColors.map((detailsColor, index) => {
+                    return (<FormControlLabel key={index} value={detailsColor}
+                      control={<Radio
+                        checked={detailsColor === color}
+                        size='medium'
+                        onChange={handleColorChange}
+                        disabled={!detailsUnityColors.includes(detailsColor)}
+                        sx={{
+                          color: detailsColorsHTML[index],
+                          '&.Mui-checked': {
                             color: detailsColorsHTML[index],
-                            '&.Mui-checked': {
-                              color: detailsColorsHTML[index],
-                            },
-                          }}
-                        />} label={detailsColor} />)
-                    })
-                  }
-                </RadioGroup>
-              </FormControl>
-            </Box>}
-          </Grid>
-
-          <Button variant="contained" sx={{ paddingInline: "10px", width: "260px" }} startIcon={<AddShoppingCartIcon />} fullWidth>
+                          }
+                        }}
+                      />} label={detailsColor} />)
+                  })
+                }
+              </RadioGroup>
+            </FormControl>
+          </Box>}
+          <Divider color='black' />
+          <Button variant="contained" sx={{ paddingInline: "10px" }} startIcon={<AddShoppingCartIcon />} fullWidth>
             AÑADIR AL CARRITO
+          </Button>
+          <Button variant="contained" color='success' sx={{ paddingInline: "10px" }} startIcon={<WhatsApp sx={{ color: "white" }} />} fullWidth>
+            RECIBIR ASESORÍA
           </Button>
         </Grid>
       </Grid>
