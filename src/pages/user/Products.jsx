@@ -3,7 +3,7 @@ import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import InfoBar from "../../components/InfoBar";
 import ProductCard from "../../components/ProductCard";
 import WhatsApp from "../../components/WhatsApp";
