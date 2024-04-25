@@ -5,7 +5,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, useMediaQuery } from '@mui/material';
 import axios from 'axios';
 import { motion } from "framer-motion";
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import Search from '../components/searchBar';
@@ -73,9 +73,9 @@ const NavigationBar = () => {
     <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
       <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
         {!isMobileOrTablet && (
-          <>          
+          <>
             <Logo imgSize="50px" />
-            <Search />    
+            <Search />
             <Box sx={{ display: 'flex', alignItems: 'end', color: 'black' }}>
               <Button variant={locationPath === "" ? "contained" : ""} component={Link} to="/">Inicio</Button>
               <Button variant={locationPath === "nosotros" ? "contained" : ""} component={Link} to="/nosotros">Nosotros</Button>
@@ -104,7 +104,7 @@ const NavigationBar = () => {
                         Todos los productos
                       </MenuItem>
                       {categories.map((category, index) => (
-                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoria=${category.id_categoria}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
+                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoriaId=${category.id_categoria}&categoriaName=${encodeURIComponent(category.nombre)}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
                           {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
                         </MenuItem>
                       ))}
