@@ -40,7 +40,7 @@ const Homepage = () => {
       <Routes>
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/productos" element={<Products />} />
-        <Route path="/productos/:id_producto" element={<Product />} />
+        <Route path="/productos/:info_producto" element={<Product />} />
         <Route path="/productos/:searchTerm" element={<Product />} />
         <Route path="/carrito" element={<ShoppingCar />} />
         <Route path="/pedidos" element={<Orders />} /> {/** POR AHORA */}
