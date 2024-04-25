@@ -11,6 +11,7 @@ import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
 import EditCard from "./pages/admin/EditCard";
+import AddCard from "./pages/admin/AddCard";
 import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
 
@@ -22,6 +23,7 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
+        <Route Component={AddCard} path="add-product/" />
         <Route Component={EditCard} path="edit/:id_product" /> 
         <Route Component={AdminDashboard} path="/" />
       </Routes>

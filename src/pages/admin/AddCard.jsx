@@ -18,8 +18,7 @@ import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
-const EditCard = () => {
-  const { id_product } = useParams();
+const AddCard = () => {
   const [productId, setProductId] = useState("");
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
@@ -45,22 +44,6 @@ const EditCard = () => {
     color: "",
     product: "",
   });
-  const productImagesTemp = [
-    {
-      id: 71,
-      url: "/src/components/2.jpeg",
-      detalleId: 27,
-    },
-    {
-      id: 72,
-      url: "/src/components/1.jpg",
-      detalleId: 27,
-    },
-    {
-      url: "/src/components/3.jpg",
-      detalleId: 27,
-    },
-  ];
 
   const handleCategory = (e) => {
     const { value } = e.target;
@@ -79,7 +62,7 @@ const EditCard = () => {
   };
 
   const handleAddImage = () => {
-    alert("añadir imagen"); 
+    alert("añadir imagen");
   };
 
   const handleRemoveImage = (index) => {
@@ -90,7 +73,7 @@ const EditCard = () => {
 
   const handleAddDetail = () => {
     console.log(productData, detailData)
-    alert("agregar detalle"); 
+    alert("agregar detalle");
   }
 
   const handleRemoveDetail = (index) => {
@@ -130,13 +113,13 @@ const EditCard = () => {
         {value === index && (
           <div>
             {children}
-          </div>         
+          </div>
         )}
       </div>
     );
   }
 
-  function createDataRequest() { 
+  function createDataRequest() {
     const imagesData = uploadImages.map((imageUrl) => ({ url: imageUrl }));
     setRequestData({
       producto: {
@@ -156,67 +139,11 @@ const EditCard = () => {
     });
   }
 
-  function updateDataRequest() { 
-    const imagesToSave = productImagesTemp.map((image) => ({...(
-      image.id ? { id_imagen: image.id } : {}),
-      url: image.url,
-      detalle: image.detalleId,
-    }));
-    setRequestData({
-      producto: {
-        fabricante: productData.producer,
-        descripcion: productData.description,
-        categoria: parseInt(productData.category),
-      },
-      detalles: [
-        {
-          id_detalle: productData.detail,
-          nombre: productData.name,
-          precio: parseFloat(productData.price),
-          unidad: productData.unit,
-          color: productData.color,
-          producto: id_product
-        },
-      ],
-      imagenes: detailImagesSaved //ToDo
-    });
-  }
 
   const handleCancel = () => {
     navigate("/admin/");
   };
 
-  /**
-   * handles the retrieval of data from an existing product in the database
-   * sending a GET request to the server
-   * @param {Event} e - the event from the form that triggers the function
-   */
-  async function fetchData(id_product) {
-    const responseData = await getProduct(id_product)
-    console.log(responseData)
-    const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
-    setProductData({
-      producer: responseData.product.fabricante,
-      description: responseData.product.descripcion,
-      category: responseData.product.categoria,
-    });
-    setDetailData({
-      name: firstDetail.nombre,
-      price: firstDetail.precio,
-      unit: firstDetail.unidad,
-      color: firstDetail.color,
-    });
-    setDetails(responseData.details);
-    setDetailImagesSaved(responseData.images);
-
-    let imgUrl = [];
-    responseData.images.forEach((img) => {
-      if (img.detalle === firstDetail.id_detalle) {
-        imgUrl.push(img.url);
-      }
-      setDetailImagesInterface(imgUrl);
-    });
-  }
 
   /**
    * handles the creation of a new product by sending a POST request to the server
@@ -235,61 +162,18 @@ const EditCard = () => {
   }
 
   /**
-   * handles the update of an existing product by sending a PUT request to the server
-   * @param id from product to delete
-   * @param {Event} e - the event from the form or button click that triggers the function
-   */
-  async function handleUpdate(e) {
-    e.preventDefault();
-    updateDataRequest();
-    const response = await updateProduct(id_product, requestData)
-    if(response){
-      alert("El producto ha sido actualizado correctamente");
-    } else {
-      alert("La actualización del producto ha fallado, vuelve a intentarlo")
-    }
-  }
-
-  /**
-   * handles the deletion of an existing product by sending a DELETE request to the server
-   * @param {Event} e - the event from the button click or form submission that triggers the function
-   */
-  async function handleDelete(e) {
-    e.preventDefault();
-    const response = await deleteProduct(id_product)
-    if(!response){
-      alert("El producto ha sido eliminado exitosamente");
-      navigate("/admin/");
-      cleanTextFields();
-    } else {
-      alert("Producto no eliminado, vuelve a intentarlo")
-    }
-  };
-
-  /**
    * handles the retrieval of all categories and product data
    */
   useEffect(() => {
     fetchCategories();
   }, []);
-  useEffect(() => {
-    fetchData(id_product);
-  }, [id_product]);
+
 
   async function fetchCategories() {
     const response = await getCategories();
     setCategories(response);
-  };
+  }
 
-  const getDetailImages = (detail_id) => {
-    let imgUrl = [];
-    detailImagesSaved.forEach((img) => {
-      if (img.detalle === detail_id) {
-        imgUrl.push(img.url);
-      }
-    });
-    return imgUrl;
-  };
   const changeDetailIndex = (newIndex) => {
     setDetailData({
       name: details[newIndex].nombre,
@@ -320,7 +204,7 @@ const EditCard = () => {
         marginLeft: 20,
       }}
     >
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleCreate}>
         <Grid container spacing={5}>
           <Grid
             item
@@ -335,42 +219,42 @@ const EditCard = () => {
             <Typography variant="h5" component="div" gutterBottom>
               Producto
             </Typography>
-              <TextField
-                fullWidth
-                label="Fabricante"
-                name="producer"
-                value={productData.producer}
-                onChange={handleInputChange}
-                variant="outlined"
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Descripción"
-                name="description"
-                value={productData.description ? productData.description : ""}
-                onChange={handleInputChange}
-                variant="outlined"
-                sx={{ marginBottom: 2 }}
-              />
-              <InputLabel id="Categoria">Categoría del producto</InputLabel>
-              <Select
-                fullWidth
-                labelId="Categoria"
-                id="demo-simple-select"
-                value={productData.category}
-                onChange={handleCategory}
-                sx={{ marginBottom: 2 }}
-              >
-                {categories.map((category) => (
-                  <MenuItem
-                    key={category.id_categoria}
-                    value={category.id_categoria}
-                  >
-                    {category.nombre} (id {category.id_categoria})
-                  </MenuItem>
-                ))}
-              </Select>
+            <TextField
+              fullWidth
+              label="Fabricante"
+              name="producer"
+              value={productData.producer}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Descripción"
+              name="description"
+              value={productData.description ? productData.description : ""}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+            <InputLabel id="Categoria">Categoría del producto</InputLabel>
+            <Select
+              fullWidth
+              labelId="Categoria"
+              id="demo-simple-select"
+              value={productData.category}
+              onChange={handleCategory}
+              sx={{ marginBottom: 2 }}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.id_categoria}
+                  value={category.id_categoria}
+                >
+                  {category.nombre} (id {category.id_categoria})
+                </MenuItem>
+              ))}
+            </Select>
           </Grid>
           <Grid
             item
@@ -492,7 +376,7 @@ const EditCard = () => {
                             color="error"
                             onClick={handleRemoveDetail}
                             size="small"
-                            
+
                           >
                             Eliminar este detalle
                           </Button>
@@ -577,16 +461,8 @@ const EditCard = () => {
         }}
       >
         <div>
-          <Button variant="contained" color="primary" onClick={handleUpdate}>
-            Guardar cambios
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleDelete}
-            style={{ marginLeft: "8px" }}
-          >
-            Eliminar producto
+          <Button variant="contained" color="primary" onClick={handleCreate}>
+            Añadir producto
           </Button>
         </div>
         <Button
@@ -603,4 +479,4 @@ const EditCard = () => {
   );
 };
 
-export default EditCard;
+export default AddCard;
