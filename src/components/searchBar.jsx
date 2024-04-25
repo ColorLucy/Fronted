@@ -136,8 +136,10 @@ const SearchBar = () => {
                           <ListItem
                             key={result.detalles[0].id_detalle}
                             component={Link}
-                            to={`/productos/${result.id_producto}`}
-                            onClick={handleClosePopper}
+                            to={`/productos/${encodeURIComponent(result.nombre)}-${result.id_producto}`}
+                            onClick={() => {
+                              handleClosePopper;
+                            }}
                             sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }}
                           >
                             <div style={{ display: 'flex', alignItems: 'center' }}>
