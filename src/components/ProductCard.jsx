@@ -1,16 +1,15 @@
-import { WhatsApp } from '@mui/icons-material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import { Button, CardActionArea, CardActions, IconButton } from '@mui/material';
+import { Button, CardActionArea, CardActions } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import AvatarGroup from '@mui/material/AvatarGroup';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { green } from '@mui/material/colors';
-import Avatar from '@mui/material/Avatar';
-import AvatarGroup from '@mui/material/AvatarGroup';
-import React from 'react';
 import numeral from 'numeral';
-import homeColorLucyImg from "../../public/homeColorLucy1.png"
+import React from 'react';
+import homeColorLucyImg from "../../public/homeColorLucy1.png";
+import { convertirColor } from '../utils/colors';
 function obtenerColoresDeProducto(detalles) {
     const colores = new Set();
     detalles.forEach(detalle => {
@@ -20,29 +19,9 @@ function obtenerColoresDeProducto(detalles) {
     });
     return Array.from(colores);
 }
-const convertirColor = (colorEnEspanol) => {
-    const mapaDeColores = {
-        "ROSADA": "#FFC0CB",
-        "ROJO": "#FF0000",
-        "AZUL": "#0000FF",
-        "ROJA": "#FF0000",
-        "VERDE": "#008000",
-        "AMARILLO": "#FFFF00",
-        "BRONCE": "#CD7F32",
-        "NEUTRO": "#F5F5F5",
-        "GRIS": "#808080",
-        "AMARILLA": "#FFFF00",
-        "BLANCA": "#FFFFFF",
-        "NEGRO": "#000000",
-        "BLANCO": "#FFFFFF"
-
-    };
-
-    return mapaDeColores[colorEnEspanol.toUpperCase()] || null;
-}
 
 function ProductCard({ product }) {
-    console.log(product)
+
     const { detalles, fabricante, id_producto, nombre } = product
     const formattedPrice = numeral(detalles[0].precio).format('$0,0.00');
     const coloresDetalles = obtenerColoresDeProducto(detalles);
