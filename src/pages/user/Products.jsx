@@ -18,36 +18,34 @@ function Products() {
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
   const categoria = parseInt(query.get('categoria') || 0, 10);
+  const searchTerm = query.get('q');
+
   useEffect(() => {
     let bandera = false;
     const fetchData = async () => {
       setLoading(true);
       try {
+        let url;
         if (categoria !== 0) {
-          const { data } = await axios.get(`http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/?page=${page}`);
-          setProductos(data.results);
-          setPagesProducts({ ...pagesProducts, [page]: data.results });
-          setPagesCount(Math.ceil(data.count / 20))
+          url = `http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/?page=${page}`;
+        } else if (searchTerm) {
+          url = `http://127.0.0.1:8000/products/search/?q=${searchTerm}&page=${page}`;
         } else {
-          const { data } = await axios.get(`http://localhost:8000/products/product-details/?page=${page}`);
-          setProductos(data.results);
-          setPagesProducts({ ...pagesProducts, [page]: data.results });
-          setPagesCount(Math.ceil(data.count / 20))
-        };
+          url = `http://localhost:8000/products/product-details/?page=${page}`;
+        }
+        const { data } = await axios.get(url);
+        setProductos(data.results);
+        setPagesProducts({ ...pagesProducts, [page]: data.results });
+        setPagesCount(Math.ceil(data.count / 20));
         bandera = true;
       } catch (error) {
         console.error('Error al obtener los datos de productos:', error);
       }
       setLoading(false);
     };
-    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera)) {
-      fetchData();
-    }
-    else {
-      setProductos(pagesProducts[page]);
-    };
 
-  }, [categoria, page]);
+    fetchData();
+  }, [categoria, page, searchTerm]);
 
   return (
     <div className="productsPage">
@@ -82,7 +80,6 @@ function Products() {
           )}
         />
       </div>
-
       <WhatsApp />
       <InfoBar />
     </div>
