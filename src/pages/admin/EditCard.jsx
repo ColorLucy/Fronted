@@ -19,31 +19,31 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
 const EditCard = () => {
+  const navigate = useNavigate();
   const { id_product } = useParams();
   const [autoPlay, setAutoPlay] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
-  const [requestData, setRequestData] = useState();
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);  
   const [categories, setCategories] = useState([]);
+  const [categorySelected, setCategorySelected] = useState("");
+  const [details, setDetails] = useState([]);
+  const [numberDetail, setNumberDetail] = useState(0);
   const [detailImagesInterface, setDetailImagesInterface] = useState([]);
   const [detailImagesSaved, setDetailImagesSaved] = useState([]);
-  const [details, setDetails] = useState([]);
-  const [categorySelected, setCategorySelected] = useState("");
-  const [numberDetail, setNumberDetail] = useState(0);
   const [uploadImages, setUploadImages] = useState([])
-  const navigate = useNavigate();
+  const [requestData, setRequestData] = useState();
   const [productData, setProductData] = useState({
-    name_product: "",
-    producer: "",
-    description: "",
-    category: "",
+    nombre: "",
+    fabricante: "",
+    descripcion: "",
+    categoria: "",
   });
   const [detailData, setDetailData] = useState({
-    id_detail: "",
-    name: "",
-    price: "",
-    unit: "",
+    id_detalle: "",
+    nombre: "",
+    precio: "",
+    unidad: "",
     color: "",
-    product: "",
+    producto: "",
   });
   const productImagesTemp = [
     {
@@ -66,7 +66,7 @@ const EditCard = () => {
     const { value } = e.target;
     setProductData((prevData) => ({
       ...prevData,
-      category: value,
+      categoria: value,
     }));
   };
 
@@ -76,10 +76,20 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
+    console.log(productData)
+  };
+
+  const handleInputChangeDetail = (index, event) => {
+    const { name, value } = event.target;
+    const newDetails = [...details];
+    newDetails[index][name] = value;
+    setDetails(newDetails);
     setDetailData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+    console.log(detailData)
+    console.log(details)
   };
 
   const handleAddImage = () => {
@@ -93,7 +103,7 @@ const EditCard = () => {
   };
 
   const handleAddDetail = () => {
-    console.log(productData, detailData)
+    //console.log(productData, detailData)
     alert("agregar detalle"); 
   }
 
@@ -109,17 +119,16 @@ const EditCard = () => {
 
   function cleanTextFields() {
     setProductData({
-      name_product: "",
-      producer: "",
-      description: "",
-      category: "",
+      nombre: "",
+      fabricante: "",
+      descripcion: "",
+      categoria: "",
     });
     setDetailImagesInterface([]);
   }
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
-
     return (
       <div
         role="tabpanel"
@@ -141,15 +150,15 @@ const EditCard = () => {
     const imagesData = uploadImages.map((imageUrl) => ({ url: imageUrl }));
     setRequestData({
       producto: {
-        fabricante: productData.producer,
-        descripcion: productData.description,
-        categoria: parseInt(productData.category),
+        fabricante: productData.fabricante,
+        descripcion: productData.descripcion,
+        categoria: parseInt(productData.categoria),
       },
       detalles: [
         {
-          nombre: productData.name,
-          precio: parseFloat(productData.price),
-          unidad: productData.unit,
+          nombre: productData.nombre,
+          precio: parseFloat(productData.precio),
+          unidad: productData.unidad,
           color: productData.color,
         },
       ],
@@ -164,21 +173,8 @@ const EditCard = () => {
       detalle: image.detalleId,
     }));
     setRequestData({
-      producto: {
-        fabricante: productData.producer,
-        descripcion: productData.description,
-        categoria: parseInt(productData.category),
-      },
-      detalles: [
-        {
-          id_detalle: productData.detail,
-          nombre: productData.name,
-          precio: parseFloat(productData.price),
-          unidad: productData.unit,
-          color: productData.color,
-          producto: id_product
-        },
-      ],
+      producto: productData,
+      detalles: details,
       imagenes: detailImagesSaved //ToDo
     });
   }
@@ -197,15 +193,15 @@ const EditCard = () => {
     console.log(responseData)
     const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
     setProductData({
-      name_product: responseData.product.nombre,
-      producer: responseData.product.fabricante,
-      description: responseData.product.descripcion,
-      category: responseData.product.categoria,
+      nombre: responseData.product.nombre,
+      fabricante: responseData.product.fabricante,
+      descripcion: responseData.product.descripcion,
+      categoria: responseData.product.categoria,
     });
     setDetailData({
-      name: firstDetail.nombre,
-      price: firstDetail.precio,
-      unit: firstDetail.unidad,
+      nombre: firstDetail.nombre,
+      precio: firstDetail.precio,
+      unidad: firstDetail.unidad,
       color: firstDetail.color,
     });
     setDetails(responseData.details);
@@ -218,7 +214,6 @@ const EditCard = () => {
       }
       setDetailImagesInterface(imgUrl);
     });
-    console.log("imgUrl", imgUrl)
   }
 
   /**
@@ -244,12 +239,18 @@ const EditCard = () => {
    */
   async function handleUpdate(e) {
     e.preventDefault();
-    updateDataRequest();
-    const response = await updateProduct(id_product, requestData)
-    if(response){
-      alert("El producto ha sido actualizado correctamente");
+    const data = {
+      producto: productData,
+      detalles: details,
+      imagenes: detailImagesSaved
+    }
+    console.log(data)
+    const response = await updateProduct(id_product, data)
+    if(!response){
+      alert("El producto ha sido actualizado correctamente.");
     } else {
-      alert("La actualización del producto ha fallado, vuelve a intentarlo")
+      alert("La actualización del producto ha fallado, vuelve a intentarlo.")
+
     }
   }
 
@@ -259,13 +260,16 @@ const EditCard = () => {
    */
   async function handleDelete(e) {
     e.preventDefault();
-    const response = await deleteProduct(id_product)
-    if(!response){
-      alert("El producto ha sido eliminado exitosamente");
-      navigate("/admin/");
-      cleanTextFields();
-    } else {
-      alert("Producto no eliminado, vuelve a intentarlo")
+    let ok = confirm("¿Confirmas la eliminación del producto?")
+    if(ok){
+      const response = await deleteProduct(id_product)
+      if(!response){
+        alert("El producto ha sido eliminado exitosamente");
+        navigate("/admin/");
+        cleanTextFields();
+      } else {
+        alert("Producto no eliminado, vuelve a intentarlo")
+      }
     }
   };
 
@@ -295,9 +299,9 @@ const EditCard = () => {
   };
   const changeDetailIndex = (newIndex) => {
     setDetailData({
-      name: details[newIndex].nombre,
-      price: details[newIndex].precio,
-      unit: details[newIndex].unidad,
+      nombre: details[newIndex].nombre,
+      precio: details[newIndex].precio,
+      unidad: details[newIndex].unidad,
       color: details[newIndex].color,
     });
     setDetailImagesInterface(getDetailImages(details[newIndex].id_detalle));
@@ -341,8 +345,8 @@ const EditCard = () => {
               <TextField
                 fullWidth
                 label="Nombre"
-                name="product-name"
-                value={productData.name_product}
+                name="nombre"
+                value={productData.nombre}
                 onChange={handleInputChange}
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
@@ -350,8 +354,8 @@ const EditCard = () => {
               <TextField
                 fullWidth
                 label="Fabricante"
-                name="producer"
-                value={productData.producer}
+                name="fabricante"
+                value={productData.fabricante}
                 onChange={handleInputChange}
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
@@ -359,8 +363,8 @@ const EditCard = () => {
               <TextField
                 fullWidth
                 label="Descripción"
-                name="description"
-                value={productData.description ? productData.description : ""}
+                name="descripcion"
+                value={productData.descripcion ? productData.descripcion : ""}
                 onChange={handleInputChange}
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
@@ -370,7 +374,7 @@ const EditCard = () => {
                 fullWidth
                 labelId="Categoria"
                 id="demo-simple-select"
-                value={productData.category}
+                value={productData.categoria}
                 onChange={handleCategory}
                 sx={{ marginBottom: 2 }}
               >
@@ -466,27 +470,27 @@ const EditCard = () => {
                           <TextField
                             fullWidth
                             label="Nombre"
-                            name="name"
+                            name="nombre"
                             value={detail.nombre}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleInputChangeDetail(index, e)}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
                           <TextField
                             fullWidth
                             label="Precio"
-                            name="price"
+                            name="precio"
                             value={detail.precio}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleInputChangeDetail(index, e)}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
                           <TextField
                             fullWidth
                             label="Cantidad"
-                            name="unit"
+                            name="unidad"
                             value={detail.unidad}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleInputChangeDetail(index, e)}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
@@ -495,7 +499,7 @@ const EditCard = () => {
                             label="Color"
                             name="color"
                             value={detail.color}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleInputChangeDetail(index, e)}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
