@@ -102,8 +102,7 @@ const ProductDashboard = () => {
       const response = await deleteProduct(id)
       if(!response){
         alert("El producto ha sido eliminado exitosamente");
-        navigate("/admin/");
-        cleanTextFields();
+        location.reload()
       } else {
         alert("Producto no eliminado, vuelve a intentarlo")
       }
