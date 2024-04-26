@@ -20,7 +20,6 @@ import Tab from "@mui/material/Tab";
 import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
 const EditCard = () => {
   const { id_product } = useParams();
-  const [productId, setProductId] = useState("");
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [requestData, setRequestData] = useState();
@@ -33,6 +32,7 @@ const EditCard = () => {
   const [uploadImages, setUploadImages] = useState([])
   const navigate = useNavigate();
   const [productData, setProductData] = useState({
+    name_product: "",
     producer: "",
     description: "",
     category: "",
@@ -76,6 +76,10 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
+    setDetailData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const handleAddImage = () => {
@@ -105,13 +109,10 @@ const EditCard = () => {
 
   function cleanTextFields() {
     setProductData({
+      name_product: "",
       producer: "",
       description: "",
       category: "",
-      name: "",
-      price: "",
-      unit: "",
-      color: "",
     });
     setDetailImagesInterface([]);
   }
@@ -196,6 +197,7 @@ const EditCard = () => {
     console.log(responseData)
     const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
     setProductData({
+      name_product: responseData.product.nombre,
       producer: responseData.product.fabricante,
       description: responseData.product.descripcion,
       category: responseData.product.categoria,
@@ -216,6 +218,7 @@ const EditCard = () => {
       }
       setDetailImagesInterface(imgUrl);
     });
+    console.log("imgUrl", imgUrl)
   }
 
   /**
@@ -335,6 +338,15 @@ const EditCard = () => {
             <Typography variant="h5" component="div" gutterBottom>
               Producto
             </Typography>
+              <TextField
+                fullWidth
+                label="Nombre"
+                name="product-name"
+                value={productData.name_product}
+                onChange={handleInputChange}
+                variant="outlined"
+                sx={{ marginBottom: 2 }}
+              />
               <TextField
                 fullWidth
                 label="Fabricante"
