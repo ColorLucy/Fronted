@@ -12,7 +12,7 @@ function AboutUs() {
         Somos una empresa dedicada a la pintura automotriz con una larga trayectoria en el mercado. Nuestro equipo de expertos se especializa en ofrecer las mejores combinaciones de pinturas para vehículos de todo tipo.
       </p>
       
-      {/*Sección Misión y Visión en dos columnas */}
+      {/*Sección Misión y Visión */}
       <Grid container spacing={2} justifyContent="center">
         {/*Misión */}
         <Grid item xs={12} sm={6}>
