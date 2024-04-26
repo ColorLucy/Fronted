@@ -1,8 +1,7 @@
 import { WhatsApp } from '@mui/icons-material';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import { Box, Button, Grid, Paper, Radio, useMediaQuery } from '@mui/material';
-import { CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, Paper, Radio, useMediaQuery } from '@mui/material';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Divider from '@mui/material/Divider';
 import FormControl from '@mui/material/FormControl';
@@ -19,6 +18,8 @@ import { default as React, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { convertirColor } from '../../utils/colors';
+
+
 
 /**
  * `Bread_crumb` is a React component that renders a breadcrumb trail. It facilitates navigation by providing links to the product page and the current category. Additionally, it displays the current product name along with the manufacturer's name.
@@ -42,13 +43,13 @@ const Bread_crumb = ({ categoria, nombreProducto, fabricanteProducto }) => {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/productos/?categoria=${categoria.id_categoria}`}
+        href={`/productos/?categoriaId=${categoria.id_categoria}&categoriaName=${encodeURIComponent(categoria.nombre)}`}
       >
         {categoria.nombre}
       </Link>,
       <Typography key="3" color="text.primary">
         {nombreProducto} ({fabricanteProducto})
-      </Typography>,
+      </Typography>
     </Breadcrumbs>
   )
 }
@@ -134,7 +135,7 @@ const Product = () => {
   }, [id_producto]);
 
   if (!product) {
-    return (<div style={{ textAlign: "center", height: "100%" }}>
+    return (<div style={{ textAlign: "center", height: "calc(100vh - 200px)" }}>
       <CircularProgress style={{ margin: "100px" }} />
       <Typography>Cargando la informacion del producto {nombre_producto}...</Typography>
     </div>);
@@ -167,15 +168,15 @@ const Product = () => {
     setActiveStep(step);
   };
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 2 }}>
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 2, minHeight: "calc(100vh - 200px)" }}>
       <Bread_crumb categoria={product.categoria} nombreProducto={product.nombre} fabricanteProducto={product.fabricante} />
-      <Grid container spacing={2}>
+      <Grid container spacing={2} height={"100%"}>
         <Grid item xs={12} md={7}>
           <Carousel
             autoPlay={false}
             cycleNavigation
             animation="slide"
-            navButtonsAlwaysVisible
+            navButtonsAlwaysVisible={selectedDetail.imagenes.length !== 0}
             indicators
             duration={500}
             IndicatorIcon={selectedDetail.imagenes.map((item, index) =>
@@ -196,15 +197,20 @@ const Product = () => {
             activeStep={activeStep}
             onChange={handleStepChange}
           >
-            {selectedDetail.imagenes.map((imgDetalle, index) => (
-              <Paper key={index} elevation={0} sx={{ position: 'relative', height: isMobileOrTablet ? 300 : 550 }}>
+            {selectedDetail.imagenes.length !== 0 ? selectedDetail.imagenes.map((imgDetalle, index) => (
+              <Paper key={index} elevation={0} sx={{ position: 'relative', height: isMobileOrTablet ? 300 : 544 }}>
                 <img src={imgDetalle.url} alt={selectedDetail.nombre}
                   style={{
                     width: "100%", maxHeight: "100%", objectFit: 'contain',
                     borderRadius: "12px", opacity: activeStep === index ? 1 : 0.5,
                   }} />
               </Paper>
-            ))}
+            )) : <Paper elevation={0} sx={{ position: 'relative', height: isMobileOrTablet ? 300 : 604 }}>
+              <img src={"/homeColorLucy1.png"} alt={"producto_sin_imagen"}
+                style={{
+                  width: "100%", maxHeight: "100%", objectFit: 'contain',
+                }} />
+            </Paper>}
           </Carousel>
         </Grid>
         <Grid item xs={12} md={5} gap={"10px"} display={"flex"} flexDirection={"column"} justifyContent={"center"} component={Paper} sx={{ maxWidth: "400px !important", padding: "16px", margin: "auto" }}>

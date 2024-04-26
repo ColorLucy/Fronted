@@ -9,7 +9,6 @@ function AboutUs() {
 
     <div>
       <h1 style={{ color: 'black' }}>SOBRE NOSOTROS</h1>
-      {/* <InfoBar /> */}
       <WhatsApp />
 
     </div>
