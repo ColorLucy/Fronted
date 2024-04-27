@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context/CartContext';
 import './shoppingcart.css'
+import {ItemCart} from '../../components/ItemCart'
+import numeral from 'numeral';
 
 const ShoppingCart =()=>{
   const[cartOpen, setCartOpen] = useState(false);
@@ -16,7 +18,12 @@ const ShoppingCart =()=>{
   },[cartItems]);
 
   const total= cartItems.reduce((previous, current)=> previous + current.amount * current.precio, 0)
-
+  cartItems.map((current, index) => {
+    console.log('Elemento del carrito', current); // Aquí se imprime el objeto current
+    return (
+      <ItemCart key={index} item={current} />
+    );
+  })
   return(
     <div className='cartContainer'>
       <div
@@ -69,6 +76,7 @@ const ShoppingCart =()=>{
         {cartItems.length ===0 ? (<p>Tu carrito está vacío</p> ): ( <div>
           {cartItems.map((item,i)=>( <ItemCart key ={i} item= {item}/>))}
             </div>)}
+          <h2>Total: {numeral(total).format('$0,0.00')}</h2>  
       </div>)}
     </div>
   )

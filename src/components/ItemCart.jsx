@@ -1,7 +1,7 @@
 import React from 'react'
 
-export const ItemCart = () => {
+export const ItemCart = ({item}) => {
   return (
-    <div>ItemCart</div>
+    <div>{item.name}</div>
   )
 }
