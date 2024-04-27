@@ -22,7 +22,7 @@ export const ItemCart = ({item}) => {
         <div>
           <div>
             {item.amount}
-            <p>Total: ${item.amount *item.price}</p>
+            <p>Total: ${item.amount * parseFloat(item.detalles[0].precio)}</p>
           </div>
         </div>
       </div>
