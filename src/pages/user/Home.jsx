@@ -104,8 +104,6 @@ export default function Home() {
           </Grid>
 
         </Grid>
-        {/* Barra inferior con información de contacto  */}
-        <InfoBar />
         <WhatsApp />
       </Grid>
     </Box>

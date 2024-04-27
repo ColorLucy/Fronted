@@ -1,17 +1,17 @@
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { CircularProgress } from '@mui/material';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
-import Typography from '@mui/material/Typography';
 import axios from 'axios';
-import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import InfoBar from "../../components/InfoBar";
 import ProductCard from "../../components/ProductCard";
 import WhatsApp from "../../components/WhatsApp";
+import Typography from '@mui/material/Typography';
+import { motion } from "framer-motion";
+import Breadcrumbs from '@mui/material/Breadcrumbs';
 import "./products.css";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 const container = {
   hidden: { opacity: 1, scale: 0.9 },
@@ -41,14 +41,11 @@ function Products() {
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
   let categoria = parseInt(query.get('categoriaId') || 0, 10);
-  let fetchAllProducts = query.get('fetchAll') === "true";
-  console.log(fetchAllProducts, typeof fetchAllProducts)
   const [categoriaName, setCategoriaName] = useState(decodeURIComponent(query.get('categoriaName')))
   const searchTerm = query.get('q');
 
   useEffect(() => {
     let bandera = false;
-    console.log(fetchAllProducts)
     const fetchData = async () => {
       setLoading(true);
       setPagesCount(0);
@@ -74,7 +71,8 @@ function Products() {
       }
       setLoading(false);
     };
-    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera) || fetchAllProducts) {
+
+    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera)) {
       fetchData();
     }
     else {
@@ -86,8 +84,8 @@ function Products() {
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
-      >
-        <Link underline="hover" key="1" style={{ textDecoration: "none", color: "GrayText" }} href='?fetchAll=true'>
+      >=
+        <Link underline="hover" key="1" style={{ textDecoration: "none", color: "GrayText" }} href="/productos" onClick={(e) => { categoria = 0 }} >
           PRODUCTOS
         </Link>
         <Typography key="3" color="text.primary">
