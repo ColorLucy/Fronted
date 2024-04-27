@@ -17,13 +17,15 @@ const ShoppingCart =()=>{
     );
   },[cartItems]);
 
-  const total= cartItems.reduce((previous, current)=> previous + current.amount * current.precio, 0)
+  const total= cartItems.reduce((previous, current)=> previous + current.amount * parseFloat(current.detalles[0].precio), 0)
   cartItems.map((current, index) => {
     console.log('Elemento del carrito', current); // Aquí se imprime el objeto current
     return (
       <ItemCart key={index} item={current} />
     );
   })
+
+
   return(
     <div className='cartContainer'>
       <div
@@ -70,13 +72,13 @@ const ShoppingCart =()=>{
         {!cartOpen &&  <div  className='productsNumber'>{productsLength}</div>}
       </div>
       {cartItems && cartOpen && (
-      <div>
+      <div className='cart'>
         <h2>Tu Carrito</h2>
 
-        {cartItems.length ===0 ? (<p>Tu carrito está vacío</p> ): ( <div>
+        {cartItems.length ===0 ? (<p className='cartNull'>Tu carrito está vacío</p> ): ( <div>
           {cartItems.map((item,i)=>( <ItemCart key ={i} item= {item}/>))}
             </div>)}
-          <h2>Total: {numeral(total).format('$0,0.00')}</h2>  
+          <h2 className='total'>Total: {numeral(total).format('$0,0.00')}</h2>  
       </div>)}
     </div>
   )

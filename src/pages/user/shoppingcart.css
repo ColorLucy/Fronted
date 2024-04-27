@@ -41,10 +41,10 @@
       position: absolute;
       margin-top: 10px;
       margin-right: 20px;
-      border-radius: 30px;
+      border-radius: 20px;
       width: 400px;
-      background-color: #222222;
-      color: white;
+      background-color: #e0dada;
+      color: rgb(12, 12, 12);
   
       h2 {
         text-align: center;
@@ -52,7 +52,7 @@
         margin-top: 35px;
       }
   
-      .cartVacio {
+      .cartNull {
         text-align: center;
         margin-top: 5px;
         font-size: 14px;
