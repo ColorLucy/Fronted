@@ -8,7 +8,6 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import numeral from 'numeral';
 import React from 'react';
-import homeColorLucyImg from "../../public/homeColorLucy1.png";
 import { convertirColor } from '../utils/colors';
 function obtenerColoresDeProducto(detalles) {
     const colores = new Set();
@@ -33,7 +32,7 @@ function ProductCard({ product }) {
                     component="img"
                     height="210"
                     weight="260px !important"
-                    src={detalles[0].imagenes.length > 0 ? detalles[0].imagenes[0].url : homeColorLucyImg}
+                    src={detalles[0].imagenes.length > 0 ? detalles[0].imagenes[0].url : "/homeColorLucy1.png"}
                     loading='lazy'
                     alt={nombre}
                     sx={{ objectFit: "contain" }}
