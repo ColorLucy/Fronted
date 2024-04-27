@@ -5,7 +5,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import ProductCard from "../../components/ProductCard";
-import WhatsApp from "../../components/WhatsApp";
 import Typography from '@mui/material/Typography';
 import { motion } from "framer-motion";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
@@ -139,7 +138,6 @@ function Products() {
           )}
         />
       </div>
-      <WhatsApp />
     </div>
   );
 }

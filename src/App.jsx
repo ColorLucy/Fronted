@@ -15,6 +15,7 @@ import AddCard from "./pages/admin/AddCard";
 import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
 import InfoBar from "./components/InfoBar";
+import WhatsApp from "./components/WhatsApp";
 
 /**
  * Vista del admin
@@ -50,6 +51,7 @@ const Homepage = () => {
         <Route Component={Home} path="/" />
       </Routes>
       <InfoBar />
+      <WhatsApp />
     </>
   );
 };
