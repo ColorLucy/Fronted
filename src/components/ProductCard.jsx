@@ -7,9 +7,10 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import numeral from 'numeral';
-import React from 'react';
+import React, { useContext } from 'react';
 import homeColorLucyImg from "../../public/homeColorLucy1.png";
 import { convertirColor } from '../utils/colors';
+import { CartContext } from '../context/CartContext';
 function obtenerColoresDeProducto(detalles) {
     const colores = new Set();
     detalles.forEach(detalle => {
@@ -26,6 +27,9 @@ function ProductCard({ product }) {
     const formattedPrice = numeral(detalles[0].precio).format('$0,0.00');
     const coloresDetalles = obtenerColoresDeProducto(detalles);
     const coloresHtml = coloresDetalles.map(convertirColor);
+
+    const {addItemToCart} =useContext(CartContext)
+
     return (
         <Card sx={{ width: "260px" }}>
             <CardActionArea href={`/productos/${encodeURIComponent(nombre)}-${id_producto}`}>
@@ -68,7 +72,7 @@ function ProductCard({ product }) {
                 </CardContent>
             </CardActionArea>
             <CardActions>
-                <Button variant="contained" sx={{ paddingInline: "10px", width: "260px" }} startIcon={<AddShoppingCartIcon />} fullWidth>
+                <Button variant="contained" sx={{ paddingInline: "10px", width: "260px" }} startIcon={<AddShoppingCartIcon />} fullWidth onClick={()=> {addItemToCart(product)}}>
                     AÑADIR AL CARRITO
                 </Button>
             </CardActions>

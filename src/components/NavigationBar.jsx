@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import Search from '../components/searchBar';
+import ShoppingCart from '../pages/user/ShoppingCart';
 import "./components.css";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
@@ -112,9 +113,11 @@ const NavigationBar = () => {
                   )}
                 </div>
               </Drawer>
-              <Button color="inherit" component={Link} to="/carrito">
+              {/* <Button color="inherit" component={Link} to="/carrito">
                 <ShoppingCartIcon sx={{ color: 'black' }} />
-              </Button>
+              </Button> */}
+
+              <ShoppingCart/>
             </Box>
           </>
         )}
