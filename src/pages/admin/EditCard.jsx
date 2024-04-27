@@ -49,16 +49,16 @@ const EditCard = () => {
     {
       id: 71,
       url: "/src/components/2.jpeg",
-      detalleId: 27,
+      detalle: 27,
     },
     {
       id: 72,
       url: "/src/components/1.jpg",
-      detalleId: 27,
+      detalle: 27,
     },
     {
       url: "/src/components/3.jpg",
-      detalleId: 27,
+      detalle: 27,
     },
   ];
 
@@ -88,22 +88,26 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
-    console.log(detailData)
-    console.log(details)
+  };
+
+  const handleImageChange = (index) => {
+    setSelectedImageIndex(index);
   };
 
   const handleAddImage = () => {
     alert("añadir imagen"); 
   };
 
-  const handleRemoveImage = (index) => {
-    const updatedImages = [...detailImagesInterface];
-    updatedImages.splice(index, 1);
-    setDetailImagesInterface(updatedImages);
+  const handleRemoveImage = (index, event) => {
+    const removedImage = detailImagesInterface[index]
+    const updatedImagesInterface = [...detailImagesInterface];
+    updatedImagesInterface.splice(index, 1);
+    setDetailImagesInterface(updatedImagesInterface);
+    const updatedImagesSaved = detailImagesSaved.filter((img) => img.id_imagen !== removedImage.id_imagen);
+    setDetailImagesSaved(updatedImagesSaved)
   };
 
   const handleAddDetail = () => {
-    //console.log(productData, detailData)
     alert("agregar detalle"); 
   }
 
@@ -112,11 +116,7 @@ const EditCard = () => {
     updatedDetails.splice(index, 1);
     setProductDetails(updatedDetails);
   }
-
-  const handleImageChange = (index) => {
-    setSelectedImageIndex(index);
-  };
-
+  
   function cleanTextFields() {
     setProductData({
       nombre: "",
@@ -170,7 +170,7 @@ const EditCard = () => {
     const imagesToSave = productImagesTemp.map((image) => ({...(
       image.id ? { id_imagen: image.id } : {}),
       url: image.url,
-      detalle: image.detalleId,
+      detalle: image.detalle,
     }));
     setRequestData({
       producto: productData,
@@ -207,12 +207,13 @@ const EditCard = () => {
     setDetails(responseData.details);
     setDetailImagesSaved(responseData.images);
 
-    let imgUrl = [];
+    let imgData = [];
     responseData.images.forEach((img) => {
       if (img.detalle === firstDetail.id_detalle) {
-        imgUrl.push(img.url);
+        imgData.push(img);
       }
-      setDetailImagesInterface(imgUrl);
+      setDetailImagesInterface(imgData);
+      
     });
   }
 
@@ -289,13 +290,13 @@ const EditCard = () => {
   };
 
   const getDetailImages = (detail_id) => {
-    let imgUrl = [];
+    let imgData = [];
     detailImagesSaved.forEach((img) => {
       if (img.detalle === detail_id) {
-        imgUrl.push(img.url);
+        imgData.push(img);
       }
     });
-    return imgUrl;
+    return imgData;
   };
   const changeDetailIndex = (newIndex) => {
     setDetailData({
@@ -541,7 +542,7 @@ const EditCard = () => {
                           {detailImagesInterface.map((image, index) => (
                             <img
                               key={index}
-                              src={image}
+                              src={image.url}
                               alt={`Product Image ${index}`}
                               style={{
                                 width: "100%",
@@ -572,7 +573,7 @@ const EditCard = () => {
                       </IconButton>
                       <IconButton
                         aria-label="delete"
-                        onClick={handleRemoveImage}
+                        onClick={(e) => handleRemoveImage(selectedImageIndex, e)}
                       >
                         <DeleteIcon />
                       </IconButton>
