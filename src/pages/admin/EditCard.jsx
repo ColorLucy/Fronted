@@ -18,19 +18,21 @@ import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
+import AddImage from "./addImage";
 const EditCard = () => {
   const navigate = useNavigate();
   const { id_product } = useParams();
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);  
   const [categories, setCategories] = useState([]);
-  const [categorySelected, setCategorySelected] = useState("");
   const [details, setDetails] = useState([]);
   const [numberDetail, setNumberDetail] = useState(0);
   const [detailImagesInterface, setDetailImagesInterface] = useState([]);
   const [detailImagesSaved, setDetailImagesSaved] = useState([]);
-  const [uploadImages, setUploadImages] = useState([])
+  const [uploadImages, setUploadImages] = useState([]);
   const [requestData, setRequestData] = useState();
+  const [showAddImageTarget, setShowAddImageTarget] = useState(false);
+  const [currentDetailId, setCurrentDetailId] = useState();
   const [productData, setProductData] = useState({
     nombre: "",
     fabricante: "",
@@ -45,22 +47,6 @@ const EditCard = () => {
     color: "",
     producto: "",
   });
-  const productImagesTemp = [
-    {
-      id: 71,
-      url: "/src/components/2.jpeg",
-      detalle: 27,
-    },
-    {
-      id: 72,
-      url: "/src/components/1.jpg",
-      detalle: 27,
-    },
-    {
-      url: "/src/components/3.jpg",
-      detalle: 27,
-    },
-  ];
 
   const handleCategory = (e) => {
     const { value } = e.target;
@@ -76,7 +62,10 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
-    console.log(productData)
+    //console.log(productData)
+    console.log("actualizar", details)
+    console.log(detailImagesInterface) //---------------
+    console.log(detailImagesSaved) //-----------------
   };
 
   const handleInputChangeDetail = (index, event) => {
@@ -94,9 +83,24 @@ const EditCard = () => {
     setSelectedImageIndex(index);
   };
 
-  const handleAddImage = () => {
-    alert("añadir imagen"); 
+  const handleAddImage = (e) => {
+    e.preventDefault();
+    setShowAddImageTarget(true);
   };
+
+  const handleImageUrlClou = (imgUrl) => {
+    const imgToSave = {
+      url: imgUrl,
+      detalle: currentDetailId
+    }
+    console.log(imgToSave)
+    setDetailImagesSaved((prevImages) => [...prevImages, imgToSave]);
+    setDetailImagesInterface((prevImages) => [...prevImages, imgToSave]);
+  }
+
+  const handleCloseUrlClou = () => {
+    setShowAddImageTarget(false);
+  }
 
   const handleRemoveImage = (index, event) => {
     const removedImage = detailImagesInterface[index]
@@ -107,14 +111,15 @@ const EditCard = () => {
     setDetailImagesSaved(updatedImagesSaved)
   };
 
-  const handleAddDetail = () => {
+  const handleAddDetail = () => { //ToDo
     alert("agregar detalle"); 
   }
 
-  const handleRemoveDetail = (index) => {
-    const updatedDetails = [...productDetails];
-    updatedDetails.splice(index, 1);
-    setProductDetails(updatedDetails);
+  const handleRemoveDetail = (id) => {
+    console.log("antes", details)
+    const updatedDetails = details.filter((detail) => detail.id_detalle !== id)
+    setDetails(updatedDetails);
+    alert("El detalle ha sido quitado")
   }
   
   function cleanTextFields() {
@@ -175,7 +180,7 @@ const EditCard = () => {
     setRequestData({
       producto: productData,
       detalles: details,
-      imagenes: detailImagesSaved //ToDo
+      imagenes: detailImagesSaved
     });
   }
 
@@ -199,12 +204,14 @@ const EditCard = () => {
       categoria: responseData.product.categoria,
     });
     setDetailData({
+      id_detalle: firstDetail.id_detalle,
       nombre: firstDetail.nombre,
       precio: firstDetail.precio,
       unidad: firstDetail.unidad,
       color: firstDetail.color,
     });
     setDetails(responseData.details);
+    setCurrentDetailId(firstDetail.id_detalle);
     setDetailImagesSaved(responseData.images);
 
     let imgData = [];
@@ -251,7 +258,6 @@ const EditCard = () => {
       alert("El producto ha sido actualizado correctamente.");
     } else {
       alert("La actualización del producto ha fallado, vuelve a intentarlo.")
-
     }
   }
 
@@ -275,7 +281,7 @@ const EditCard = () => {
   };
 
   /**
-   * handles the retrieval of all categories and product data
+   * handles the retrieval of all categories and the interaction with details-images data
    */
   useEffect(() => {
     fetchCategories();
@@ -298,6 +304,7 @@ const EditCard = () => {
     });
     return imgData;
   };
+
   const changeDetailIndex = (newIndex) => {
     setDetailData({
       nombre: details[newIndex].nombre,
@@ -307,6 +314,7 @@ const EditCard = () => {
     });
     setDetailImagesInterface(getDetailImages(details[newIndex].id_detalle));
     setNumberDetail(newIndex);
+    setCurrentDetailId(details[newIndex].id_detalle)
   };
   function a11yProps(index) {
     return {
@@ -504,15 +512,20 @@ const EditCard = () => {
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
-                          <Button
-                            variant="outlined"
-                            color="error"
-                            onClick={handleRemoveDetail}
-                            size="small"
-                            
-                          >
-                            Eliminar este detalle
-                          </Button>
+                          <div>
+                            {!showAddImageTarget && (
+                              <div> 
+                                <Button
+                                  variant="outlined"
+                                  color="error"
+                                  onClick={(e) => handleRemoveDetail(currentDetailId)}
+                                  size="small"
+                                >
+                                  Eliminar este detalle
+                                </Button>
+                              </div>
+                            )}
+                          </div>
                         </TabPanel>
                       );
                     })}
@@ -567,16 +580,18 @@ const EditCard = () => {
                         </div>
                       )}
                     </div>
-                    <div >
-                      <IconButton aria-label="add" onClick={handleAddImage}>
-                        <AddCircleIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={(e) => handleRemoveImage(selectedImageIndex, e)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                    <div>
+                        {!showAddImageTarget && (
+                            <div>
+                                <IconButton aria-label="add" onClick={(e) => handleAddImage(e)}>
+                                    <AddCircleIcon />
+                                </IconButton>
+                                <IconButton aria-label="delete" onClick={(e) => handleRemoveImage(selectedImageIndex, e)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </div>
+                        )}
+                        {showAddImageTarget && <AddImage imageUploadedClou={ handleImageUrlClou } onClose={ handleCloseUrlClou }/>}
                     </div>
                   </Grid>
                 </Grid>
