@@ -62,10 +62,10 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
-    //console.log(productData)
-    console.log("actualizar", details)
-    console.log(detailImagesInterface) //---------------
-    console.log(detailImagesSaved) //-----------------
+    console.log(productData)
+    console.log("actualizados", details)
+    //console.log(detailImagesInterface) 
+    console.log(detailImagesSaved) 
   };
 
   const handleInputChangeDetail = (index, event) => {
@@ -93,7 +93,6 @@ const EditCard = () => {
       url: imgUrl,
       detalle: currentDetailId
     }
-    console.log(imgToSave)
     setDetailImagesSaved((prevImages) => [...prevImages, imgToSave]);
     setDetailImagesInterface((prevImages) => [...prevImages, imgToSave]);
   }
@@ -111,24 +110,30 @@ const EditCard = () => {
     setDetailImagesSaved(updatedImagesSaved)
   };
 
-  const handleAddDetail = () => { //ToDo
-    alert("agregar detalle"); 
+  const handleAddDetail = () => { //doing
+    console.log("Detalle", detailData); 
+    console.log("Detalle img interface", detailImagesInterface); 
+    console.log("Detalle img guardada", detailImagesSaved);
+    cleanTextFields()
   }
 
   const handleRemoveDetail = (id) => {
-    console.log("antes", details)
     const updatedDetails = details.filter((detail) => detail.id_detalle !== id)
+    const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id)
     setDetails(updatedDetails);
+    setDetailImagesSaved(updatedImages);
     alert("El detalle ha sido quitado")
   }
   
   function cleanTextFields() {
-    setProductData({
+    setDetailData({
+      id_detalle: "",
       nombre: "",
-      fabricante: "",
-      descripcion: "",
-      categoria: "",
-    });
+      precio: "",
+      unidad: "",
+      color: "",
+      producto: "",
+      });
     setDetailImagesInterface([]);
   }
 
@@ -195,7 +200,6 @@ const EditCard = () => {
    */
   async function fetchData(id_product) {
     const responseData = await getProduct(id_product)
-    console.log(responseData)
     const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
     setProductData({
       nombre: responseData.product.nombre,
