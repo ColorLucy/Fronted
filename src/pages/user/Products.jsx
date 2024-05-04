@@ -38,15 +38,18 @@ function Products() {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const page = parseInt(query.get('page') || '1', 10);
+  let fetchAllProducts = query.get('fetchAll') === "true";
   let categoria = parseInt(query.get('categoriaId') || 0, 10);
   const [categoriaName, setCategoriaName] = useState(decodeURIComponent(query.get('categoriaName')))
   const searchTerm = query.get('q');
 
   useEffect(() => {
     let bandera = false;
+    fetchAllProducts = query.get('fetchAll') === "true";
     const fetchData = async () => {
       setLoading(true);
       setPagesCount(0);
+      setCategoriaName(decodeURIComponent(query.get('categoriaName')))
       try {
         let url;
         if (categoria !== 0) {
@@ -69,8 +72,8 @@ function Products() {
       }
       setLoading(false);
     };
-
-    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera)) {
+    console.log(!pagesProducts.hasOwnProperty(page), (categoria !== 0 && !bandera), fetchAllProducts)
+    if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera) || fetchAllProducts) {
       fetchData();
     }
     else {
@@ -83,7 +86,7 @@ function Products() {
         separator={<NavigateNextIcon fontSize="small" />}
         aria-label="breadcrumb"
       >=
-        <Link underline="hover" key="1" style={{ textDecoration: "none", color: "GrayText" }} href="/productos" onClick={(e) => { categoria = 0 }} >
+        <Link underline="hover" key="1" style={{ textDecoration: "none", color: "GrayText" }} to='?fetchAll=true' >
           PRODUCTOS
         </Link>
         <Typography key="3" color="text.primary">
