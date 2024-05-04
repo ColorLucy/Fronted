@@ -3,6 +3,8 @@ import { CartContext } from '../../context/CartContext';
 import './shoppingcart.css'
 import {ItemCart} from '../../components/ItemCart'
 import numeral from 'numeral';
+import { Box, Divider, Link, Paper, Typography } from '@mui/material';
+import { color } from 'framer-motion';
 
 const ShoppingCart =()=>{
   const[cartOpen, setCartOpen] = useState(false);
@@ -18,21 +20,14 @@ const ShoppingCart =()=>{
   },[cartItems]);
 
   const total= cartItems.reduce((previous, current)=> previous + current.amount * parseFloat(current.detalles[0].precio), 0)
-  cartItems.map((current, index) => {
-    console.log('Elemento del carrito', current); // Aquí se imprime el objeto current
-    return (
-      <ItemCart key={index} item={current} />
-    );
-  })
-
 
   return(
-    <div className='cartContainer'>
-      <div
+    <Box className='cartContainer'>
+      <Box
         onClick={() => setCartOpen(!cartOpen)}
         className='buttonCartContainer'
       >
-        <div className='buttonCart'>
+        <Box className='buttonCart'>
           {!cartOpen ? (
             <svg
               
@@ -56,8 +51,8 @@ const ShoppingCart =()=>{
             </svg>
           ) : (
             <svg
-              width="20"
-              height="20"
+              width="15"
+              height="15"
               viewBox="0 0 20 20"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -68,19 +63,24 @@ const ShoppingCart =()=>{
               />
             </svg>
           )}
-        </div>
-        {!cartOpen &&  <div  className='productsNumber'>{productsLength}</div>}
-      </div>
+        </Box>
+        {!cartOpen &&  <Box  className='productsNumber'>{productsLength}</Box>}
+      </Box>
       {cartItems && cartOpen && (
-      <div className='cart'>
-        <h2>Tu Carrito</h2>
+      <Paper elevation={4} className='cart'>
+        
+        <Box sx={{display:'flex', justifyContent: 'space-between', margin:'15px 50px 0 10px' }}>
+          <Typography>ITEMS</Typography>
+          <Link sx={{color:'black',textDecoration:'none', cursor:'pointer', textTransform:'uppercase'}}  >Ver Carrito</Link>
+        </Box>
+        <Divider variant="middle" sx={{margin:'0 10px 15px 10px'}} />
 
-        {cartItems.length ===0 ? (<p className='cartNull'>Tu carrito está vacío</p> ): ( <div>
+        {cartItems.length ===0 ? (<Typography className='cartNull'>Tu carrito está vacío</Typography> ): ( <Box>
           {cartItems.map((item,i)=>( <ItemCart key ={i} item= {item}/>))}
-            </div>)}
-          <h2 className='total'>Total: {numeral(total).format('$0,0.00')}</h2>  
-      </div>)}
-    </div>
+            </Box>)}
+          <Typography className='total'>Total: {numeral(total).format('$0,0')}</Typography>  
+      </Paper>)}
+    </Box>
   )
 }
 
