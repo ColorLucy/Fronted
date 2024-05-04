@@ -1,7 +1,7 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoopOutlinedIcon from "@mui/icons-material/LoopOutlined";
-import ReplyIcon from '@mui/icons-material/Reply';
+import ReplyIcon from "@mui/icons-material/Reply";
 import { Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -11,19 +11,25 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
+import {
+  deleteProduct,
+  getCategories,
+  getProduct,
+  updateProduct,
+} from "../../utils/crudProducts";
 import AddImage from "./addImage";
+import { color } from "framer-motion";
 const EditCard = () => {
   const navigate = useNavigate();
   const { id_product } = useParams();
   const [autoPlay, setAutoPlay] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(null);  
+  const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [categories, setCategories] = useState([]);
   const [details, setDetails] = useState([]);
   const [numberDetail, setNumberDetail] = useState(0);
@@ -32,7 +38,9 @@ const EditCard = () => {
   const [uploadImages, setUploadImages] = useState([]);
   const [requestData, setRequestData] = useState();
   const [showAddImageTarget, setShowAddImageTarget] = useState(false);
+  const [showAddDetailTarget, setShowAddDetailTarget] = useState(false);
   const [currentDetailId, setCurrentDetailId] = useState();
+  const [focus, setFocus] = useState({nombre: false, precio: false, unidad: false, color: false})
   const [productData, setProductData] = useState({
     nombre: "",
     fabricante: "",
@@ -40,13 +48,19 @@ const EditCard = () => {
     categoria: "",
   });
   const [detailData, setDetailData] = useState({
-    id_detalle: "",
     nombre: "",
     precio: "",
     unidad: "",
     color: "",
     producto: "",
   });
+  const [newDetail, setNewDetail] = useState({
+    nombre: "NUEVO DETALLE",
+    precio: "",
+    unidad: "",
+    color: "",
+    producto: id_product,
+  })
 
   const handleCategory = (e) => {
     const { value } = e.target;
@@ -62,21 +76,15 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
-    console.log(productData)
-    console.log("actualizados", details)
-    //console.log(detailImagesInterface) 
-    console.log(detailImagesSaved) 
   };
 
-  const handleInputChangeDetail = (index, event) => {
-    const { name, value } = event.target;
-    const newDetails = [...details];
-    newDetails[index][name] = value;
-    setDetails(newDetails);
-    setDetailData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const handleInputChangeDetail = (e) => {
+    e.preventDefault();
+    const { name, value } = e.target;
+    let updatedDetails = [...details]
+    updatedDetails[numberDetail][name] = value;
+    setDetails(updatedDetails);
+    setFocus({...focus, [name]:true})
   };
 
   const handleImageChange = (index) => {
@@ -91,51 +99,38 @@ const EditCard = () => {
   const handleImageUrlClou = (imgUrl) => {
     const imgToSave = {
       url: imgUrl,
-      detalle: currentDetailId
-    }
+      detalle: currentDetailId,
+    };
     setDetailImagesSaved((prevImages) => [...prevImages, imgToSave]);
     setDetailImagesInterface((prevImages) => [...prevImages, imgToSave]);
-  }
+  };
 
   const handleCloseUrlClou = () => {
     setShowAddImageTarget(false);
-  }
+  };
 
   const handleRemoveImage = (index, event) => {
-    const removedImage = detailImagesInterface[index]
+    const removedImage = detailImagesInterface[index];
     const updatedImagesInterface = [...detailImagesInterface];
     updatedImagesInterface.splice(index, 1);
     setDetailImagesInterface(updatedImagesInterface);
-    const updatedImagesSaved = detailImagesSaved.filter((img) => img.id_imagen !== removedImage.id_imagen);
-    setDetailImagesSaved(updatedImagesSaved)
+    const updatedImagesSaved = detailImagesSaved.filter(
+      (img) => img.id_imagen !== removedImage.id_imagen
+    );
+    setDetailImagesSaved(updatedImagesSaved);
   };
 
-  const handleAddDetail = () => { //doing
-    console.log("Detalle", detailData); 
-    console.log("Detalle img interface", detailImagesInterface); 
-    console.log("Detalle img guardada", detailImagesSaved);
-    cleanTextFields()
-  }
+  const handleAddDetail = () => {
+    setDetails(prevDetails => [...prevDetails, newDetail]);
+  };
 
   const handleRemoveDetail = (id) => {
-    const updatedDetails = details.filter((detail) => detail.id_detalle !== id)
-    const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id)
+    const updatedDetails = details.filter((detail) => detail.id_detalle !== id);
+    const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id);
     setDetails(updatedDetails);
     setDetailImagesSaved(updatedImages);
-    alert("El detalle ha sido quitado")
-  }
-  
-  function cleanTextFields() {
-    setDetailData({
-      id_detalle: "",
-      nombre: "",
-      precio: "",
-      unidad: "",
-      color: "",
-      producto: "",
-      });
-    setDetailImagesInterface([]);
-  }
+    alert("El detalle ha sido quitado");
+  };
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -147,16 +142,12 @@ const EditCard = () => {
         aria-labelledby={`full-width-tab-${index}`}
         {...other}
       >
-        {value === index && (
-          <div>
-            {children}
-          </div>         
-        )}
+        {value === index && <div>{children}</div>}
       </div>
     );
   }
 
-  function createDataRequest() { 
+  function createDataRequest() {
     const imagesData = uploadImages.map((imageUrl) => ({ url: imageUrl }));
     setRequestData({
       producto: {
@@ -176,16 +167,16 @@ const EditCard = () => {
     });
   }
 
-  function updateDataRequest() { 
-    const imagesToSave = productImagesTemp.map((image) => ({...(
-      image.id ? { id_imagen: image.id } : {}),
+  function updateDataRequest() {
+    const imagesToSave = productImagesTemp.map((image) => ({
+      ...(image.id ? { id_imagen: image.id } : {}),
       url: image.url,
       detalle: image.detalle,
     }));
     setRequestData({
       producto: productData,
       detalles: details,
-      imagenes: detailImagesSaved
+      imagenes: detailImagesSaved,
     });
   }
 
@@ -199,7 +190,7 @@ const EditCard = () => {
    * @param {Event} e - the event from the form that triggers the function
    */
   async function fetchData(id_product) {
-    const responseData = await getProduct(id_product)
+    const responseData = await getProduct(id_product);
     const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
     setProductData({
       nombre: responseData.product.nombre,
@@ -208,7 +199,7 @@ const EditCard = () => {
       categoria: responseData.product.categoria,
     });
     setDetailData({
-      id_detalle: firstDetail.id_detalle,
+      id_producto: firstDetail.id_producto,
       nombre: firstDetail.nombre,
       precio: firstDetail.precio,
       unidad: firstDetail.unidad,
@@ -224,7 +215,6 @@ const EditCard = () => {
         imgData.push(img);
       }
       setDetailImagesInterface(imgData);
-      
     });
   }
 
@@ -235,8 +225,8 @@ const EditCard = () => {
   async function handleCreate(e) {
     e.preventDefault();
     createDataRequest();
-    const response = await postProduct(requestData)
-    if(response){
+    const response = await postProduct(requestData);
+    if (response) {
       cleanTextFields();
       alert("El producto se ha creado exitosamente");
     } else {
@@ -254,14 +244,13 @@ const EditCard = () => {
     const data = {
       producto: productData,
       detalles: details,
-      imagenes: detailImagesSaved
-    }
-    console.log(data)
-    const response = await updateProduct(id_product, data)
-    if(!response){
+      imagenes: detailImagesSaved,
+    };
+    const response = await updateProduct(id_product, data);
+    if (!response) {
       alert("El producto ha sido actualizado correctamente.");
     } else {
-      alert("La actualización del producto ha fallado, vuelve a intentarlo.")
+      alert("La actualización del producto ha fallado, vuelve a intentarlo.");
     }
   }
 
@@ -271,18 +260,18 @@ const EditCard = () => {
    */
   async function handleDelete(e) {
     e.preventDefault();
-    let ok = confirm("¿Confirmas la eliminación del producto?")
-    if(ok){
-      const response = await deleteProduct(id_product)
-      if(!response){
+    let ok = confirm("¿Confirmas la eliminación del producto?");
+    if (ok) {
+      const response = await deleteProduct(id_product);
+      if (!response) {
         alert("El producto ha sido eliminado exitosamente");
         navigate("/admin/");
         cleanTextFields();
       } else {
-        alert("Producto no eliminado, vuelve a intentarlo")
+        alert("Producto no eliminado, vuelve a intentarlo");
       }
     }
-  };
+  }
 
   /**
    * handles the retrieval of all categories and the interaction with details-images data
@@ -297,7 +286,7 @@ const EditCard = () => {
   async function fetchCategories() {
     const response = await getCategories();
     setCategories(response);
-  };
+  }
 
   const getDetailImages = (detail_id) => {
     let imgData = [];
@@ -318,7 +307,7 @@ const EditCard = () => {
     });
     setDetailImagesInterface(getDetailImages(details[newIndex].id_detalle));
     setNumberDetail(newIndex);
-    setCurrentDetailId(details[newIndex].id_detalle)
+    setCurrentDetailId(details[newIndex].id_detalle);
   };
   function a11yProps(index) {
     return {
@@ -355,51 +344,51 @@ const EditCard = () => {
             <Typography variant="h5" component="div" gutterBottom>
               Producto
             </Typography>
-              <TextField
-                fullWidth
-                label="Nombre"
-                name="nombre"
-                value={productData.nombre}
-                onChange={handleInputChange}
-                variant="outlined"
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Fabricante"
-                name="fabricante"
-                value={productData.fabricante}
-                onChange={handleInputChange}
-                variant="outlined"
-                sx={{ marginBottom: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Descripción"
-                name="descripcion"
-                value={productData.descripcion ? productData.descripcion : ""}
-                onChange={handleInputChange}
-                variant="outlined"
-                sx={{ marginBottom: 2 }}
-              />
-              <InputLabel id="Categoria">Categoría del producto</InputLabel>
-              <Select
-                fullWidth
-                labelId="Categoria"
-                id="demo-simple-select"
-                value={productData.categoria}
-                onChange={handleCategory}
-                sx={{ marginBottom: 2 }}
-              >
-                {categories.map((category) => (
-                  <MenuItem
-                    key={category.id_categoria}
-                    value={category.id_categoria}
-                  >
-                    {category.nombre} (id {category.id_categoria})
-                  </MenuItem>
-                ))}
-              </Select>
+            <TextField
+              fullWidth
+              label="Nombre"
+              name="nombre"
+              value={productData.nombre}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Fabricante"
+              name="fabricante"
+              value={productData.fabricante}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="Descripción"
+              name="descripcion"
+              value={productData.descripcion ? productData.descripcion : ""}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 2 }}
+            />
+            <InputLabel id="Categoria">Categoría del producto</InputLabel>
+            <Select
+              fullWidth
+              labelId="Categoria"
+              id="demo-simple-select"
+              value={productData.categoria}
+              onChange={handleCategory}
+              sx={{ marginBottom: 2 }}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.id_categoria}
+                  value={category.id_categoria}
+                >
+                  {category.nombre} (id {category.id_categoria})
+                </MenuItem>
+              ))}
+            </Select>
           </Grid>
           <Grid
             item
@@ -484,8 +473,11 @@ const EditCard = () => {
                             fullWidth
                             label="Nombre"
                             name="nombre"
+                            onClick={() => setFocus({nombre: true, precio: false, unidad: false, color: false})}
                             value={detail.nombre}
-                            onChange={(e) => handleInputChangeDetail(index, e)}
+                            autoFocus={focus.nombre}
+                            onBlur={() => setFocus({...focus, nombre: false})}
+                            onChange={handleInputChangeDetail}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
@@ -493,8 +485,11 @@ const EditCard = () => {
                             fullWidth
                             label="Precio"
                             name="precio"
+                            onClick={() => setFocus({nombre: false, precio: true, unidad: false, color: false})}
                             value={detail.precio}
-                            onChange={(e) => handleInputChangeDetail(index, e)}
+                            autoFocus={focus.precio}
+                            onBlur={() => setFocus({...focus, precio: false})}
+                            onChange={handleInputChangeDetail}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
@@ -503,7 +498,9 @@ const EditCard = () => {
                             label="Cantidad"
                             name="unidad"
                             value={detail.unidad}
-                            onChange={(e) => handleInputChangeDetail(index, e)}
+                            autoFocus={focus.unidad}
+                            onBlur={() => setFocus({...focus, unidad: false})}
+                            onChange={handleInputChangeDetail}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
@@ -511,18 +508,23 @@ const EditCard = () => {
                             fullWidth
                             label="Color"
                             name="color"
+                           
                             value={detail.color}
-                            onChange={(e) => handleInputChangeDetail(index, e)}
+                            autoFocus={focus.color}
+                            onBlur={() => setFocus({...focus, color: false})}
+                            onChange={handleInputChangeDetail}
                             variant="outlined"
                             sx={{ marginBottom: 2 }}
                           />
                           <div>
                             {!showAddImageTarget && (
-                              <div> 
+                              <div>
                                 <Button
                                   variant="outlined"
                                   color="error"
-                                  onClick={(e) => handleRemoveDetail(currentDetailId)}
+                                  onClick={(e) =>
+                                    handleRemoveDetail(currentDetailId)
+                                  }
                                   size="small"
                                 >
                                   Eliminar este detalle
@@ -585,17 +587,30 @@ const EditCard = () => {
                       )}
                     </div>
                     <div>
-                        {!showAddImageTarget && (
-                            <div>
-                                <IconButton aria-label="add" onClick={(e) => handleAddImage(e)}>
-                                    <AddCircleIcon />
-                                </IconButton>
-                                <IconButton aria-label="delete" onClick={(e) => handleRemoveImage(selectedImageIndex, e)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </div>
-                        )}
-                        {showAddImageTarget && <AddImage imageUploadedClou={ handleImageUrlClou } onClose={ handleCloseUrlClou }/>}
+                      {!showAddImageTarget && (
+                        <div>
+                          <IconButton
+                            aria-label="add"
+                            onClick={(e) => handleAddImage(e)}
+                          >
+                            <AddCircleIcon />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            onClick={(e) =>
+                              handleRemoveImage(selectedImageIndex, e)
+                            }
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      )}
+                      {showAddImageTarget && (
+                        <AddImage
+                          imageUploadedClou={handleImageUrlClou}
+                          onClose={handleCloseUrlClou}
+                        />
+                      )}
                     </div>
                   </Grid>
                 </Grid>
@@ -629,7 +644,7 @@ const EditCard = () => {
           variant="text"
           color="inherit"
           onClick={handleCancel}
-          endIcon= {<ReplyIcon />}
+          endIcon={<ReplyIcon />}
           style={{ marginLeft: "8px" }}
         >
           Volver
