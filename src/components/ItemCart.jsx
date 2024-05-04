@@ -3,7 +3,7 @@ import { CartContext } from '../context/CartContext'
 import homeColorLucyImg from "../../public/homeColorLucy1.png";
 
 export const ItemCart = ({item}) => {
-  const {deleteItemToCard, addItemToCart} = useContext(CartContext);
+  const {deleteItemToCart, addItemToCart} = useContext(CartContext);
 
   const{id} =item;
 
@@ -16,7 +16,7 @@ export const ItemCart = ({item}) => {
           <p>{item.nombre}</p>
           <div>
             <button onClick={()=> addItemToCart(item)}>Agregrar</button>
-            <button onClick={()=> deleteItemToCard(item)}>Retirar</button>
+            <button onClick={()=> deleteItemToCart(item)}>Retirar</button>
           </div>
         </div>
         <div>
