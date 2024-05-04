@@ -152,9 +152,10 @@ export default function Home() {
         </animated.div>
         {/* Apartado de productos */}
         <animated.div style={animatedPropsProductos}>
-          <Grid container item xs={12} alignItems={'center'} justifyContent={'center'} height="100vh" marginTop='50px' id="productos">
+          <Grid container item xs={12} alignItems={'center'} justifyContent={'center'} marginTop='50px' id="productos">
             {/* Columna de la imagen */}
-            <Grid item xs={12} md={6} display="flex" justifyContent="center" height="80%">
+            <Grid item xs={12} md={6} display="flex" justifyContent="center" 
+        >
               <Paper elevation={0} sx={{ maxWidth: '530px', maxHeight: '600px', justifyContent: "center", display: "flex" }}>
                   <img src={"aerosoles.png"} alt={"aerosoles"}
                     style={{
