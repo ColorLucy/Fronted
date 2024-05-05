@@ -26,7 +26,7 @@ import {
 import styles from "./ProductDashboard.module.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
-import { consultarDetalles, consultarProductos } from "../../utils/products";
+import { consultarProductos } from "../../utils/products";
 import Logo from "../../components/logo";
 import { useNavigate } from "react-router-dom";
 import { deleteProduct} from "../../utils/crudProducts";
