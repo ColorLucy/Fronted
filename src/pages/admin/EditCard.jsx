@@ -51,7 +51,7 @@ const EditCard = () => {
     categoria: "",
   });
 
-  const [newDetail] = useState({
+  const [newDetail, setNewDetail] = useState({
     nombre: "NUEVO DETALLE",
     precio: "",
     unidad: "",
@@ -201,6 +201,13 @@ const EditCard = () => {
     } else {
       alert("La actualización del producto ha fallado, vuelve a intentarlo.");
     }
+    setNewDetail({
+      nombre: "NUEVO DETALLE",
+      precio: "",
+      unidad: "",
+      color: "",
+      producto: id_product,
+    })
     setShowAddDetailButton(true)
   }
 
