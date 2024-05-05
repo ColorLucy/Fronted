@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Grid, Input } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import IosShareIcon from '@mui/icons-material/IosShare';
 import CloseSharpIcon from '@mui/icons-material/CloseSharp';
 
@@ -26,10 +26,11 @@ const AddImage = ({ imageUploadedClou,  onClose}) => {
             );
             const data = await response.json();
             const imgUrl = data.url;
-            imageUploadedClou(imgUrl)
+            imageUploadedClou(imgUrl);
         } catch (error) {
             console.error('Error al subir la imagen:', error);
         }
+        onClose();
     }
 
     const handleFileChange = (e) => {

@@ -2,7 +2,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoopOutlinedIcon from "@mui/icons-material/LoopOutlined";
 import ReplyIcon from "@mui/icons-material/Reply";
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -11,34 +11,37 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import {
-  deleteProduct,
-  getCategories,
-  getProduct,
-  updateProduct,
-} from "../../utils/crudProducts";
+import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
 import AddImage from "./addImage";
-import { color } from "framer-motion";
+
+/**
+ * Manages RUD operations for editing and deleting products, and CRUD for adding/removing details and images.
+ * This function encapsulates all product editing functionality.
+ * 
+ * @description This function handles various operations related to products, details and images. Orchestra 
+ * User interface interactions and backend API communications for editing product information, managing details and handling images.
+ * 
+ * @returns {JSX.Element} A JSX element that permits manipulate products data 
+ */
 const EditCard = () => {
   const navigate = useNavigate();
   const { id_product } = useParams();
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [isThereProduct, setIsThereProduct] = useState(false)
   const [details, setDetails] = useState([]);
   const [numberDetail, setNumberDetail] = useState(0);
   const [detailImagesInterface, setDetailImagesInterface] = useState([]);
   const [detailImagesSaved, setDetailImagesSaved] = useState([]);
-  const [uploadImages, setUploadImages] = useState([]);
-  const [requestData, setRequestData] = useState();
   const [showAddImageTarget, setShowAddImageTarget] = useState(false);
-  const [showAddDetailTarget, setShowAddDetailTarget] = useState(false);
+  const [showAddDetailButton, setShowAddDetailButton] = useState(true);
   const [currentDetailId, setCurrentDetailId] = useState();
   const [focus, setFocus] = useState({nombre: false, precio: false, unidad: false, color: false})
   const [productData, setProductData] = useState({
@@ -47,14 +50,8 @@ const EditCard = () => {
     descripcion: "",
     categoria: "",
   });
-  const [detailData, setDetailData] = useState({
-    nombre: "",
-    precio: "",
-    unidad: "",
-    color: "",
-    producto: "",
-  });
-  const [newDetail, setNewDetail] = useState({
+
+  const [newDetail] = useState({
     nombre: "NUEVO DETALLE",
     precio: "",
     unidad: "",
@@ -81,6 +78,10 @@ const EditCard = () => {
   const handleInputChangeDetail = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
+    if(name === "precio" && isNaN(Number(value))){
+      alert("El precio debe ser valor numérico");
+      return;
+    }
     let updatedDetails = [...details]
     updatedDetails[numberDetail][name] = value;
     setDetails(updatedDetails);
@@ -109,7 +110,7 @@ const EditCard = () => {
     setShowAddImageTarget(false);
   };
 
-  const handleRemoveImage = (index, event) => {
+  const handleRemoveImage = (index, e) => {
     const removedImage = detailImagesInterface[index];
     const updatedImagesInterface = [...detailImagesInterface];
     updatedImagesInterface.splice(index, 1);
@@ -121,15 +122,18 @@ const EditCard = () => {
   };
 
   const handleAddDetail = () => {
+    setShowAddDetailButton(false)
     setDetails(prevDetails => [...prevDetails, newDetail]);
   };
 
-  const handleRemoveDetail = (id) => {
+  const handleRemoveDetail = (id, e) => {
+    e.preventDefault()
     const updatedDetails = details.filter((detail) => detail.id_detalle !== id);
     const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id);
     setDetails(updatedDetails);
     setDetailImagesSaved(updatedImages);
-    alert("El detalle ha sido quitado");
+    setShowAddDetailButton(true)
+    alert("El detalle ha sido quitado")
   };
 
   function TabPanel(props) {
@@ -145,39 +149,6 @@ const EditCard = () => {
         {value === index && <div>{children}</div>}
       </div>
     );
-  }
-
-  function createDataRequest() {
-    const imagesData = uploadImages.map((imageUrl) => ({ url: imageUrl }));
-    setRequestData({
-      producto: {
-        fabricante: productData.fabricante,
-        descripcion: productData.descripcion,
-        categoria: parseInt(productData.categoria),
-      },
-      detalles: [
-        {
-          nombre: productData.nombre,
-          precio: parseFloat(productData.precio),
-          unidad: productData.unidad,
-          color: productData.color,
-        },
-      ],
-      imagenes: imagesData,
-    });
-  }
-
-  function updateDataRequest() {
-    const imagesToSave = productImagesTemp.map((image) => ({
-      ...(image.id ? { id_imagen: image.id } : {}),
-      url: image.url,
-      detalle: image.detalle,
-    }));
-    setRequestData({
-      producto: productData,
-      detalles: details,
-      imagenes: detailImagesSaved,
-    });
   }
 
   const handleCancel = () => {
@@ -198,13 +169,6 @@ const EditCard = () => {
       descripcion: responseData.product.descripcion,
       categoria: responseData.product.categoria,
     });
-    setDetailData({
-      id_producto: firstDetail.id_producto,
-      nombre: firstDetail.nombre,
-      precio: firstDetail.precio,
-      unidad: firstDetail.unidad,
-      color: firstDetail.color,
-    });
     setDetails(responseData.details);
     setCurrentDetailId(firstDetail.id_detalle);
     setDetailImagesSaved(responseData.images);
@@ -216,22 +180,7 @@ const EditCard = () => {
       }
       setDetailImagesInterface(imgData);
     });
-  }
-
-  /**
-   * handles the creation of a new product by sending a POST request to the server
-   * @param {Event} e - the event from the form that triggers the function
-   */
-  async function handleCreate(e) {
-    e.preventDefault();
-    createDataRequest();
-    const response = await postProduct(requestData);
-    if (response) {
-      cleanTextFields();
-      alert("El producto se ha creado exitosamente");
-    } else {
-      alert("No se ha podido crear el producto");
-    }
+    setIsThereProduct(true)
   }
 
   /**
@@ -252,6 +201,7 @@ const EditCard = () => {
     } else {
       alert("La actualización del producto ha fallado, vuelve a intentarlo.");
     }
+    setShowAddDetailButton(true)
   }
 
   /**
@@ -277,10 +227,8 @@ const EditCard = () => {
    * handles the retrieval of all categories and the interaction with details-images data
    */
   useEffect(() => {
-    fetchCategories();
-  }, []);
-  useEffect(() => {
     fetchData(id_product);
+    fetchCategories();
   }, [id_product]);
 
   async function fetchCategories() {
@@ -299,12 +247,6 @@ const EditCard = () => {
   };
 
   const changeDetailIndex = (newIndex) => {
-    setDetailData({
-      nombre: details[newIndex].nombre,
-      precio: details[newIndex].precio,
-      unidad: details[newIndex].unidad,
-      color: details[newIndex].color,
-    });
     setDetailImagesInterface(getDetailImages(details[newIndex].id_detalle));
     setNumberDetail(newIndex);
     setCurrentDetailId(details[newIndex].id_detalle);
@@ -318,29 +260,11 @@ const EditCard = () => {
 
   return (
     <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        overflowY: "auto",
-        marginRight: 20,
-        marginLeft: 20,
-      }}
+      sx={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", overflowY: "auto", marginRight: 20, marginLeft: 20,}}
     >
       <form onSubmit={handleUpdate}>
         <Grid container spacing={5}>
-          <Grid
-            item
-            xs={4}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <Grid item xs={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <Typography variant="h5" component="div" gutterBottom>
               Producto
             </Typography>
@@ -390,33 +314,9 @@ const EditCard = () => {
               ))}
             </Select>
           </Grid>
-          <Grid
-            item
-            xs={8}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Grid
-              container
-              spacing={2}
-              direction={"row"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <Grid
-                item
-                xs={2}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+          <Grid item xs={8} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
+            <Grid container spacing={2} direction={"row"} justifyContent={"center"} alignItems={"center"} >
+              <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
                 <Typography
                   variant="h5"
                   gutterBottom
@@ -426,9 +326,11 @@ const EditCard = () => {
                 >
                   Detalles
                 </Typography>
-                <IconButton aria-label="add" onClick={handleAddDetail}>
-                  <AddCircleIcon />
-                </IconButton>
+                {showAddDetailButton && (
+                  <IconButton aria-label="add" onClick={handleAddDetail}>
+                    <AddCircleIcon />
+                  </IconButton>
+                )}   
                 <Tabs
                   orientation="vertical"
                   variant="scrollable"
@@ -442,33 +344,18 @@ const EditCard = () => {
                         key={index}
                         label={detail.nombre}
                         {...a11yProps(index)}
-                        onClick={(e) => {
-                          changeDetailIndex(index);
-                        }}
+                        onClick={(e) => {changeDetailIndex(index);}}
                       />
                     );
                   })}
                 </Tabs>
               </Grid>
-              <Grid
-                item
-                xs={10}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+              <Grid item xs={10} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
                 <Grid container spacing={1}>
                   <Grid item xs={6}>
                     {details.map((detail, index) => {
                       return (
-                        <TabPanel
-                          key={index}
-                          value={numberDetail}
-                          index={index}
-                        >
+                        <TabPanel key={index} value={numberDetail} index={index} >
                           <TextField
                             fullWidth
                             label="Nombre"
@@ -508,7 +395,6 @@ const EditCard = () => {
                             fullWidth
                             label="Color"
                             name="color"
-                           
                             value={detail.color}
                             autoFocus={focus.color}
                             onBlur={() => setFocus({...focus, color: false})}
@@ -519,14 +405,7 @@ const EditCard = () => {
                           <div>
                             {!showAddImageTarget && (
                               <div>
-                                <Button
-                                  variant="outlined"
-                                  color="error"
-                                  onClick={(e) =>
-                                    handleRemoveDetail(currentDetailId)
-                                  }
-                                  size="small"
-                                >
+                                <Button variant="outlined" color="error" onClick={(e) => handleRemoveDetail(currentDetailId, e)} size="small" >
                                   Eliminar este detalle
                                 </Button>
                               </div>
@@ -536,28 +415,10 @@ const EditCard = () => {
                       );
                     })}
                   </Grid>
-                  <Grid
-                    item
-                    xs={6}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        marginBottom: "5px",
-                      }}
-                    >
+                  <Grid item xs={6} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
+                    <div style={{ width: "100%", height: "100%", marginBottom: "5px", }} >
                       {detailImagesInterface.length > 0 ? (
-                        <CustomCarousel
-                          autoPlay={autoPlay}
-                          onImageChange={handleImageChange}
-                        >
+                        <CustomCarousel autoPlay={autoPlay} onImageChange={handleImageChange} >
                           {detailImagesInterface.map((image, index) => (
                             <img
                               key={index}
@@ -572,16 +433,7 @@ const EditCard = () => {
                           ))}
                         </CustomCarousel>
                       ) : (
-                        <div
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            border: "1px dashed #ccc",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
+                        <div style={{ width: "100%", height: "100%", border: "1px dashed #ccc", display: "flex", alignItems: "center", justifyContent: "center", }} >
                           <div>No hay imágenes para mostrar</div>
                         </div>
                       )}
@@ -589,27 +441,16 @@ const EditCard = () => {
                     <div>
                       {!showAddImageTarget && (
                         <div>
-                          <IconButton
-                            aria-label="add"
-                            onClick={(e) => handleAddImage(e)}
-                          >
+                          <IconButton aria-label="add" onClick={(e) => handleAddImage(e)} >
                             <AddCircleIcon />
                           </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            onClick={(e) =>
-                              handleRemoveImage(selectedImageIndex, e)
-                            }
-                          >
+                          <IconButton aria-label="delete" onClick={(e) => handleRemoveImage(selectedImageIndex, e)} >
                             <DeleteIcon />
                           </IconButton>
                         </div>
                       )}
                       {showAddImageTarget && (
-                        <AddImage
-                          imageUploadedClou={handleImageUrlClou}
-                          onClose={handleCloseUrlClou}
-                        />
+                        <AddImage imageUploadedClou={handleImageUrlClou} onClose={handleCloseUrlClou} />
                       )}
                     </div>
                   </Grid>
@@ -620,33 +461,16 @@ const EditCard = () => {
         </Grid>
       </form>
       <div
-        style={{
-          marginTop: "55px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+        style={{ marginTop: "55px", display: "flex", justifyContent: "space-between", alignItems: "center", }} >
         <div>
           <Button variant="contained" color="primary" onClick={handleUpdate}>
             Guardar cambios
           </Button>
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleDelete}
-            style={{ marginLeft: "8px" }}
-          >
+          <Button variant="contained" color="error" onClick={handleDelete} style={{ marginLeft: "8px" }} >
             Eliminar producto
           </Button>
         </div>
-        <Button
-          variant="text"
-          color="inherit"
-          onClick={handleCancel}
-          endIcon={<ReplyIcon />}
-          style={{ marginLeft: "8px" }}
-        >
+        <Button variant="text" color="inherit" onClick={handleCancel} endIcon={<ReplyIcon />} style={{ marginLeft: "8px" }} >
           Volver
         </Button>
       </div>
