@@ -16,6 +16,7 @@ import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
 import InfoBar from "./components/InfoBar";
 import WhatsApp from "./components/WhatsApp";
+import SignUp from "./pages/user/SignUp";
 
 /**
  * Vista del admin
@@ -44,6 +45,7 @@ const Homepage = () => {
       <NavigationBar />
       <Routes>
         <Route path="/nosotros" element={<AboutUs />} />
+        <Route path="/registro" element={<SignUp />} />
         <Route path="/productos" element={<Products />} />
         <Route path="/productos/:info_producto" element={<Product />} />
         <Route path="/productos/:searchTerm" element={<Product />} />

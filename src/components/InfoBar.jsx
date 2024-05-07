@@ -11,7 +11,7 @@ export default function InfoBar() {
       <Grid container sx={{
         backgroundColor: '#2C2E33', display: 'flex',
         minHeight: '100px', position: 'static',
-        bottom: 0, width: '100%', marginTop: '20px'
+        bottom: 0, width: '100%'
       }} justifyContent="center" >
         {/* TItulo */}
         <Grid item alignContent={'center'} color={'white'}>

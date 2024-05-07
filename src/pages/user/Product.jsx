@@ -135,7 +135,7 @@ const Product = () => {
   }, [id_producto]);
 
   if (!product) {
-    return (<div style={{ textAlign: "center", height: "calc(100vh - 200px)" }}>
+    return (<div style={{ textAlign: "center", height: "calc(100vh - 180px)" }}>
       <CircularProgress style={{ margin: "100px" }} />
       <Typography>Cargando la informacion del producto {nombre_producto}...</Typography>
     </div>);
@@ -168,7 +168,7 @@ const Product = () => {
     setActiveStep(step);
   };
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 2, minHeight: "calc(100vh - 200px)" }}>
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", p: 2, minHeight: "calc(100vh - 180px)" }}>
       <Bread_crumb categoria={product.categoria} nombreProducto={product.nombre} fabricanteProducto={product.fabricante} />
       <Grid container spacing={2} height={"100%"}>
         <Grid item xs={12} md={7}>
