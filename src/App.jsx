@@ -15,6 +15,7 @@ import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
 import InfoBar from "./components/InfoBar";
 import { CartProvider } from "./context/CartContext";
+import WhatsApp from "./components/WhatsApp";
 
 /**
  * Vista del admin
@@ -25,9 +26,9 @@ const Admin = () => {
       <Routes>
         <Route Component={AdminLogin} path="login/" />
         <Route Component={AddCard} path="add-product/" />
-        <Route Component={EditCard} path="edit/:id_product" /> 
+        <Route Component={EditCard} path="edit/:id_product" />
         <Route Component={AdminDashboard} path="/" />
-        <Route Component={Orders} path="/orders"/>
+        <Route Component={Orders} path="/orders" />
       </Routes>
     </AuthProvider>
   );
@@ -42,7 +43,7 @@ const Homepage = () => {
     <>
       <CartProvider>
         <NavigationBar />
-        
+
         <Routes>
           <Route path="/nosotros" element={<AboutUs />} />
           <Route path="/productos" element={<Products />} />
@@ -54,6 +55,7 @@ const Homepage = () => {
       </CartProvider>
 
       <InfoBar />
+      <WhatsApp />
     </>
   );
 };

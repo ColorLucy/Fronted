@@ -2,9 +2,9 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, useMediaQuery } from '@mui/material';
+import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, useMediaQuery, Slide, Typography } from '@mui/material';
 import axios from 'axios';
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
@@ -90,23 +90,42 @@ const NavigationBar = () => {
                 anchor="left"
                 open={drawerOpen1}
                 onClose={handleToggleDrawer}
+                transitionDuration={500}
+                sx={{
+                  '& .MuiDrawer-paper': {
+                    backgroundColor: '#0367a6',
+                    '&::-webkit-scrollbar': {
+                      width: '10px', 
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      backgroundColor: 'rgba(255,255,255,0.5)', 
+                      borderRadius: '10px', 
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.7)', 
+                    },
+                    '&::-webkit-scrollbar-track': {
+                      backgroundColor: 'transparent', 
+                    },
+                  },
+                }}
               >
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <IconButton onClick={handleDrawerClose}>
-                    <CloseIcon />
-                  </IconButton>
+                  <Button onClick={handleDrawerClose}>
+                    <CloseIcon sx={{ color: 'white' }}/>
+                  </Button>
                 </div>
                 <div style={{ width: 250 }}>
                   {loading ? (
                     <CircularProgress style={{ margin: "50px" }} />
                   ) : (
                     <>
-                      <MenuItem onClick={handleToggleDrawer} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
-                        Todos los productos
+                      <MenuItem onClick={handleToggleDrawer} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#ffffff1a" }, color: "white" }}>
+                        <Typography variant="button">Todos los productos</Typography>
                       </MenuItem>
                       {categories.map((category, index) => (
-                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoriaId=${category.id_categoria}&categoriaName=${encodeURIComponent(category.nombre)}`} sx={{ "&:hover": { backgroundColor: "#0368a61a", color: "black" } }}>
-                          {category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}
+                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoriaId=${category.id_categoria}&categoriaName=${encodeURIComponent(category.nombre)}`} sx={{ "&:hover": { backgroundColor: "#ffffff1a", color: "white" }, color: "white", marginLeft: '16px'}}>
+                          <Typography variant="button">{category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}</Typography>
                         </MenuItem>
                       ))}
                     </>
@@ -138,30 +157,49 @@ const NavigationBar = () => {
               anchor="left"
               open={drawerOpen2}
               onClose={handleToggleDrawer}
+              transitionDuration={500}
+              sx={{
+                '& .MuiDrawer-paper': {
+                  backgroundColor: '#0367a6',
+                  '&::-webkit-scrollbar': {
+                    width: '10px', 
+                  },
+                  '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: 'rgba(255,255,255,0.5)', 
+                    borderRadius: '10px', 
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.7)', 
+                  },
+                  '&::-webkit-scrollbar-track': {
+                    backgroundColor: 'transparent', 
+                    },
+                },
+              }}
             >
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <IconButton onClick={handleDrawerClose}>
-                  <CloseIcon />
+                  <CloseIcon sx={{ color: 'white' }}/>
                 </IconButton>
               </div>
               <List>
-                <ListItem selected={locationPath === ""} component={Link} to="/" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                <ListItem selected={locationPath === ""} component={Link} to="/" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
                   <ListItemText primary="Inicio" />
                 </ListItem>
-                <ListItem selected={locationPath === "nosotros"} component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                <ListItem selected={locationPath === "nosotros"} component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
                   <ListItemText primary="Nosotros" />
                 </ListItem>
-                <ListItem selected={locationPath === "productos"} onClick={toggleProductos} component={Link} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                <ListItem selected={locationPath === "productos"} onClick={toggleProductos} component={Link} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
                   <ListItemText primary="Productos" />
                   {openProductos ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse in={openProductos} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem component={Link} to="/productos" onClick={handleToggleDrawer} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                    <ListItem component={Link} to="/productos" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
                       <ListItemText primary="Todos los productos" />
                     </ListItem>
                     {categories.map((category) => (
-                      <ListItem key={category.id_categoria} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} style={{ color: 'black' }} sx={{ "&:hover": { backgroundColor: "#0368a61a" } }}>
+                      <ListItem key={category.id_categoria} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
                         <ListItemText primary={category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()} />
                       </ListItem>
                     ))}

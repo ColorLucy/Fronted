@@ -4,6 +4,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import numeral from 'numeral';
+import homeColorLucyImg from "../../public/homeColorLucy1.png";
 
 const SearchBar = () => {
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
@@ -143,19 +144,13 @@ const SearchBar = () => {
                             sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }}
                           >
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              {result.detalles[0].imagenes.length > 0 ? (
+                              
                                 <img
-                                  src={result.detalles[0].imagenes[0].url}
+                                  src={result.detalles[0].imagenes.length > 0 ? result.detalles[0].imagenes[0].url: homeColorLucyImg}
                                   alt={result.detalles[0].nombre}
                                   style={{ width: "50px", height: "50px", marginRight: "10px" }}
                                 />
-                              ) : (
-                                <img
-                                  src="homeColorLucy1.png"
-                                  alt="Imagen por defecto"
-                                  style={{ width: "50px", height: "50px", marginRight: "10px" }}
-                                />
-                              )}
+                
                               <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>{result.detalles[0].nombre}</Typography>
                             </div>
                             <Typography variant="subtitle1" fontWeight="bold">{numeral(result.detalles[0].precio).format('$0,0.00')}</Typography>
