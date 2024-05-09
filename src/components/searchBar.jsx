@@ -39,7 +39,7 @@ const SearchBar = () => {
       if (searchTerm !== '') {
         setLoadingSearch(true);
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/products/search/?q=${searchTerm}`, {
+          const response = await axios.get(`https://colorlucyserver.onrender.com/products/search/?q=${searchTerm}`, {
             cancelToken: new axios.CancelToken((c) => {
               cancel = c;
             })

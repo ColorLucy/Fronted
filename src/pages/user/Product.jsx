@@ -106,7 +106,7 @@ const Product = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:8000/products/product-details/${id_producto}/`);
+        const { data } = await axios.get(`https://colorlucyserver.onrender.com/products/product-details/${id_producto}/`);
         setProduct(data);
         setDetails(data.detalles);
         const detailsUnitys = data.detalles

@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.clear();
     e.preventDefault();
     const response = await axios
-      .post("http://localhost:8000/auth/login/", data)
+      .post("https://colorlucyserver.onrender.com/auth/login/", data)
       .catch((e) => {
         setLoginError(true);
       });
