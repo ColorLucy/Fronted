@@ -1,0 +1,124 @@
+.productsPage {
+  background-color: #ffffff;
+  padding: 16px;
+}
+
+.productsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  min-height: calc(100vh - 298px);
+  gap: 15px;
+  min-width: 80%;
+}
+
+.productItem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.productContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.productButtons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+
+.productItem h6 {
+  margin-top: 10px;
+}
+
+.productButtons button {
+  width: calc(100% - 20px);
+  margin-bottom: 10px;
+}
+
+.buttonAddCar {
+  background-color: transparent;
+  margin-bottom: 10px;
+  border: 2px solid #0367a6;
+  color: #0367a6;
+  padding: 5px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 10px;
+  min-width: 212px;
+  min-height: 20px;
+  bottom: 0;
+}
+
+.buttonAddCar:hover {
+  background-color: rgb(3, 103, 166);
+  color: #fff;
+}
+
+.buttonOrder {
+  background-color: transparent;
+  border: 2px solid #29a71a;
+  color: #29a71a;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  border-radius: 10px;
+  min-width: 212px;
+  min-height: 20px;
+}
+
+.buttonOrder:hover {
+  background-color: #29a71a;
+  color: #fff;
+}
+
+.logoMobile {
+  width: 220px;
+  height: auto;
+  margin: auto;
+}
+
+@media (min-width: 320px) {
+  .buttonAddCar {
+    font-size: 10px;
+    padding: 3px 6px;
+    min-width: 150px;
+    min-height: 10px;
+  }
+
+  .buttonOrder {
+    font-size: 10px;
+    padding: 5px 10px;
+    min-width: 150px;
+    min-height: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .buttonAddCar {
+    font-size: 14px;
+    padding: 10px 20px;
+    min-width: 212px;
+    min-height: 20px;
+  }
+
+  .buttonOrder {
+    font-size: 14px;
+    padding: 10px 20px;
+    min-width: 212px;
+    min-height: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  .productItem {
+    width: calc(25% - 15px);
+  }
+}

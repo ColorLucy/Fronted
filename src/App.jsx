@@ -1,35 +1,72 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import "./App.css";
+import NavigationBar from "./components/NavigationBar";
+import { AuthProvider } from "./context/AuthContext";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminLogin from "./pages/admin/AdminLogin";
+import AboutUs from "./pages/user/AboutUs";
+import Home from "./pages/user/Home";
+import Products from "./pages/user/Products";
+import ShoppingCar from "./pages/user/ShoppingCar";
+import EditCard from "./pages/admin/EditCard";
+import AddCard from "./pages/admin/AddCard";
+import Orders from "./pages/admin/Orders";
+import Product from "./pages/user/Product";
+import InfoBar from "./components/InfoBar";
+import WhatsApp from "./components/WhatsApp";
 
+/**
+ * Vista del admin
+ */
+const Admin = () => {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route Component={AdminLogin} path="login/" />
+        <Route Component={AddCard} path="add-product/" />
+        <Route Component={EditCard} path="edit/:id_product" /> 
+        <Route Component={AdminDashboard} path="/" />
+        <Route Component={Orders} path="/orders"/>
+      </Routes>
+    </AuthProvider>
+  );
+};
+
+/**
+ * Vista del cliente
+ * @returns
+ */
+const Homepage = () => {
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <NavigationBar />
+      <Routes>
+        <Route path="/nosotros" element={<AboutUs />} />
+        <Route path="/productos" element={<Products />} />
+        <Route path="/productos/:info_producto" element={<Product />} />
+        <Route path="/productos/:searchTerm" element={<Product />} />
+        <Route path="/carrito" element={<ShoppingCar />} />
+        <Route Component={Home} path="/" />
+      </Routes>
+      <InfoBar />
+      <WhatsApp />
     </>
-  )
+  );
+};
+
+function App() {
+  return (
+    <div className="App">
+      <Router>
+        <Routes>
+          <Route Component={Admin} path="/admin/*" />
+          <Route Component={Homepage} path="*" />
+        </Routes>
+      </Router>
+    </div>
+  );
 }
 
-export default App
+export default App;
