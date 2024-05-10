@@ -28,12 +28,11 @@ export default function InfoBar() {
           backgroundColor: "#2C2E33",
           display: "flex",
           position: "static",
-          minHeight: "7rem",
+          minHeight: "100px",
           bottom: 0,
           left: 0,
           right: 0,
-          marginTop: "1rem",
-          padding: "1rem 0",
+          padding: "16px 0",
         }}
         justifyContent="center"
       >
