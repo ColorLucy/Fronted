@@ -11,8 +11,13 @@ export async function consultarProductos() {
 }
 
 export async function consultarDetalles() {
-  const { data } = await axiosInstance.get(`/products/view-details/`);
-  return data;
+  try {
+    const { data } = await axiosInstance.get(`/products/view-details/`);
+    // console.log(response);
+    return data;
+  } catch (error) {
+    console.error("Error fetching details: ", error);
+  }
 }
 
 export async function consultarTrozosDetalles(page) {

@@ -8,9 +8,13 @@ export default function InfoBar() {
 
   useEffect(() => {
     const fetchInfo = async () => {
-      const data = await getInfoBarInfo();
-      setInfo(data[0]);
-      console.log("Data: ", data.title);
+      try {
+        const data = await getInfoBarInfo();
+        setInfo(data[0]);
+        // console.log("Data: ", data.title);
+      } catch (error) {
+        console.error("Error: ", error);
+      }
     };
     fetchInfo();
   }, []);

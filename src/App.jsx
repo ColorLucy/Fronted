@@ -13,6 +13,7 @@ import ShoppingCar from "./pages/user/ShoppingCar";
 import EditCard from "./pages/admin/EditCard";
 import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
+import HomeEdit from "./pages/admin/HomeEdit";
 
 /**
  * Vista del admin
@@ -22,7 +23,8 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
-        <Route Component={EditCard} path="edit/:id_product" /> 
+        <Route Component={EditCard} path="edit/:id_product" />
+        <Route Component={HomeEdit} path="/home/edit" />
         <Route Component={AdminDashboard} path="/" />
       </Routes>
     </AuthProvider>
@@ -38,13 +40,13 @@ const Homepage = () => {
     <>
       <NavigationBar />
       <Routes>
+        <Route path="/home" element={<Home />} />
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/productos" element={<Products />} />
         <Route path="/productos/:id_producto" element={<Product />} />
         <Route path="/carrito" element={<ShoppingCar />} />
         <Route path="/pedidos" element={<Orders />} /> {/** POR AHORA */}
         <Route Component={Home} path="/" />
-        
       </Routes>
     </>
   );
