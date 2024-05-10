@@ -14,6 +14,7 @@ import EditCard from "./pages/admin/EditCard";
 import AddCard from "./pages/admin/AddCard";
 import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
+import HomeEdit from "./pages/admin/HomeEdit";
 import InfoBar from "./components/InfoBar";
 import WhatsApp from "./components/WhatsApp";
 import SignUp from "./pages/user/SignUp";
@@ -27,9 +28,10 @@ const Admin = () => {
       <Routes>
         <Route Component={AdminLogin} path="login/" />
         <Route Component={AddCard} path="add-product/" />
-        <Route Component={EditCard} path="edit/:id_product" /> 
+        <Route Component={EditCard} path="edit/:id_product" />
+        <Route Component={HomeEdit} path="/home/edit" />
         <Route Component={AdminDashboard} path="/" />
-        <Route Component={Orders} path="/orders"/>
+        <Route Component={Orders} path="/orders" />
       </Routes>
     </AuthProvider>
   );
@@ -44,6 +46,7 @@ const Homepage = () => {
     <>
       <NavigationBar />
       <Routes>
+        <Route path="/home" element={<Home />} />
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/registro" element={<SignUp />} />
         <Route path="/productos" element={<Products />} />
