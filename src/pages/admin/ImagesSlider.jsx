@@ -57,22 +57,62 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
   };
 
   return (
-    <div
-      className="container__slider"
-      onMouseEnter={AutoPlayStop}
-      onMouseLeave={AutoPlayStart}
-    >
-      {children.map((item, index) => {
-        return (
-          <div
-            className={"slider__item slider__item-active-" + (activeIndex + 1)}
-            key={index}
-          >
-            {item}
-          </div>
-        );
-      })}
+    <>
+      <div
+        className="container__slider"
+        onMouseEnter={AutoPlayStop}
+        onMouseLeave={AutoPlayStart}
+      >
+        {children.map((item, index) => {
+          return (
+            <div
+              className={
+                "slider__item slider__item-active-" + (activeIndex + 1)
+              }
+              key={index}
+            >
+              {item}
+            </div>
+          );
+        })}
 
+        <button
+          className="slider__btn-next"
+          onClick={(e) => {
+            e.preventDefault();
+            slideNext();
+          }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            color: "ButtonShadow",
+            border: "none",
+            padding: "15px 6px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          {">"}
+        </button>
+        <button
+          className="slider__btn-prev"
+          onClick={(e) => {
+            e.preventDefault();
+            slidePrev();
+          }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            color: "ButtonShadow",
+            border: "none",
+            padding: "15px 6px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
+          }}
+        >
+          {"<"}
+        </button>
+      </div>
       <div className="container__slider__links">
         {children.map((item, index) => {
           return (
@@ -91,44 +131,7 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
           );
         })}
       </div>
-
-      <button
-        className="slider__btn-next"
-        onClick={(e) => {
-          e.preventDefault();
-          slideNext();
-        }}
-        style={{
-          backgroundColor: "transparent",
-          color: "ButtonShadow",
-          border: "none",
-          padding: "15px 6px",
-          borderRadius: "5px",
-          cursor: "pointer",
-          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        {">"}
-      </button>
-      <button
-        className="slider__btn-prev"
-        onClick={(e) => {
-          e.preventDefault();
-          slidePrev();
-        }}
-        style={{
-          backgroundColor: "transparent",
-          color: "ButtonShadow",
-          border: "none",
-          padding: "15px 6px",
-          borderRadius: "5px",
-          cursor: "pointer",
-          boxShadow: "0px 2px 5px rgba(0, 0, 0, 0.2)",
-        }}
-      >
-        {"<"}
-      </button>
-    </div>
+    </>
   );
 }
 
