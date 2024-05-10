@@ -1,12 +1,13 @@
 .productsPage {
   background-color: #ffffff;
+  padding: 16px;
 }
 
 .productsContainer {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  min-height: calc(100vh - 286px);
+  min-height: calc(100vh - 298px);
   gap: 15px;
   min-width: 80%;
 }

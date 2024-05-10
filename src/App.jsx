@@ -11,9 +11,12 @@ import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
 import ShoppingCar from "./pages/user/ShoppingCar";
 import EditCard from "./pages/admin/EditCard";
+import AddCard from "./pages/admin/AddCard";
 import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
 import HomeEdit from "./pages/admin/HomeEdit";
+import InfoBar from "./components/InfoBar";
+import WhatsApp from "./components/WhatsApp";
 
 /**
  * Vista del admin
@@ -23,9 +26,11 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
+        <Route Component={AddCard} path="add-product/" />
         <Route Component={EditCard} path="edit/:id_product" />
         <Route Component={HomeEdit} path="/home/edit" />
         <Route Component={AdminDashboard} path="/" />
+        <Route Component={Orders} path="/orders" />
       </Routes>
     </AuthProvider>
   );
@@ -43,11 +48,13 @@ const Homepage = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/productos" element={<Products />} />
-        <Route path="/productos/:id_producto" element={<Product />} />
+        <Route path="/productos/:info_producto" element={<Product />} />
+        <Route path="/productos/:searchTerm" element={<Product />} />
         <Route path="/carrito" element={<ShoppingCar />} />
-        <Route path="/pedidos" element={<Orders />} /> {/** POR AHORA */}
         <Route Component={Home} path="/" />
       </Routes>
+      <InfoBar />
+      <WhatsApp />
     </>
   );
 };

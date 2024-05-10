@@ -1,240 +1,351 @@
+import { useState, useEffect } from "react";
+import { useSpring, animated } from "react-spring";
 import {
   Box,
   Button,
   Card,
   CardMedia,
   Grid,
+  Paper,
   Typography,
   useMediaQuery,
-  styled,
 } from "@mui/material";
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import InfoBar from "../../components/InfoBar";
-import WhatsApp from "../../components/WhatsApp";
-import {
-  getHomeInfo,
-  getStartImages,
-  getCombinationsImages,
-  getProductsImages,
-  getAlliesImages,
-} from "../../utils/information";
-
-const StyledCard = styled(Card)({
-  border: "none",
-  boxShadow: "none",
-});
 
 export default function Home() {
-  const [textInfo, setTextInfo] = useState({});
-  const [startImages, setStartImages] = useState([]);
-  const [combinationsImages, setCombinationsImages] = useState([]);
-  const [productsImages, setProductsImages] = useState([]);
-  const [alliesImages, setAlliesImages] = useState([]);
   const isMobileOrTablet = useMediaQuery("(max-width: 960px)");
+  const [scrollY, setScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState({
+    combinaciones: false,
+    productos: false,
+    aliados: false,
+  });
 
   useEffect(() => {
-    const fetchTextInfo = async () => {
-      const data = await getHomeInfo();
-      setTextInfo(data[0]);
-      // console.log("Home Text: ", data[0]);
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
     };
-    const fetchStartImages = async () => {
-      const data = await getStartImages();
-      setStartImages(data);
-      // console.log("Start: ", data);
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
     };
-    const fetchCombinationsImages = async () => {
-      const data = await getCombinationsImages();
-      setCombinationsImages(data);
-      // console.log("Combinations: ", data);
-    };
-    const fetchProductsImages = async () => {
-      const data = await getProductsImages();
-      setProductsImages(data);
-      // console.log("Products: ", data);
-    };
-    const fetchAlliesImages = async () => {
-      const data = await getAlliesImages();
-      setAlliesImages(data);
-      // console.log("Allies: ", data);
-    };
-    fetchTextInfo();
-    fetchStartImages();
-    fetchCombinationsImages();
-    fetchProductsImages();
-    fetchAlliesImages();
   }, []);
+
+  useEffect(() => {
+    const handleVisibility = () => {
+      const combinacionesElement = document.getElementById("combinaciones");
+      const productosElement = document.getElementById("productos");
+      const aliadosElement = document.getElementById("aliados");
+
+      if (combinacionesElement) {
+        const combinacionesRect = combinacionesElement.getBoundingClientRect();
+        const isVisibleCombinaciones =
+          combinacionesRect.top < window.innerHeight * 0.8;
+        setIsVisible((prevState) => ({
+          ...prevState,
+          combinaciones: isVisibleCombinaciones,
+        }));
+      }
+
+      if (productosElement) {
+        const productosRect = productosElement.getBoundingClientRect();
+        const isVisibleProductos = productosRect.top < window.innerHeight * 0.8;
+        setIsVisible((prevState) => ({
+          ...prevState,
+          productos: isVisibleProductos,
+        }));
+      }
+
+      if (aliadosElement) {
+        const aliadosRect = aliadosElement.getBoundingClientRect();
+        const isVisibleAliados = aliadosRect.top < window.innerHeight * 0.8;
+        setIsVisible((prevState) => ({
+          ...prevState,
+          aliados: isVisibleAliados,
+        }));
+      }
+    };
+
+    window.addEventListener("scroll", handleVisibility);
+
+    return () => {
+      window.removeEventListener("scroll", handleVisibility);
+    };
+  }, []);
+
+  const animatedPropsCombinaciones = useSpring({
+    opacity: isVisible.combinaciones ? 1 : 0,
+    transform: `translateY(${isVisible.combinaciones ? 0 : +100}px)`,
+    from: { opacity: 0, transform: "translateY(+100px)" },
+    config: { duration: 1000 },
+  });
+
+  const animatedPropsProductos = useSpring({
+    opacity: isVisible.productos ? 1 : 0,
+    transform: `translateY(${isVisible.productos ? 0 : +100}px)`,
+    from: { opacity: 0, transform: "translateY(+100px)" },
+    config: { duration: 1000 },
+  });
+
+  const animatedPropsAliados = useSpring({
+    opacity: isVisible.aliados ? 1 : 0,
+    transform: `translateY(${isVisible.aliados ? 0 : +100}px)`,
+    from: { opacity: 0, transform: "translateY(+100px)" },
+    config: { duration: 1000 },
+  });
 
   return (
     <Box>
       <Grid
         container
         spacing={2}
-        justifyContent="end"
+        justifyContent="center"
         alignItems="center"
-        paddingTop={12}
-        style={isMobileOrTablet ? {} : {}}
+        paddingTop={2}
+        style={
+          isMobileOrTablet ? { paddingLeft: "10px", paddingRight: "10px" } : {}
+        }
       >
         {/* Informacion empresa, a inicio de página, lado izquierdo */}
-        <Grid item xs={12} md={5} justifyContent={"center"}>
-          <Typography
-            sx={{
-              color: "black",
-              fontSize: isMobileOrTablet ? "30px" : "50px",
-              fontStyle: "italic",
-              textAlign: isMobileOrTablet ? "center" : "center",
-            }}
-          >
-            {/* Título */}
-            {textInfo.start_title}
-          </Typography>
-          <Typography
-            sx={{
-              color: "black",
-              fontSize: isMobileOrTablet ? "15px" : "20px",
-              textAlign: isMobileOrTablet ? "center" : "center",
-            }}
-          >
-            {/* Texto 1 */}
-            {textInfo.start_text_one}
-          </Typography>
-          <Typography
-            align="center"
-            sx={{
-              color: "black",
-              fontSize: isMobileOrTablet ? "12px" : "15px",
-            }}
-          >
-            {/* Texto 2 */}
-            {textInfo.start_text_two}
-          </Typography>
-          <Typography align="center">
-            <Button
-              variant="contained"
-              href="https://api.whatsapp.com/send/?phone=%2B573155176725&text=Hola,%20deseo%20asesor%C3%ADa&type=phone_number&app_absent=0"
-              sx={{
-                backgroundColor: "#0367A3",
-                marginTop: "1rem",
-              }}
-            >
-              Comprar
-            </Button>
-          </Typography>
-        </Grid>
-        {/* Imagen a inicio de página, lado derecho */}
-        <Grid item xs={12} md={6} alignContent={"center"} color={"white"}>
-          {startImages == null ? (
-            <h3>{":("}</h3>
-          ) : (
-            startImages.map((image, index) => (
-              <StyledCard
-                key={index}
-                sx={{
-                  maxWidth: "40vw",
-                  maxHeight: "100vh",
-                  margin: "0 auto",
-                  marginTop: "10px",
-                }}
-              >
-                <CardMedia component="img" image={image.url} />
-              </StyledCard>
-            ))
-          )}
-        </Grid>
-        {/* Apartado de combinaciones */}
         <Grid
-          container
-          justifyContent="center"
-          alignItems="center"
-          padding={"0 2rem"}
-        >
-          <Grid item xs={12} md={12}>
-            <Typography
-              marginTop="50px"
-              sx={{
-                color: "black",
-                fontSize: isMobileOrTablet ? "30px" : "40px",
-                fontStyle: "italic",
-                textAlign: "center",
-              }}
-            >
-              {/* Título */}
-              {textInfo.combinations_title}
-            </Typography>
-          </Grid>
-          {/* Imagenes de combinaciones */}
-          <Grid
-            item
-            xs={12}
-            md={7}
-            display={"flex"}
-            marginTop={"2rem"}
-            alignItems={"center"}
-          >
-            {combinationsImages == null ? (
-              <h3>{":("}</h3>
-            ) : (
-              combinationsImages.map((image, index) => (
-                <StyledCard
-                  key={index}
-                  sx={{ maxWidth: 300, maxHeight: 230, marginRight: "1rem" }}
-                >
-                  <CardMedia component="img" image={image.url} />
-                </StyledCard>
-              ))
-            )}
-          </Grid>
-
-          <Typography
-            marginTop="3rem"
-            sx={{
-              color: "black",
-              fontSize: isMobileOrTablet ? "1rem" : "1.25rem",
-              textAlign: "center",
-            }}
-          >
-            {/* Texto 1 */}
-            {textInfo.combinations_text}
-          </Typography>
-        </Grid>
-        {/* Apartado de Productos */}
-        <Grid
-          container
           item
           xs={12}
-          md={12}
-          alignItems="center"
-          justifyContent="center"
-          marginTop="50px"
+          style={{
+            backgroundImage: `url('homeColorLucy1.png')`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            width: "100%",
+            minHeight: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+            textAlign: "center",
+            zIndex: 0,
+          }}
         >
-          <Grid item>
-            {productsImages == null ? (
-              <h3>{":("}</h3>
-            ) : (
-              productsImages.map((image, index) => (
-                <StyledCard
-                  key={index}
-                  sx={{ maxWidth: 230, maxHeight: 300, marginBottom: "1rem" }}
-                >
-                  <CardMedia component="img" image={image.url} />
-                </StyledCard>
-              ))
-            )}
-          </Grid>
-          <Grid item xs={8} md={5} alignItems="center" justifyContent="center">
-            <Typography
-              sx={{
-                color: "black",
-                fontSize: isMobileOrTablet ? "2rem" : "2.5rem",
-                fontStyle: "italic",
-                textAlign: "center",
+          {/* Contenido de texto superpuesto */}
+          <Grid container justifyContent="center" alignItems="center">
+            <Grid
+              item
+              xs={10}
+              md={6}
+              style={{
+                position: "relative",
+                zIndex: 1,
+                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                padding: "20px",
+                borderRadius: "5px",
               }}
             >
-              {/* Texto */}
-              {textInfo.products_text}
-            </Typography>
-            <Typography align="center">
+              <Typography variant={isMobileOrTablet ? "h4" : "h2"} gutterBottom>
+                Empresa de pintura automotriz
+              </Typography>
+              <Typography
+                variant={isMobileOrTablet ? "body1" : "h6"}
+                gutterBottom
+              >
+                Nos especializamos en combinaciones de pinturas.
+              </Typography>
+              <Typography
+                variant={isMobileOrTablet ? "body2" : "body1"}
+                gutterBottom
+              >
+                ¡Realizamos domicilios en Cali y sus alrededores!
+              </Typography>
+              <Button
+                variant="contained"
+                href="https://api.whatsapp.com/send/?phone=%2B573155176725&text=Hola,%20deseo%20asesor%C3%ADa&type=phone_number&app_absent=0"
+                sx={{
+                  backgroundColor: "white",
+                  marginTop: "30px",
+                  color: "black",
+                  "&:hover": { color: "white" },
+                }}
+              >
+                Comprar
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Apartado de combinaciones */}
+        <animated.div style={animatedPropsCombinaciones}>
+          <Grid
+            container
+            item
+            xs={12}
+            justifyContent="center"
+            alignItems="center"
+            id="combinaciones"
+          >
+            <Grid item xs={12} md={12}>
+              <Typography
+                marginTop="50px"
+                sx={{
+                  color: "black",
+                  fontSize: isMobileOrTablet ? "30px" : "40px",
+                  fontStyle: "italic",
+                  textAlign: "center",
+                }}
+              >
+                Combinaciones
+              </Typography>
+            </Grid>
+            {/* Imágenes de combinaciones */}
+            <Grid
+              item
+              container
+              xs={12}
+              md={12}
+              marginTop={5}
+              justifyContent="center"
+              alignItems="center"
+              gap={2}
+            >
+              <Grid item xs={12} md={3.5}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    maxWidth: "100%",
+                    height: "40vh",
+                    width: "100%",
+                    justifyContent: "center",
+                    display: "flex",
+                  }}
+                >
+                  <img
+                    src={"combinaciones1.png"}
+                    alt={"combinaciones1"}
+                    style={{
+                      width: "100%",
+                      maxHeight: "100%",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={3.5}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    maxWidth: "100%",
+                    height: "40vh",
+                    width: "100%",
+                    justifyContent: "center",
+                    display: "flex",
+                  }}
+                >
+                  <img
+                    src={"combinaciones2.png"}
+                    alt={"combinaciones2"}
+                    style={{
+                      width: "100%",
+                      maxHeight: "100%",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={3.5}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    maxWidth: "100%",
+                    height: "40vh",
+                    width: "100%",
+                    justifyContent: "center",
+                    display: "flex",
+                  }}
+                >
+                  <img
+                    src={"combinaciones3.jpeg"}
+                    alt={"combinaciones3"}
+                    style={{
+                      width: "100%",
+                      maxHeight: "100%",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }}
+                  />
+                </Paper>
+              </Grid>
+            </Grid>
+            <Grid item xs={12} md={7}>
+              <Typography
+                marginTop="50px"
+                sx={{
+                  color: "black",
+                  fontSize: isMobileOrTablet ? "15px" : "20px",
+                  textAlign: "center",
+                }}
+              >
+                Colores realizados en ColorLucy, ven y solicita tu color con
+                nosotros
+              </Typography>
+            </Grid>
+          </Grid>
+        </animated.div>
+        {/* Apartado de productos */}
+        <animated.div style={animatedPropsProductos}>
+          <Grid
+            container
+            item
+            xs={12}
+            alignItems={"center"}
+            justifyContent={"center"}
+            marginTop="50px"
+            id="productos"
+          >
+            {/* Columna de la imagen */}
+            <Grid item xs={12} md={6} display="flex" justifyContent="center">
+              <Paper
+                elevation={0}
+                sx={{
+                  maxWidth: "530px",
+                  maxHeight: "600px",
+                  justifyContent: "center",
+                  display: "flex",
+                }}
+              >
+                <img
+                  src={"aerosoles.png"}
+                  alt={"aerosoles"}
+                  style={{
+                    width: "100%",
+                    maxHeight: "100%",
+                    objectFit: "cover",
+                    borderRadius: "10px",
+                  }}
+                />
+              </Paper>
+            </Grid>
+            {/* Columna del texto y botón */}
+            <Grid
+              item
+              xs={12}
+              md={6}
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              flexDirection="column"
+            >
+              <div style={{ textAlign: "center" }}>
+                <Typography
+                  sx={{
+                    color: "black",
+                    fontSize: isMobileOrTablet ? "25px" : "40px",
+                    fontStyle: "italic",
+                  }}
+                >
+                  Encuentra los mejores productos para tu negocio.
+                </Typography>
+              </div>
               <Button
                 variant="outlined"
                 component={Link}
@@ -242,60 +353,47 @@ export default function Home() {
                 sx={{
                   borderColor: "gray",
                   color: "gray",
-                  marginTop: "2rem",
+                  marginTop: "30px",
+                  maxWidth: "200px",
                 }}
               >
                 Ver más
               </Button>
-            </Typography>
+            </Grid>
           </Grid>
-        </Grid>
+        </animated.div>
         {/* Aliados */}
-        <Grid container alignItems="center" justifyContent="center">
-          <Grid item xs={12} md={12}>
-            <Typography
-              marginTop="50px"
-              sx={{
-                color: "black",
-                fontSize: isMobileOrTablet ? "20px" : "30px",
-                fontStyle: "italic",
-                textAlign: "center",
-              }}
-            >
-              {textInfo.allies_text}
-            </Typography>
-          </Grid>
-          {/* Logos marcas aliadas */}
+        <animated.div style={animatedPropsAliados}>
           <Grid
-            item
-            xs={12}
-            md={8}
-            display={"flex"}
-            marginTop={"1rem"}
+            container
             alignItems="center"
             justifyContent="center"
+            id="aliados"
           >
-            {alliesImages == null ? (
-              <h3>{":("}</h3>
-            ) : (
-              alliesImages.map((image, index) => (
-                <StyledCard
-                  key={index}
-                  sx={{
-                    maxWidth: 300,
-                    maxHeight: 230,
-                    marginRight: "1rem",
-                  }}
-                >
-                  <CardMedia component="img" image={image.url} />
-                </StyledCard>
-              ))
-            )}
+            <Grid item xs={12} md={12}>
+              <Typography
+                marginTop="50px"
+                sx={{
+                  color: "black",
+                  fontSize: isMobileOrTablet ? "20px" : "30px",
+                  fontStyle: "italic",
+                  textAlign: "center",
+                }}
+              >
+                Contamos con los mejores aliados
+              </Typography>
+            </Grid>
+            {/* logos marcas aliadas */}
+            <Grid item xs={12} md={5} display={"flex"}>
+              <Card sx={{ maxWidth: 300, maxHeight: 230, marginRight: "15px" }}>
+                <CardMedia component="img" image="ppg.png" />
+              </Card>
+              <Card sx={{ maxWidth: 300, maxHeight: 230, marginRight: "15px" }}>
+                <CardMedia component="img" image="ixell.png" />
+              </Card>
+            </Grid>
           </Grid>
-        </Grid>
-        {/* Barra inferior con información de contacto  */}
-        <InfoBar />
-        <WhatsApp />
+        </animated.div>
       </Grid>
     </Box>
   );

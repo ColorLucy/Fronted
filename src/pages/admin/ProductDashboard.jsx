@@ -26,9 +26,10 @@ import {
 import styles from "./ProductDashboard.module.css";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
-import { consultarDetalles, consultarProductos } from "../../utils/products";
+import { consultarProductos } from "../../utils/products";
 import Logo from "../../components/logo";
 import { useNavigate } from "react-router-dom";
+import { deleteProduct} from "../../utils/crudProducts";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -81,7 +82,7 @@ const ProductDashboard = () => {
   };
 
   const handleAddProduct = () => {
-    window.open("http://localhost:5173", "_blank");
+    navigate("/admin/add-product/");
     handleClose();
   };
 
@@ -95,9 +96,17 @@ const ProductDashboard = () => {
     handleClose();
   };
 
-  const handleDeleteProduct = () => {
-    window.open("http://localhost:5173", "_blank");
-    handleClose();
+  async function handleDeleteProduct(id){
+    let ok = confirm("¿Confirmas la eliminación del producto?")
+    if(ok){
+      const response = await deleteProduct(id)
+      if(!response){
+        alert("El producto ha sido eliminado exitosamente");
+        location.reload()
+      } else {
+        alert("Producto no eliminado, vuelve a intentarlo")
+      }
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -235,7 +244,7 @@ const ProductDashboard = () => {
                           <MenuItem onClick={() => {handleEditProduct(row.id_producto)}}>
                             <EditIcon sx={{ mr: "0.5rem" }} /> Editar
                           </MenuItem>
-                          <MenuItem onClick={() => handleDeleteProduct()}>
+                          <MenuItem onClick={() => {handleDeleteProduct(row.id_producto)}}>
                             <DeleteForeverIcon sx={{ mr: "0.5rem" }} /> Eliminar
                           </MenuItem>
                         </Menu>

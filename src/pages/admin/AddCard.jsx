@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
+import { deleteProduct, getCategories, getProduct, postProduct, updateProduct } from "../../utils/crudProducts";
 import AddImage from "./addImage";
 
 /**
@@ -29,7 +29,7 @@ import AddImage from "./addImage";
  * 
  * @returns {JSX.Element} A JSX element that permits manipulate products data 
  */
-const EditCard = () => {
+const AddCard = () => {
   const navigate = useNavigate();
   const { id_product } = useParams();
   const [autoPlay, setAutoPlay] = useState(false);
@@ -155,60 +155,34 @@ const EditCard = () => {
     navigate("/admin/");
   };
 
-  /**
-   * handles the retrieval of data from an existing product in the database
-   * sending a GET request to the server
-   * @param {Event} e - the event from the form that triggers the function
-   */
-  async function fetchData(id_product) {
-    const responseData = await getProduct(id_product);
-    const firstDetail = responseData.details.length > 0 ? responseData.details[0] : {};
-    setProductData({
-      nombre: responseData.product.nombre,
-      fabricante: responseData.product.fabricante,
-      descripcion: responseData.product.descripcion,
-      categoria: responseData.product.categoria,
-    });
-    setDetails(responseData.details);
-    setCurrentDetailId(firstDetail.id_detalle);
-    setDetailImagesSaved(responseData.images);
-
-    let imgData = [];
-    responseData.images.forEach((img) => {
-      if (img.detalle === firstDetail.id_detalle) {
-        imgData.push(img);
-      }
-      setDetailImagesInterface(imgData);
-    });
-    setIsThereProduct(true)
-  }
 
   /**
    * handles the update of an existing product by sending a PUT request to the server
    * @param id from product to delete
    * @param {Event} e - the event from the form or button click that triggers the function
    */
-  async function handleUpdate(e) {
+  async function handleCreate(e) {
     e.preventDefault();
     const data = {
       producto: productData,
       detalles: details,
       imagenes: detailImagesSaved,
     };
-    const response = await updateProduct(id_product, data);
-    if (!response) {
-      alert("El producto ha sido actualizado correctamente.");
+    const response = await postProduct(data);
+    if (response) {
+      alert("El producto ha sido creado correctamente.");
     } else {
-      alert("La actualización del producto ha fallado, vuelve a intentarlo.");
+      alert("La creación del producto ha fallado, vuelve a intentarlo.");
     }
     setNewDetail({
       nombre: "NUEVO DETALLE",
       precio: "",
       unidad: "",
       color: "",
-      producto: id_product,
     })
-    setShowAddDetailButton(true)
+    setShowAddDetailButton(false)
+    navigate("/admin/");
+    
   }
 
   /**
@@ -234,7 +208,6 @@ const EditCard = () => {
    * handles the retrieval of all categories and the interaction with details-images data
    */
   useEffect(() => {
-    fetchData(id_product);
     fetchCategories();
   }, [id_product]);
 
@@ -269,7 +242,7 @@ const EditCard = () => {
     <Box
       sx={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", overflowY: "auto", marginRight: 20, marginLeft: 20,}}
     >
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleCreate}>
         <Grid container spacing={5}>
           <Grid item xs={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <Typography variant="h5" component="div" gutterBottom>
@@ -470,7 +443,7 @@ const EditCard = () => {
       <div
         style={{ marginTop: "55px", display: "flex", justifyContent: "space-between", alignItems: "center", }} >
         <div>
-          <Button variant="contained" color="primary" onClick={handleUpdate}>
+          <Button variant="contained" color="primary" onClick={handleCreate}>
             Guardar cambios
           </Button>
           <Button variant="contained" color="error" onClick={handleDelete} style={{ marginLeft: "8px" }} >
@@ -485,4 +458,4 @@ const EditCard = () => {
   );
 };
 
-export default EditCard;
+export default AddCard;
