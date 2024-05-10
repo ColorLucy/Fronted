@@ -2,18 +2,58 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, useMediaQuery, Slide, Typography, Divider, Avatar } from '@mui/material';
+import { AppBar, Avatar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, Typography, useMediaQuery } from '@mui/material';
 import axios from 'axios';
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigation } from 'react-router-dom';
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import Search from '../components/searchBar';
 import "./components.css";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
-import React from 'react'
 
-export const BarColors = ({cantIntermediate}) => {
+/**
+ * Transforma un string a un color
+ * @param {*} string cadena a convertir
+ * @returns color
+ */
+function stringToColor(string) {
+  if(!string) return null
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+
+/**
+ * Crea una configuracion para el icono de un usuario
+ * @param {*} name - Nombre del usuario
+ * @returns las propiedades del avatar de un usuario en base a su nombre
+ */
+function stringAvatar(name) {
+  return {
+    children:
+      name.split(" ").length > 1
+        ? `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`
+        : `${name.split(" ")[0][0]}`,
+  };
+}
+
+export const BarColors = ({ cantIntermediate }) => {
   const container = {
     hidden: { opacity: 1, scale: 0 },
     visible: {
@@ -34,7 +74,7 @@ export const BarColors = ({cantIntermediate}) => {
   };
 
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-  const expandedPalette = generateIntermediateColors(colors, cantIntermediate? cantIntermediate: isMobileOrTablet ? 5 : 14);
+  const expandedPalette = generateIntermediateColors(colors, cantIntermediate ? cantIntermediate : isMobileOrTablet ? 5 : 14);
   return (
     <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "100%" }} variants={container}
       initial="hidden"
@@ -65,9 +105,9 @@ const NavigationBar = () => {
   const { pathname } = useLocation();
   const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
 
-
-
+  const styles = user ? { ...stringAvatar(user.name) } : null
   useEffect(() => {
     axios.get('https://colorlucyserver.onrender.com/products/view-categories/')
       .then(response => {
@@ -159,7 +199,7 @@ const NavigationBar = () => {
               <Button color="inherit" component={Link} to="/carrito">
                 <ShoppingCartIcon sx={{ color: 'black' }} />
               </Button>
-              <Avatar src="/broken-image.jpg" component={Link} to="/registro" sx={{ width: 38, height: 38, marginRight: "10px" }} />
+              <Avatar {...styles} component={Link} to="/registro" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
             </Box>
           </>
         )}

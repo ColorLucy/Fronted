@@ -12,10 +12,11 @@ import InputLabel from '@mui/material/InputLabel';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logo from '../../components/logo';
 import { BarColors } from '../../components/NavigationBar';
-
+import { FormHelperText } from '@mui/material';
+import axiosInstance from '../../utils/axiosInstance';
 
 const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -23,14 +24,27 @@ const SignUp = () => {
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-    const isInvalid = queryParams.get('invalid') === 'true';
-    const [showLoginRedirect, setShowLoginRedirect] = useState(isInvalid);
-
+    const [nameError, setNameError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [passwordValidationError, setPasswordValidationError] = useState(false);
+    const navigate = useNavigate();
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await axiosInstance.post("/auth/signup/", signUpData).then(({ data }) => {
+            console.log(data)
+            axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
+            localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
+            localStorage.setItem('user', JSON.stringify(data.user));
+            navigate("/")
+        }).catch(e => console.log(e))
+
+    }
     return (
         <div className='adminPage' style={{ height: "calc(100vh - 180px)" }}>
             <Snackbar
@@ -55,36 +69,58 @@ const SignUp = () => {
                         display: 'flex', flexDirection: "column", gap: "5px", marginTop: "40px", alignItems: "center",
                         '& .MuiFormControl-root': { width: '34ch', margin: "6px" },
                     }}
-                    noValidate
-                    autoComplete="off"
+                    onSubmit={handleSubmit}
                 >
                     <TextField
                         label="Nombre completo"
                         variant="filled"
                         type='text'
+                        autoComplete='name'
                         value={signUpData.name}
-                        onChange={e => setSignUpData({ ...signUpData, name: e.target.value })}
+                        onChange={e => { setSignUpData({ ...signUpData, name: e.target.value }); setNameError(!e.target.validity.valid) }}
                         fullWidth
                         required
+                        error={nameError}
+                        helperText={
+                            nameError ? "Por favor, ingrese su nombre utilizando únicamente letras y espacios." : ""
+                        }
+                        inputProps={{
+                            pattern: "[A-Za-z ]+",
+                        }}
                     />
                     <TextField
                         label="Correo electrónico"
                         variant="filled"
                         type='email'
+                        autoComplete='email'
                         value={signUpData.email}
-                        onChange={e => setSignUpData({ ...signUpData, email: e.target.value })}
+                        onChange={e => { setSignUpData({ ...signUpData, email: e.target.value }); setEmailError(!e.target.validity.valid) }}
                         fullWidth
                         required
+                        helperText={emailError ? "Por favor, ingrese un correo electrónico válido." : ""}
+                        error={emailError}
+                        inputProps={{
+                            type: "email",
+                        }}
                     />
 
-                    <FormControl variant="filled" fullWidth >
-                        <InputLabel htmlFor="filled-adornment-password" >Contraseña</InputLabel>
+                    <FormControl variant="filled" fullWidth error={passwordError !== false}
+                    >
+                        <InputLabel htmlFor="filled-adornment-password">Contraseña</InputLabel>
                         <FilledInput
-                            id="filled-adornment-password"
                             type={showPassword ? 'text' : 'password'}
                             value={signUpData.password}
                             required
-                            onChange={e => setSignUpData({ ...signUpData, password: e.target.value })}
+                            autoComplete='new-password'
+                            aria-describedby="component-helper-text"
+                            onChange={e => {
+                                setSignUpData({ ...signUpData, password: e.target.value })
+                                setPasswordError(
+                                    e.target.value.length < 6 ? "Por seguridad, la contraseña debe tener al menos 6 caracteres." :
+                                        !/\d/.test(e.target.value) ? "La contraseña debe incluir al menos un número." :
+                                            false
+                                );
+                            }}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -98,15 +134,22 @@ const SignUp = () => {
                                 </InputAdornment>
                             }
                         />
+                        <FormHelperText id="component-helper-text">
+                            {passwordError}
+                        </FormHelperText>
                     </FormControl>
-                    <FormControl variant="filled" fullWidth >
+                    <FormControl variant="filled" fullWidth error={passwordValidationError !== false}>
                         <InputLabel htmlFor="filled-adornment-password" >Confirmar contraseña</InputLabel>
                         <FilledInput
-                            id="filled-adornment-password"
                             type={showPassword ? 'text' : 'password'}
                             value={signUpData.confirmPassword}
                             required
-                            onChange={e => setSignUpData({ ...signUpData, confirmPassword: e.target.value })}
+                            autoComplete='new-password'
+                            aria-describedby="component-helper-text-1"
+                            onChange={e => {
+                                setSignUpData({ ...signUpData, confirmPassword: e.target.value })
+                                setPasswordValidationError(e.target.value !== signUpData.password.slice(0, e.target.value.length) ? "Las contraseñas no coinciden. Por favor, verifique que ambas sean iguales." : false);
+                            }}
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
@@ -120,9 +163,11 @@ const SignUp = () => {
                                 </InputAdornment>
                             }
                         />
+                        <FormHelperText id="component-helper-text-1">
+                            {passwordValidationError}
+                        </FormHelperText>
                     </FormControl>
-
-                    <Button variant="contained" fullWidth style={{ width: '37ch', margin: "15px" }}>Enviar</Button>
+                    <Button variant="contained" type='submit' fullWidth style={{ width: '37ch', margin: "15px" }}>Registrarse</Button>
                 </Box>
             </div>
         </div>
