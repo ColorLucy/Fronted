@@ -69,7 +69,7 @@ const NavigationBar = () => {
 
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/products/view-categories/')
+    axios.get('https://colorlucyserver.onrender.com/products/view-categories/')
       .then(response => {
         setCategories(response.data);
         setLoading(false);
