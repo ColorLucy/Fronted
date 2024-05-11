@@ -25,17 +25,19 @@ const HomeEdit = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Button
-        id="reload-button"
-        color="lucy_red"
-        variant="contained"
-        sx={{ color: "white", margin: "16px 0 0 0", left: "85%" }}
-        onClick={() => window.location.reload()}
-      >
-        Volver
-      </Button>
       {isFormSelected ? (
-        <EditForm />
+        <div>
+          <Button
+            id="reload-button"
+            color="lucy_red"
+            variant="contained"
+            sx={{ color: "white", margin: "16px 0 0 0", left: "85%" }}
+            onClick={() => setIsFormSelected(false)}
+          >
+            Volver
+          </Button>
+          <EditForm />
+        </div>
       ) : (
         <Box
           sx={{
