@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { IconButton, InputBase, Paper, Popper, Fade, CircularProgress, Typography, useMediaQuery, ListItem} from '@mui/material';
+import { IconButton, InputBase, Paper, Popper, Fade, CircularProgress, Typography, useMediaQuery, ListItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import numeral from 'numeral';
 import homeColorLucyImg from "../../public/homeColorLucy1.png";
+import axiosInstance from '../utils/axiosInstance';
 
 const SearchBar = () => {
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
@@ -14,7 +15,7 @@ const SearchBar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [placement, setPlacement] = useState();
-  
+
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
@@ -39,7 +40,7 @@ const SearchBar = () => {
       if (searchTerm !== '') {
         setLoadingSearch(true);
         try {
-          const response = await axios.get(`https://colorlucyserver.onrender.com/products/search/?q=${searchTerm}`, {
+          const response = await axiosInstance.get(`/products/search/?q=${searchTerm}`, {
             cancelToken: new axios.CancelToken((c) => {
               cancel = c;
             })
@@ -59,9 +60,9 @@ const SearchBar = () => {
         setLoadingSearch(false);
       }
     };
-  
+
     getSearchResults();
-  
+
     return () => {
       // Cancelar la solicitud cuando el componente se desmonta o se actualiza
       if (cancel) {
@@ -69,7 +70,7 @@ const SearchBar = () => {
       }
     };
   }, [searchTerm]);
-  
+
   return (
     <>
       <Paper
@@ -124,7 +125,7 @@ const SearchBar = () => {
         >
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={400}>
-              <Paper sx={{ maxHeight: '300px', overflowY: 'auto' , width: isMobileOrTablet ? '100%' : 600, marginTop: '3px'}}>
+              <Paper sx={{ maxHeight: '300px', overflowY: 'auto', width: isMobileOrTablet ? '100%' : 600, marginTop: '3px' }}>
                 {loadingSearch ? (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px' }}>
                     <CircularProgress />
@@ -144,13 +145,13 @@ const SearchBar = () => {
                             sx={{ "&:hover": { backgroundColor: "#0368a61a" }, justifyContent: 'space-between' }}
                           >
                             <div style={{ display: 'flex', alignItems: 'center' }}>
-                              
-                                <img
-                                  src={result.detalles[0].imagenes.length > 0 ? result.detalles[0].imagenes[0].url: homeColorLucyImg}
-                                  alt={result.detalles[0].nombre}
-                                  style={{ width: "50px", height: "50px", marginRight: "10px" }}
-                                />
-                
+
+                              <img
+                                src={result.detalles[0].imagenes.length > 0 ? result.detalles[0].imagenes[0].url : homeColorLucyImg}
+                                alt={result.detalles[0].nombre}
+                                style={{ width: "50px", height: "50px", marginRight: "10px" }}
+                              />
+
                               <Typography variant="subtitle1" sx={{ marginRight: "10px" }}>{result.detalles[0].nombre}</Typography>
                             </div>
                             <Typography variant="subtitle1" fontWeight="bold">{numeral(result.detalles[0].precio).format('$0,0.00')}</Typography>
