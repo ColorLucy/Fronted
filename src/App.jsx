@@ -10,7 +10,6 @@ import AdminLogin from "./pages/admin/AdminLogin";
 import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
-import ShoppingCar from "./pages/user/ShoppingCar";
 import EditCard from "./pages/admin/EditCard";
 import AddCard from "./pages/admin/AddCard";
 import Orders from "./pages/admin/Orders";
@@ -58,7 +57,6 @@ const Homepage = () => {
           <Route path="/productos" element={<Products />} />
           <Route path="/productos/:info_producto" element={<Product />} />
           <Route path="/productos/:searchTerm" element={<Product />} />
-          <Route path="/carrito" element={<ShoppingCar />} />
           <Route Component={Home} path="/" />
         </Routes>
       </CartProvider>

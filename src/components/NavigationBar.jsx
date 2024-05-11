@@ -1,7 +1,7 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ShoppingCart from "../pages/user/ShoppingCart";
 import {
   AppBar,
   Avatar,
@@ -397,9 +397,8 @@ const NavigationBar = () => {
             <div>
               <Logo imgSize="10px" />
             </div>
-            <Button color="inherit" component={Link} to="/carrito">
-              <ShoppingCartIcon sx={{ color: "black" }} />
-            </Button>
+
+            <ShoppingCart />
           </>
         )}
       </Toolbar>
