@@ -19,11 +19,20 @@ import axiosInstance from '../../utils/axiosInstance';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 
+/**
+ * Componente `SignUp` para el registro de usuarios.
+ * Permite a los usuarios registrarse mediante un formulario con nombre, correo electrónico y contraseña.
+ * También soporta el registro a través de Google usando Google OAuth.
+ *
+ * Utiliza estado local para manejar los datos del formulario y la visibilidad de la contraseña.
+ * Los datos se envían a un servidor mediante peticiones POST para el registro básico y autenticación con Google.
+ *
+ * @returns {JSX.Element} Formulario de registro para usuarios.
+ */
 const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [signUpData, setSignUpData] = useState({ email: "", password: "", name: "", confirmPassword: "" })
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const location = useLocation();
+
     const [loading, setLoading] = useState(false);
     const [nameError, setNameError] = useState(false);
     const [emailError, setEmailError] = useState(false);
@@ -31,6 +40,7 @@ const SignUp = () => {
     const [showSignUpError, setShowSignUpError] = useState(false);
     const [passwordValidationError, setPasswordValidationError] = useState(false);
     const navigate = useNavigate();
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
@@ -53,7 +63,6 @@ const SignUp = () => {
         e.preventDefault();
         setLoading(true)
         await axiosInstance.post("/auth/signup/", signUpData).then(({ data }) => {
-
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
             localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
             localStorage.setItem('user', JSON.stringify(data.user));
@@ -205,7 +214,7 @@ const SignUp = () => {
                         autoHideDuration={5000}
                         TransitionComponent={Grow}
                         onClose={() => {
-                            showSignUpError(false);
+                            setShowSignUpError(false);
                         }}
                     >
                         <Alert
@@ -221,4 +230,4 @@ const SignUp = () => {
     )
 }
 
-export default SignUp
+export default SignUp;
