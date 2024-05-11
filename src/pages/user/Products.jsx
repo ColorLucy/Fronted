@@ -72,7 +72,6 @@ function Products() {
       }
       setLoading(false);
     };
-    console.log(!pagesProducts.hasOwnProperty(page), (categoria !== 0 && !bandera), fetchAllProducts)
     if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera) || fetchAllProducts) {
       fetchData();
     }

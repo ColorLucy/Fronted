@@ -89,6 +89,7 @@ export default function AdminLogin() {
           <TextField
             label="Correo electrónico"
             variant="filled"
+            autoComplete='email'
             type='email'
             value={loginData.email}
             onChange={e => setLoginData({ ...loginData, email: e.target.value })}
@@ -103,6 +104,7 @@ export default function AdminLogin() {
               type={showPassword ? 'text' : 'password'}
               value={loginData.password}
               required
+              autoComplete='current-password'
               onChange={e => setLoginData({ ...loginData, password: e.target.value })}
               endAdornment={
                 <InputAdornment position="end">
