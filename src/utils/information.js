@@ -1,12 +1,12 @@
 import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
-const url = "https://colorlucyserver.onrender.com";
 
 // GET
 
 export async function getInfoBarInfo() {
   try {
-    const { data } = await axios.get(url + `/info/api/infobar/`);
+    const { data } = await axiosInstance.get(`/info/api/infobar/`);
     // console.log(data);
     return data;
   } catch (error) {
@@ -16,7 +16,7 @@ export async function getInfoBarInfo() {
 
 export async function getHomeInfo() {
   try {
-    const { data } = await axios.get(url + `/info/api/home/text/`);
+    const { data } = await axiosInstance.get(`/info/api/home/text/`);
     // console.log(data);
     return data;
   } catch (error) {
@@ -26,7 +26,7 @@ export async function getHomeInfo() {
 
 export async function getStartImages() {
   try {
-    const { data } = await axios.get(url + `/info/api/home/start/`);
+    const { data } = await axiosInstance.get(`/info/api/home/start/`);
     // console.log(data);
     return data;
   } catch (error) {
@@ -36,7 +36,7 @@ export async function getStartImages() {
 
 export async function getCombinationsImages() {
   try {
-    const { data } = await axios.get(url + `/info/api/home/combinations/`);
+    const { data } = await axiosInstance.get(`/info/api/home/combinations/`);
     // console.log(data);
     return data;
   } catch (error) {
@@ -46,7 +46,7 @@ export async function getCombinationsImages() {
 
 export async function getProductsImages() {
   try {
-    const { data } = await axios.get(url + `/info/api/home/products/`);
+    const { data } = await axiosInstance.get(`/info/api/home/products/`);
     // console.log(data);
     return data;
   } catch (error) {
@@ -56,7 +56,7 @@ export async function getProductsImages() {
 
 export async function getAlliesImages() {
   try {
-    const { data } = await axios.get(url + `/info/api/home/allies/`);
+    const { data } = await axiosInstance.get(`/info/api/home/allies/`);
     // console.log(data);
     return data;
   } catch (error) {
@@ -74,8 +74,8 @@ export async function getAlliesImages() {
  */
 export async function updateHomeText(id, data) {
   try {
-    const { response } = await axios.patch(
-      url + `/info/api/home/text/${id}/`,
+    const { response } = await axiosInstance.patch(
+      `/info/api/home/text/${id}/`,
       data
     );
     return response;
@@ -86,8 +86,8 @@ export async function updateHomeText(id, data) {
 
 export async function updateStartImage(id, data) {
   try {
-    const { response } = await axios.patch(
-      url + `/info/api/home/start/${id}/`,
+    const { response } = await axiosInstance.patch(
+      `/info/api/home/start/${id}/`,
       data,
       {
         headers: {
@@ -104,7 +104,7 @@ export async function updateStartImage(id, data) {
 export async function updateCombinationsImage(id, data) {
   try {
     const { response } = await axios.patch(
-      url + `/info/api/home/combinations/${id}/`,
+      `/info/api/home/combinations/${id}/`,
       data,
       {
         headers: {
@@ -120,8 +120,8 @@ export async function updateCombinationsImage(id, data) {
 
 export async function updateProductsImage(id, data) {
   try {
-    const { response } = await axios.patch(
-      url + `/info/api/home/products/${id}/`,
+    const { response } = await axiosInstance.patch(
+      `/info/api/home/products/${id}/`,
       data,
       {
         headers: {
@@ -137,8 +137,8 @@ export async function updateProductsImage(id, data) {
 
 export async function updateAlliesImage(id, data) {
   try {
-    const { response } = await axios.patch(
-      url + `/info/api/home/allies/${id}/`,
+    const { response } = await axiosInstance.patch(
+      `/info/api/home/allies/${id}/`,
       data,
       {
         headers: {
