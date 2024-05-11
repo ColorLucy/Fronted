@@ -245,7 +245,10 @@ const NavigationBar = () => {
                   <CloseIcon sx={{ color: 'white' }} />
                 </IconButton>
               </div>
-              <List>
+              <List> 
+                <ListItem>
+                  <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
+                </ListItem>
                 <ListItem selected={locationPath === ""} component={Link} to="/" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
                   <ListItemText primary="Inicio" />
                 </ListItem>
