@@ -12,11 +12,11 @@ import RadioGroup from '@mui/material/RadioGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Typography from '@mui/material/Typography';
+import axios from 'axios';
 import numeral from 'numeral';
 import { default as React, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import axiosInstance from '../../utils/axiosInstance';
 import { convertirColor } from '../../utils/colors';
 
 
@@ -106,7 +106,7 @@ const Product = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const { data } = await axiosInstance.get(`/products/product-details/${id_producto}/`);
+        const { data } = await axios.get(`https://colorlucyserver.onrender.com/products/product-details/${id_producto}/`);
         setProduct(data);
         setDetails(data.detalles);
         const detailsUnitys = data.detalles
