@@ -67,7 +67,7 @@ const HomeCombinationsForm = () => {
         let newImages = [];
         let newImagesFile = [];
         for (const item of data) {
-          console.log("Item", item);
+          // console.log("Item", item);
           initialImages.push(item.url);
           newImages.push(item.url);
           newImagesFile.push(null);
@@ -98,7 +98,10 @@ const HomeCombinationsForm = () => {
           );
         })
         .catch((error) => {
-          console.log("Ocurrió un error al actualizar la información: ", error);
+          console.error(
+            "Ocurrió un error al actualizar la información: ",
+            error
+          );
           window.alert(
             "La actualización de la información ha fallado, vuelva a intentarlo"
           );
@@ -341,7 +344,7 @@ const HomeCombinationsForm = () => {
             </Button>
             <Button
               id="test-button"
-              sx={{ color: "white", marginTop: "1rem" }}
+              sx={{ color: "white", marginTop: "1rem", display: "none" }}
               color="lucy_pink"
               variant="contained"
               onClick={(event) => handleTest(event)}

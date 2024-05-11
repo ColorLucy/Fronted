@@ -60,7 +60,7 @@ const HomeAlliesForm = () => {
         let newImages = [];
         let newImagesFile = [];
         for (const item of data) {
-          console.log("Item", item);
+          // console.log("Item", item);
           initialImages.push(item.url);
           newImages.push(item.url);
           newImagesFile.push(null);
@@ -91,7 +91,10 @@ const HomeAlliesForm = () => {
           );
         })
         .catch((error) => {
-          console.log("Ocurrió un error al actualizar la información: ", error);
+          console.error(
+            "Ocurrió un error al actualizar la información: ",
+            error
+          );
           window.alert(
             "La actualización de la información ha fallado, vuelva a intentarlo"
           );
@@ -141,7 +144,7 @@ const HomeAlliesForm = () => {
     // console.log(event.target.files);
     try {
       let newImageURL = URL.createObjectURL(event.target.files[0]);
-      console.log(alliesImages[index].url);
+      // console.log(alliesImages[index].url);
       alliesImages[index].url = newImageURL; // Image to show in the carousel
       newAlliesImageURL[index] = newImageURL;
       newImageFile[index] = event.target.files[0];
@@ -301,7 +304,7 @@ const HomeAlliesForm = () => {
             </Button>
             <Button
               id="test-button"
-              sx={{ color: "white", marginTop: "1rem" }}
+              sx={{ color: "white", marginTop: "1rem", display: "none" }}
               color="lucy_pink"
               variant="contained"
               onClick={(event) => handleTest(event)}
