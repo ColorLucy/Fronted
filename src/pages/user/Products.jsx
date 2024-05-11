@@ -1,15 +1,16 @@
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { CircularProgress } from '@mui/material';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Pagination from '@mui/material/Pagination';
 import PaginationItem from '@mui/material/PaginationItem';
-import Typography from '@mui/material/Typography';
-import { motion } from "framer-motion";
+import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import ProductCard from "../../components/ProductCard";
-import axiosInstance from '../../utils/axiosInstance';
+import Typography from '@mui/material/Typography';
+import { motion } from "framer-motion";
+import Breadcrumbs from '@mui/material/Breadcrumbs';
 import "./products.css";
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+
 const container = {
   hidden: { opacity: 1, scale: 0.9 },
   visible: {
@@ -52,13 +53,13 @@ function Products() {
       try {
         let url;
         if (categoria !== 0) {
-          url = `/products/detalles-por-categoria/${categoria}/?page=${page}`;
+          url = `https://colorlucyserver.onrender.com/products/detalles-por-categoria/${categoria}/?page=${page}`;
         } else if (searchTerm) {
-          url = `/products/search/?q=${searchTerm}&page=${page}`;
+          url = `https://colorlucyserver.onrender.com/products/search/?q=${searchTerm}&page=${page}`;
         } else {
-          url = `/products/product-details/?page=${page}`;
+          url = `https://colorlucyserver.onrender.com/products/product-details/?page=${page}`;
         }
-        const { data } = await axiosInstance.get(url);
+        const { data } = await axios.get(url);
         setProductos(data.results);
         setPagesProducts({ ...pagesProducts, [page]: data.results });
         setPagesCount(Math.ceil(data.count / 20));

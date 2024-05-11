@@ -56,6 +56,7 @@ export const AuthProvider = ({ children }) => {
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
       //axiosInstance.defaultConfig.headers.authorization = `Bearer ${response.data.access}`
       localStorage.setItem("authTokens", JSON.stringify(response.data));
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate("/admin");
     }
   };
