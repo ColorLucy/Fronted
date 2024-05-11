@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Alert, Box, Button, FilledInput, FormControl, Grow, IconButton, InputAdornment, InputLabel, Snackbar, TextField } from '@mui/material';
 import axiosInstance from '../../utils/axiosInstance';
@@ -95,6 +95,9 @@ const SignIn = () => {
                     </FormControl>
 
                     <Button variant="contained" fullWidth style={{ width: '37ch', margin: "15px" }} onClick={handleSignIn}>Iniciar Sesión</Button>
+                    <Link to="/registro" style={{ textDecoration: 'none', textAlign: "center" }}>
+                        <p style={{ width: '37ch', margin: "15px" }}>Registrarse</p>
+                    </Link>
                 </Box>
             </div>
         </div>
