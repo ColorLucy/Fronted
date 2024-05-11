@@ -2,28 +2,58 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AppBar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, useMediaQuery, Slide, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, Typography, useMediaQuery } from '@mui/material';
 import axios from 'axios';
-import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from 'react';
+import { motion } from "framer-motion";
+import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import Search from '../components/searchBar';
 import "./components.css";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
-const NavigationBar = () => {
+/**
+ * Transforma un string a un color
+ * @param {*} string cadena a convertir
+ * @returns color
+ */
+function stringToColor(string) {
+  if(!string) return null
+  let hash = 0;
+  let i;
 
-  const [drawerOpen1, setdrawerOpen1] = useState(false);
-  const [drawerOpen2, setdrawerOpen2] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [openProductos, setOpenProductos] = useState(false);
-  const { pathname } = useLocation();
-  const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
-  const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-  const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 5 : 14);
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
 
+  let color = '#';
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  /* eslint-enable no-bitwise */
+
+  return color;
+}
+
+
+/**
+ * Crea una configuracion para el icono de un usuario
+ * @param {*} name - Nombre del usuario
+ * @returns las propiedades del avatar de un usuario en base a su nombre
+ */
+function stringAvatar(name) {
+  return {
+    children:
+      name.split(" ").length > 1
+        ? `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`
+        : `${name.split(" ")[0][0]}`,
+  };
+}
+
+export const BarColors = ({ cantIntermediate }) => {
   const container = {
     hidden: { opacity: 1, scale: 0 },
     visible: {
@@ -43,8 +73,43 @@ const NavigationBar = () => {
     }
   };
 
+  const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+  const expandedPalette = generateIntermediateColors(colors, cantIntermediate ? cantIntermediate : isMobileOrTablet ? 5 : 14);
+  return (
+    <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "100%" }} variants={container}
+      initial="hidden"
+      animate="visible">
+      {expandedPalette.map((color, index) => (
+        <motion.div
+          key={index}
+          variants={item}
+          style={{
+            backgroundColor: color,
+            width: '100%',
+            height: '4px',
+            marginRight: '2px',
+          }}
+        />
+      ))}
+    </motion.div>
+  )
+}
+
+
+const NavigationBar = () => {
+  const [drawerOpen1, setdrawerOpen1] = useState(false);
+  const [drawerOpen2, setdrawerOpen2] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [openProductos, setOpenProductos] = useState(false);
+  const { pathname } = useLocation();
+  const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
+  const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
+
+  const styles = user ? { ...stringAvatar(user.name) } : null
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/products/view-categories/')
+    axios.get('https://colorlucyserver.onrender.com/products/view-categories/')
       .then(response => {
         setCategories(response.data);
         setLoading(false);
@@ -94,24 +159,24 @@ const NavigationBar = () => {
                   '& .MuiDrawer-paper': {
                     backgroundColor: '#0367a6',
                     '&::-webkit-scrollbar': {
-                      width: '10px', 
+                      width: '10px',
                     },
                     '&::-webkit-scrollbar-thumb': {
-                      backgroundColor: 'rgba(255,255,255,0.5)', 
-                      borderRadius: '10px', 
+                      backgroundColor: 'rgba(255,255,255,0.5)',
+                      borderRadius: '10px',
                     },
                     '&::-webkit-scrollbar-thumb:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.7)', 
+                      backgroundColor: 'rgba(255,255,255,0.7)',
                     },
                     '&::-webkit-scrollbar-track': {
-                      backgroundColor: 'transparent', 
+                      backgroundColor: 'transparent',
                     },
                   },
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                   <Button onClick={handleDrawerClose}>
-                    <CloseIcon sx={{ color: 'white' }}/>
+                    <CloseIcon sx={{ color: 'white' }} />
                   </Button>
                 </div>
                 <div style={{ width: 250 }}>
@@ -123,7 +188,7 @@ const NavigationBar = () => {
                         <Typography variant="button">Todos los productos</Typography>
                       </MenuItem>
                       {categories.map((category, index) => (
-                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoriaId=${category.id_categoria}&categoriaName=${encodeURIComponent(category.nombre)}`} sx={{ "&:hover": { backgroundColor: "#ffffff1a", color: "white" }, color: "white", marginLeft: '16px'}}>
+                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoriaId=${category.id_categoria}&categoriaName=${encodeURIComponent(category.nombre)}`} sx={{ "&:hover": { backgroundColor: "#ffffff1a", color: "white" }, color: "white", marginLeft: '16px' }}>
                           <Typography variant="button">{category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}</Typography>
                         </MenuItem>
                       ))}
@@ -134,6 +199,7 @@ const NavigationBar = () => {
               <Button color="inherit" component={Link} to="/carrito">
                 <ShoppingCartIcon sx={{ color: 'black' }} />
               </Button>
+              <Avatar {...styles} component={Link} to="/registro" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
             </Box>
           </>
         )}
@@ -159,24 +225,24 @@ const NavigationBar = () => {
                 '& .MuiDrawer-paper': {
                   backgroundColor: '#0367a6',
                   '&::-webkit-scrollbar': {
-                    width: '10px', 
+                    width: '10px',
                   },
                   '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'rgba(255,255,255,0.5)', 
-                    borderRadius: '10px', 
+                    backgroundColor: 'rgba(255,255,255,0.5)',
+                    borderRadius: '10px',
                   },
                   '&::-webkit-scrollbar-thumb:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.7)', 
+                    backgroundColor: 'rgba(255,255,255,0.7)',
                   },
                   '&::-webkit-scrollbar-track': {
-                    backgroundColor: 'transparent', 
-                    },
+                    backgroundColor: 'transparent',
+                  },
                 },
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <IconButton onClick={handleDrawerClose}>
-                  <CloseIcon sx={{ color: 'white' }}/>
+                  <CloseIcon sx={{ color: 'white' }} />
                 </IconButton>
               </div>
               <List>
@@ -216,22 +282,7 @@ const NavigationBar = () => {
       {isMobileOrTablet && (
         <Search />
       )}
-      <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center" }} variants={container}
-        initial="hidden"
-        animate="visible">
-        {expandedPalette.map((color, index) => (
-          <motion.div
-            key={index}
-            variants={item}
-            style={{
-              backgroundColor: color,
-              width: '100%',
-              height: '4px',
-              marginRight: '2px',
-            }}
-          />
-        ))}
-      </motion.div>
+      <BarColors />
     </AppBar>
   );
 };

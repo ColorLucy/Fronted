@@ -53,11 +53,11 @@ function Products() {
       try {
         let url;
         if (categoria !== 0) {
-          url = `http://127.0.0.1:8000/products/detalles-por-categoria/${categoria}/?page=${page}`;
+          url = `https://colorlucyserver.onrender.com/products/detalles-por-categoria/${categoria}/?page=${page}`;
         } else if (searchTerm) {
-          url = `http://127.0.0.1:8000/products/search/?q=${searchTerm}&page=${page}`;
+          url = `https://colorlucyserver.onrender.com/products/search/?q=${searchTerm}&page=${page}`;
         } else {
-          url = `http://localhost:8000/products/product-details/?page=${page}`;
+          url = `https://colorlucyserver.onrender.com/products/product-details/?page=${page}`;
         }
         const { data } = await axios.get(url);
         setProductos(data.results);
