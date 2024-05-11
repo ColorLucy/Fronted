@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import "./App.css";
 import NavigationBar from "./components/NavigationBar";
 import { AuthProvider } from "./context/AuthContext";
@@ -63,14 +63,16 @@ const Homepage = () => {
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route Component={Admin} path="/admin/*" />
-          <Route Component={Homepage} path="*" />
-        </Routes>
-      </Router>
-    </div>
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <div className="App">
+        <Router>
+          <Routes>
+            <Route Component={Admin} path="/admin/*" />
+            <Route Component={Homepage} path="*" />
+          </Routes>
+        </Router>
+      </div>
+    </GoogleOAuthProvider>
   );
 }
 

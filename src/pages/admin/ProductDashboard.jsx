@@ -86,8 +86,8 @@ const ProductDashboard = () => {
     handleClose();
   };
 
-  const handleViewProduct = () => {
-    window.open("http://localhost:5173", "_blank");
+  const handleViewProduct = (nombre, id_producto) => {
+    window.open(window.location.origin+ `/productos/${encodeURIComponent(nombre)}-${id_producto}`);
     handleClose();
   };
 
@@ -238,7 +238,7 @@ const ProductDashboard = () => {
                             "aria-labelledby": "basic-button",
                           }}
                         >
-                          <MenuItem onClick={() => handleViewProduct()}>
+                          <MenuItem onClick={() => handleViewProduct(row.nombre,row.id_producto)}>
                             <VisibilityIcon sx={{ mr: "0.5rem" }} /> Ver
                           </MenuItem>
                           <MenuItem onClick={() => {handleEditProduct(row.id_producto)}}>
