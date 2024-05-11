@@ -3,6 +3,7 @@ import "jwt-decode";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useEffect, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import axiosInstance from "../utils/axiosInstance";
 
 /**
  * `AuthContext` is a context that provides authentication interfaces to the frontend.
@@ -43,8 +44,8 @@ export const AuthProvider = ({ children }) => {
   let loginUser = async (e, data) => {
     localStorage.clear();
     e.preventDefault();
-    const response = await axios
-      .post("http://localhost:8000/auth/login/", data)
+    const response = await axiosInstance
+      .post("/auth/login/", data)
       .catch((e) => {
         setLoginError(true);
       });
@@ -52,7 +53,10 @@ export const AuthProvider = ({ children }) => {
     if (response.status === 200) {
       setAuthTokens(response.data);
       setUser(jwtDecode(response.data.access));
+      axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
+      //axiosInstance.defaultConfig.headers.authorization = `Bearer ${response.data.access}`
       localStorage.setItem("authTokens", JSON.stringify(response.data));
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate("/admin");
     }
   };

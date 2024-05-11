@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { IconButton, InputBase, Paper, Popper, Fade, CircularProgress, Typography, useMediaQuery, ListItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import numeral from 'numeral';
 import homeColorLucyImg from "../../public/homeColorLucy1.png";
+import axiosInstance from '../utils/axiosInstance';
+import axios from 'axios';
 
 const SearchBar = () => {
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
@@ -39,11 +40,11 @@ const SearchBar = () => {
       if (searchTerm !== '') {
         setLoadingSearch(true);
         try {
-          const response = await axios.get(`http://127.0.0.1:8000/products/search/?q=${searchTerm}`, {
+          const response = await axiosInstance.get(`/products/search/?q=${searchTerm}`, {
             cancelToken: new axios.CancelToken((c) => {
               cancel = c;
             })
-          }); console.log(response.data)
+          });
           setSearchResults(response.data.results);
           setLoadingSearch(false);
         } catch (error) {

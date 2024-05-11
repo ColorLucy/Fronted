@@ -20,11 +20,11 @@ import RadioGroup from "@mui/material/RadioGroup";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Typography from "@mui/material/Typography";
-import axios from "axios";
 import numeral from "numeral";
 import { default as React, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import axiosInstance from "../../utils/axiosInstance";
 import { convertirColor } from "../../utils/colors";
 import { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
@@ -122,8 +122,8 @@ const Product = () => {
   useEffect(() => {
     const fetchProducto = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:8000/products/product-details/${id_producto}/`
+        const { data } = await axiosInstance.get(
+          `/products/product-details/${id_producto}/`
         );
         setProduct(data);
         setDetails(data.detalles);
@@ -176,7 +176,7 @@ const Product = () => {
 
   if (!product) {
     return (
-      <div style={{ textAlign: "center", height: "calc(100vh - 200px)" }}>
+      <div style={{ textAlign: "center", height: "calc(100vh - 180px)" }}>
         <CircularProgress style={{ margin: "100px" }} />
         <Typography>
           Cargando la informacion del producto {nombre_producto}...
@@ -243,7 +243,7 @@ const Product = () => {
         display: "flex",
         flexDirection: "column",
         p: 2,
-        minHeight: "calc(100vh - 200px)",
+        minHeight: "calc(100vh - 180px)",
       }}
     >
       <Bread_crumb
