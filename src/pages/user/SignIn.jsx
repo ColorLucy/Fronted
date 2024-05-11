@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Alert, Box, Button, FilledInput, FormControl, Grow, IconButton, InputAdornment, InputLabel, Snackbar, TextField } from '@mui/material';
+import axiosInstance from '../../utils/axiosInstance';
 
 const SignIn = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -11,15 +12,26 @@ const SignIn = () => {
     const queryParams = new URLSearchParams(location.search);
     const isInvalid = queryParams.get('invalid') === 'true';
     const [showLoginError, setShowLoginError] = useState(isInvalid);
+    const navigate = useNavigate();
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
     const handleSignIn = () => {
-       
-        console.log('Datos de inicio de sesión:', loginData);
+        axiosInstance
+          .post("/auth/login/", loginData)
+          .then(({ data }) => {
+            console.log(data);
+            localStorage.setItem('accessToken', data.access); 
+            navigate('/profile'); 
+          })
+          .catch((error) => {
+            console.error("Error al iniciar sesión:", error);
+            setShowLoginError(true); 
+          });
     };
+    
 
     return (
         <div className='adminPage' style={{ height: "calc(100vh - 180px)" }}>
@@ -33,7 +45,7 @@ const SignIn = () => {
                     severity="error"
                     variant="filled"
                     sx={{ width: '100%' }}
-                >Credenciales incorrectas. Por favor, inténtalo de nuevo.
+                >Correo o contraseña incorrecta. Por favor, inténtalo de nuevo.
                 </Alert>
             </Snackbar>
             <div className='cardLoginAdmin'>

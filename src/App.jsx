@@ -19,6 +19,7 @@ import InfoBar from "./components/InfoBar";
 import WhatsApp from "./components/WhatsApp";
 import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
+import Profile from "./pages/user/Profile";
 
 /**
  * Vista del admin
@@ -47,7 +48,8 @@ const Homepage = () => {
     <>
       <NavigationBar />
       <Routes>
-        <Route path="/login" element={<SignIn />} /> 
+        <Route path="/signIn" element={<SignIn />} /> 
+        <Route path="/profile" element={<Profile />} /> 
         <Route path="/home" element={<Home />} />
         <Route path="/nosotros" element={<AboutUs />} />
         <Route path="/registro" element={<SignUp />} />
