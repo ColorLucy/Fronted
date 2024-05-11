@@ -12,12 +12,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import InputLabel from '@mui/material/InputLabel';
 import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { BarColors } from '../../components/NavigationBar';
-import axiosInstance from '../../utils/axiosInstance';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BarColors } from '../../components/NavigationBar';
+import axiosInstance from '../../utils/axiosInstance';
 
 /**
  * Componente `SignUp` para el registro de usuarios.
@@ -48,7 +48,6 @@ const SignUp = () => {
     const onGoogleLoginSuccess = async (response) => {
         setLoading(true)
         const dataResponse = jwtDecode(response.credential)
-        console.log(response, dataResponse)
         await axiosInstance.post("/auth/google/", { email: dataResponse.email, name: dataResponse.name })
             .then(({ data }) => {
                 axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
