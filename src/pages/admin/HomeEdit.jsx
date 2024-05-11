@@ -6,9 +6,10 @@ import HomeStartForm from "../../components/HomeStartForm";
 import HomeCombinationsForm from "../../components/HomeCombinationsForm";
 import HomeProductsForm from "../../components/HomeProductsForm";
 import HomeAlliesForm from "../../components/HomeAlliesForm";
+import HomeInfobarForm from "../../components/HomeInfobarForm";
 
 const HomeEdit = () => {
-  const [EditForm, setEditForm] = useState(() => <></>);
+  const [EditForm, setEditForm] = useState(() => <div></div>);
   const [isFormSelected, setIsFormSelected] = useState(false);
 
   /**
@@ -24,6 +25,15 @@ const HomeEdit = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <Button
+        id="reload-button"
+        color="lucy_red"
+        variant="contained"
+        sx={{ color: "white", margin: "16px 0 0 0", left: "85%" }}
+        onClick={() => window.location.reload()}
+      >
+        Volver
+      </Button>
       {isFormSelected ? (
         <EditForm />
       ) : (
@@ -40,6 +50,7 @@ const HomeEdit = () => {
             sx={{
               fontWeight: "bold",
               fontSize: "2rem",
+              margin: "1rem 0 2rem 0",
             }}
           >
             Elija un Sección a Editar
@@ -48,7 +59,7 @@ const HomeEdit = () => {
             id="start-form-button"
             color="lucy_blue"
             variant="contained"
-            sx={{ color: "white", margin: "5rem 0 1rem 0" }}
+            sx={{ color: "white", margin: "1rem 0" }}
             onClick={(event) => handleForm(event, HomeStartForm)}
           >
             Editar Sección de Inicio
@@ -72,13 +83,22 @@ const HomeEdit = () => {
             Editar Sección de Productos
           </Button>
           <Button
-            id="products-form-button"
+            id="allies-form-button"
             color="lucy_blue"
             variant="contained"
             sx={{ color: "white", margin: "1rem 0" }}
             onClick={(event) => handleForm(event, HomeAlliesForm)}
           >
             Editar Sección de Aliados
+          </Button>
+          <Button
+            id="infobar-form-button"
+            color="lucy_blue"
+            variant="contained"
+            sx={{ color: "white", margin: "1rem 0" }}
+            onClick={(event) => handleForm(event, HomeInfobarForm)}
+          >
+            Editar Sección de Contacto
           </Button>
         </Box>
       )}
