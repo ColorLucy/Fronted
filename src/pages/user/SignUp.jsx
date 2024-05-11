@@ -1,5 +1,6 @@
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { Backdrop, CircularProgress, Divider, FormHelperText } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,37 +14,52 @@ import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Logo from '../../components/logo';
 import { BarColors } from '../../components/NavigationBar';
-import { FormHelperText } from '@mui/material';
 import axiosInstance from '../../utils/axiosInstance';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 
 const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [signUpData, setSignUpData] = useState({ email: "", password: "", name: "", confirmPassword: "" })
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+    const [loading, setLoading] = useState(false);
     const [nameError, setNameError] = useState(false);
     const [emailError, setEmailError] = useState(false);
     const [passwordError, setPasswordError] = useState(false);
+    const [showSignUpError, setShowSignUpError] = useState(false);
     const [passwordValidationError, setPasswordValidationError] = useState(false);
     const navigate = useNavigate();
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
 
+    const onGoogleLoginSuccess = async (response) => {
+        setLoading(true)
+        const dataResponse = jwtDecode(response.credential)
+        console.log(response, dataResponse)
+        await axiosInstance.post("/auth/google/", { email: dataResponse.email, name: dataResponse.name })
+            .then(({ data }) => {
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
+                localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
+                localStorage.setItem('user', JSON.stringify(data.user));
+                navigate("/")
+            }).catch(e => showSignUpError(true))
+        setLoading(false)
 
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true)
         await axiosInstance.post("/auth/signup/", signUpData).then(({ data }) => {
-            console.log(data)
+
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.access}`;
             localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
             localStorage.setItem('user', JSON.stringify(data.user));
             navigate("/")
-        }).catch(e => console.log(e))
-
+        }).catch(e => showSignUpError(true))
+        setLoading(false)
     }
     return (
         <div className='adminPage' style={{ height: "calc(100vh - 180px)" }}>
@@ -168,6 +184,37 @@ const SignUp = () => {
                         </FormHelperText>
                     </FormControl>
                     <Button variant="contained" type='submit' fullWidth style={{ width: '37ch', margin: "15px" }}>Registrarse</Button>
+                    <Divider variant="middle" sx={{ width: "90%", opacity: "1", color: "black" }} />
+                    <GoogleLogin
+                        onSuccess={onGoogleLoginSuccess}
+                        onError={() => {
+                            showSignUpError(true)
+                        }}
+                        size='large'
+                        width={"100%"}
+                    />
+                    <Backdrop
+                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={loading}
+                        onClick={(e) => setLoading(false)}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop>
+                    <Snackbar
+                        open={showSignUpError}
+                        autoHideDuration={5000}
+                        TransitionComponent={Grow}
+                        onClose={() => {
+                            showSignUpError(false);
+                        }}
+                    >
+                        <Alert
+                            severity="error"
+                            variant="filled"
+                            sx={{ width: '100%' }}
+                        >Lamentablemente, no pudimos completar tu registro. Por favor, intenta nuevamente.
+                        </Alert>
+                    </Snackbar>
                 </Box>
             </div>
         </div>
