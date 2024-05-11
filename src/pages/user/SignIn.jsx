@@ -94,7 +94,7 @@ const SignIn = () => {
                         />
                     </FormControl>
 
-                    <Button variant="contained" fullWidth style={{ width: '37ch', margin: "15px" }} onClick={handleSignIn}>Iniciar Sesión</Button>
+                    <Button variant="contained" fullWidth style={{ width: '37ch' }} onClick={handleSignIn}>Iniciar Sesión</Button>
                     <Link to="/registro" style={{ textDecoration: 'none', textAlign: "center" }}>
                         <p style={{ width: '37ch', margin: "15px" }}>Registrarse</p>
                     </Link>
