@@ -23,7 +23,8 @@ const SignIn = () => {
           .post("/auth/login/", loginData)
           .then(({ data }) => {
             console.log(data);
-            localStorage.setItem('accessToken', data.access); 
+            localStorage.setItem('user', JSON.stringify(data.user));
+            localStorage.setItem('accessToken', data.access);
             navigate('/profile'); 
           })
           .catch((error) => {
