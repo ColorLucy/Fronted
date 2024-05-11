@@ -199,7 +199,7 @@ const NavigationBar = () => {
               <Button color="inherit" component={Link} to="/carrito">
                 <ShoppingCartIcon sx={{ color: 'black' }} />
               </Button>
-              <Avatar {...styles} component={Link} to="/registro" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
+              <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
             </Box>
           </>
         )}
