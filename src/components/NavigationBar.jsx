@@ -3,12 +3,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AppBar, Avatar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, Typography, useMediaQuery } from '@mui/material';
-import axios from 'axios';
 import { motion } from "framer-motion";
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import Logo, { generateIntermediateColors } from '../components/logo';
 import Search from '../components/searchBar';
+import axiosInstance from '../utils/axiosInstance';
 import "./components.css";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
@@ -18,7 +18,7 @@ const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
  * @returns color
  */
 function stringToColor(string) {
-  if(!string) return null
+  if (!string) return null
   let hash = 0;
   let i;
 
@@ -109,7 +109,7 @@ const NavigationBar = () => {
 
   const styles = user ? { ...stringAvatar(user.name) } : null
   useEffect(() => {
-    axios.get('https://colorlucyserver.onrender.com/products/view-categories/')
+    axiosInstance.get('/products/view-categories/')
       .then(response => {
         setCategories(response.data);
         setLoading(false);

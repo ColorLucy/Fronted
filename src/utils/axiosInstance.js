@@ -2,7 +2,8 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 
-const baseURL = "https://colorlucyserver.onrender.com";
+//const baseURL = "https://colorlucyserver.onrender.com";
+const baseURL = "http://127.0.0.1:8000";
 
 let authTokens = localStorage.getItem("authTokens")
   ? JSON.parse(localStorage.getItem("authTokens"))
@@ -43,10 +44,16 @@ axiosInstance.interceptors.request.use(async (req) => {
   return req;
 });
 
-axiosInstance.interceptors.response.use(async (res) => {
-  if (res.status === 404) {
+
+axiosInstance.interceptors.response.use((response) => {
+  // Cualquier código de estado que este dentro del rango de 2xx causa la ejecución de esta función 
+  // Haz algo con los datos de la respuesta
+  return response;
+}, function (error) {
+  console.log("HOla", error, error.response.status )
+  if (error.response.status === 403) {
     window.location.href = "/admin/login?invalid=true";
   }
-  return res;
+  return Promise.reject(error);
 });
 export default axiosInstance;

@@ -158,7 +158,7 @@ export default function Home() {
   });
 
   return (
-    <Box>
+    <Box sx={{ minHeight: "calc(100vh - 160px)" }}>
       <Grid
         container
         spacing={2}
