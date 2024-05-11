@@ -2,8 +2,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 
-//const baseURL = "https://colorlucyserver.onrender.com";
-const baseURL = "http://127.0.0.1:8000/";
+const baseURL = "https://colorlucyserver.onrender.com";
 
 let authTokens = localStorage.getItem("authTokens")
   ? JSON.parse(localStorage.getItem("authTokens"))
