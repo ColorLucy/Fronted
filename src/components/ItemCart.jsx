@@ -45,10 +45,11 @@ export const ItemCart = ({ item }) => {
               />
             </CardContent>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={2}>
             {" "}
             {/*grid para el nombre del producto */}
-            <Typography>{item.nombre}</Typography>
+            <Typography fontSize={"15px"}>{item.nombre}</Typography>
+            <Typography fontSize={"10px"}>{item.fabricante}</Typography>
           </Grid>
           <Grid item xs={4} sx={{ display: "flex" }}>
             {" "}
@@ -66,7 +67,7 @@ export const ItemCart = ({ item }) => {
               <RemoveRoundedIcon />
             </Box>
           </Grid>
-          <Grid item xs={2}>
+          <Grid item xs={3}>
             <Typography>
               {numeral(item.amount * total).format("$0,0")}
             </Typography>
