@@ -179,7 +179,7 @@ const HomeAlliesForm = () => {
   return (
     <ThemeProvider theme={theme}>
       <Box
-        sx={{ padding: "2rem 0" }}
+        sx={{ paddingBottom: "2rem" }}
         component="form"
         onSubmit={formik.handleSubmit}
       >
