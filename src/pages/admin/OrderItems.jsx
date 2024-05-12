@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography } from '@mui/material';
+import React from "react";
+import { Typography } from "@mui/material";
 
 export const Item = ({ children }) => (
   <Typography color="gray" align="left">
@@ -24,11 +24,15 @@ export const ItemTittle2 = ({ children }) => (
 );
 
 export const ItemDynamic = ({ children, state }) => {
-  let color = 'purple';
-  if (state === 'Completado') {
-    color = 'green';
-  } else if (state === 'Cancelado') {
-    color = 'red';
+  let color = "purple";
+  if (state === "Completado") {
+    color = "green";
+  } else if (state === "Cancelado") {
+    color = "red";
   }
-  return <Typography variant="inherit" align="center" sx={{ color }}>{children}</Typography>;
+  return (
+    <Typography variant="inherit" align="center" sx={{ color }}>
+      {children}
+    </Typography>
+  );
 };

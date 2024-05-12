@@ -5,6 +5,7 @@ import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import ReplyIcon from "@mui/icons-material/Reply";
 import {
   Table,
   TableBody,
@@ -29,7 +30,7 @@ import { theme } from "../../styles/theme";
 import { consultarProductos } from "../../utils/products";
 import Logo from "../../components/logo";
 import { useNavigate } from "react-router-dom";
-import { deleteProduct} from "../../utils/crudProducts";
+import { deleteProduct } from "../../utils/crudProducts";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -65,11 +66,11 @@ const ProductDashboard = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [loading, setLoading] = React.useState(true);
   const [search, setSearch] = React.useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   async function obtenerProductos() {
     const datos = await consultarProductos();
-    setProductCount(datos.length);    
+    setProductCount(datos.length);
     setData(datos);
   }
 
@@ -87,27 +88,30 @@ const ProductDashboard = () => {
   };
 
   const handleViewProduct = (nombre, id_producto) => {
-    window.open(window.location.origin+ `/productos/${encodeURIComponent(nombre)}-${id_producto}`);
+    window.open(
+      window.location.origin +
+        `/productos/${encodeURIComponent(nombre)}-${id_producto}`
+    );
     handleClose();
   };
 
   const handleEditProduct = (id) => {
-    navigate("/admin/edit/"+id);
+    navigate("/admin/edit/" + id);
     handleClose();
   };
 
-  async function handleDeleteProduct(id){
-    let ok = confirm("¿Confirmas la eliminación del producto?")
-    if(ok){
-      const response = await deleteProduct(id)
-      if(!response){
+  async function handleDeleteProduct(id) {
+    let ok = confirm("¿Confirmas la eliminación del producto?");
+    if (ok) {
+      const response = await deleteProduct(id);
+      if (!response) {
         alert("El producto ha sido eliminado exitosamente");
-        location.reload()
+        location.reload();
       } else {
-        alert("Producto no eliminado, vuelve a intentarlo")
+        alert("Producto no eliminado, vuelve a intentarlo");
       }
     }
-  };
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -130,7 +134,7 @@ const ProductDashboard = () => {
         }}
       >
         <Logo imgSize={40} minLen={true} />
-        <h3 className={`${styles.dashboardTitle}`}>Dashboard</h3>
+        <h3 className={`${styles.dashboardTitle}`}>Productos</h3>
         <TextField
           color="lucy_yellow"
           label="Search"
@@ -158,6 +162,20 @@ const ProductDashboard = () => {
           onClick={handleAddProduct}
         >
           Añadir Producto
+        </Button>
+        <Button
+          sx={{
+            backgroundColor: "#C63CA2",
+            color: "white",
+            fontFamily: "Roboto",
+            "&:hover": {
+              backgroundColor: "#D7194A",
+            },
+          }}
+          startIcon={<ReplyIcon />}
+          onClick={() => navigate("/admin/")}
+        >
+          Volver
         </Button>
       </Box>
       {loading ? (
@@ -238,13 +256,25 @@ const ProductDashboard = () => {
                             "aria-labelledby": "basic-button",
                           }}
                         >
-                          <MenuItem onClick={() => handleViewProduct(row.nombre,row.id_producto)}>
+                          <MenuItem
+                            onClick={() =>
+                              handleViewProduct(row.nombre, row.id_producto)
+                            }
+                          >
                             <VisibilityIcon sx={{ mr: "0.5rem" }} /> Ver
                           </MenuItem>
-                          <MenuItem onClick={() => {handleEditProduct(row.id_producto)}}>
+                          <MenuItem
+                            onClick={() => {
+                              handleEditProduct(row.id_producto);
+                            }}
+                          >
                             <EditIcon sx={{ mr: "0.5rem" }} /> Editar
                           </MenuItem>
-                          <MenuItem onClick={() => {handleDeleteProduct(row.id_producto)}}>
+                          <MenuItem
+                            onClick={() => {
+                              handleDeleteProduct(row.id_producto);
+                            }}
+                          >
                             <DeleteForeverIcon sx={{ mr: "0.5rem" }} /> Eliminar
                           </MenuItem>
                         </Menu>

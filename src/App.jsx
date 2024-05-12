@@ -12,6 +12,7 @@ import Home from "./pages/user/Home";
 import Products from "./pages/user/Products";
 import EditCard from "./pages/admin/EditCard";
 import AddCard from "./pages/admin/AddCard";
+import ProductTable from "./pages/admin/ProductDashboard";
 import Orders from "./pages/admin/Orders";
 import Product from "./pages/user/Product";
 import HomeEdit from "./pages/admin/HomeEdit";
@@ -33,7 +34,8 @@ const Admin = () => {
         <Route Component={EditCard} path="edit/:id_product" />
         <Route Component={HomeEdit} path="/home/edit" />
         <Route Component={AdminDashboard} path="/" />
-        <Route Component={Orders} path="/orders" />
+        <Route Component={ProductTable} path="products/" />
+        <Route Component={Orders} path="orders/" />
       </Routes>
     </AuthProvider>
   );
