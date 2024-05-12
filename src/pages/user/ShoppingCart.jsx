@@ -55,7 +55,7 @@ const ShoppingCart = () => {
             item.amount
           } unidades - ${numeral(parseFloat(item.detalles[0].precio)).format(
             "$0,0"
-          )} la unidad`
+          )} la unidad,`
       );
       const message = `Hola, soy ${userName}, me gustaría ordenar lo siguiente:\n${cartInfo.join(
         "\n"
