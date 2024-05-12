@@ -1,16 +1,32 @@
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
-import MenuIcon from '@mui/icons-material/Menu';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { AppBar, Avatar, Box, Button, CircularProgress, Collapse, Drawer, IconButton, List, ListItem, ListItemText, MenuItem, Toolbar, Typography, useMediaQuery } from '@mui/material';
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import MenuIcon from "@mui/icons-material/Menu";
+import ShoppingCart from "../pages/user/ShoppingCart";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  CircularProgress,
+  Collapse,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  MenuItem,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { motion } from "framer-motion";
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import Logo, { generateIntermediateColors } from '../components/logo';
-import Search from '../components/searchBar';
-import axiosInstance from '../utils/axiosInstance';
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import Logo, { generateIntermediateColors } from "../components/logo";
+import Search from "../components/searchBar";
+import axiosInstance from "../utils/axiosInstance";
 import "./components.css";
-const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
+const colors = ["#EDC208", "#D7194A", "#0AA64D", "#0367A6", "#C63CA2"];
 
 /**
  * Transforma un string a un color
@@ -18,7 +34,7 @@ const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
  * @returns color
  */
 function stringToColor(string) {
-  if (!string) return null
+  if (!string) return null;
   let hash = 0;
   let i;
 
@@ -27,7 +43,7 @@ function stringToColor(string) {
     hash = string.charCodeAt(i) + ((hash << 5) - hash);
   }
 
-  let color = '#';
+  let color = "#";
 
   for (i = 0; i < 3; i += 1) {
     const value = (hash >> (i * 8)) & 0xff;
@@ -37,7 +53,6 @@ function stringToColor(string) {
 
   return color;
 }
-
 
 /**
  * Crea una configuracion para el icono de un usuario
@@ -61,40 +76,50 @@ export const BarColors = ({ cantIntermediate }) => {
       scale: 1,
       transition: {
         delayChildren: 0.2,
-        staggerChildren: 0.01
-      }
-    }
+        staggerChildren: 0.01,
+      },
+    },
   };
   const item = {
     hidden: { x: 2, opacity: 0 },
     visible: {
       x: 0,
-      opacity: 1
-    }
+      opacity: 1,
+    },
   };
 
-  const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-  const expandedPalette = generateIntermediateColors(colors, cantIntermediate ? cantIntermediate : isMobileOrTablet ? 5 : 14);
+  const isMobileOrTablet = useMediaQuery("(max-width: 960px)");
+  const expandedPalette = generateIntermediateColors(
+    colors,
+    cantIntermediate ? cantIntermediate : isMobileOrTablet ? 5 : 14
+  );
   return (
-    <motion.div style={{ display: 'flex', alignItems: 'center', justifyContent: "center", width: "100%" }} variants={container}
+    <motion.div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "100%",
+      }}
+      variants={container}
       initial="hidden"
-      animate="visible">
+      animate="visible"
+    >
       {expandedPalette.map((color, index) => (
         <motion.div
           key={index}
           variants={item}
           style={{
             backgroundColor: color,
-            width: '100%',
-            height: '4px',
-            marginRight: '2px',
+            width: "100%",
+            height: "4px",
+            marginRight: "2px",
           }}
         />
       ))}
     </motion.div>
-  )
-}
-
+  );
+};
 
 const NavigationBar = () => {
   const [drawerOpen1, setdrawerOpen1] = useState(false);
@@ -103,20 +128,23 @@ const NavigationBar = () => {
   const [loading, setLoading] = useState(true);
   const [openProductos, setOpenProductos] = useState(false);
   const { pathname } = useLocation();
-  const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : ""
-  const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
-  const user = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null
+  const locationPath = pathname?.split("/")[1] ? pathname.split("/")[1] : "";
+  const isMobileOrTablet = useMediaQuery("(max-width: 960px)");
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null;
 
-  const styles = user ? { ...stringAvatar(user.name) } : null
+  const styles = user ? { ...stringAvatar(user.name) } : null;
   useEffect(() => {
-    axiosInstance.get('/products/view-categories/')
-      .then(response => {
+    axiosInstance
+      .get("/products/view-categories/")
+      .then((response) => {
         setCategories(response.data);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         setLoading(true);
-        console.error('Error al obtener los datos de categorias:', error);
+        console.error("Error al obtener los datos de categorias:", error);
       });
   }, []);
 
@@ -135,15 +163,33 @@ const NavigationBar = () => {
   };
 
   return (
-    <AppBar position="sticky" elevation={2} style={{ backgroundColor: "#F2F3F4" }}>
-      <Toolbar sx={{ justifyContent: 'space-between', padding: '0px !important' }}>
+    <AppBar
+      position="sticky"
+      elevation={2}
+      style={{ backgroundColor: "#F2F3F4" }}
+    >
+      <Toolbar
+        sx={{ justifyContent: "space-between", padding: "0px !important" }}
+      >
         {!isMobileOrTablet && (
           <>
             <Logo imgSize="50px" />
             <Search />
-            <Box sx={{ display: 'flex', alignItems: 'end', color: 'black' }}>
-              <Button variant={locationPath === "" ? "contained" : ""} component={Link} to="/">Inicio</Button>
-              <Button variant={locationPath === "nosotros" ? "contained" : ""} component={Link} to="/nosotros">Nosotros</Button>
+            <Box sx={{ display: "flex", alignItems: "end", color: "black" }}>
+              <Button
+                variant={locationPath === "" ? "contained" : ""}
+                component={Link}
+                to="/"
+              >
+                Inicio
+              </Button>
+              <Button
+                variant={locationPath === "nosotros" ? "contained" : ""}
+                component={Link}
+                to="/nosotros"
+              >
+                Nosotros
+              </Button>
               <Button
                 variant={locationPath === "productos" ? "contained" : ""}
                 onClick={handleToggleDrawer}
@@ -156,27 +202,27 @@ const NavigationBar = () => {
                 onClose={handleToggleDrawer}
                 transitionDuration={500}
                 sx={{
-                  '& .MuiDrawer-paper': {
-                    backgroundColor: '#0367a6',
-                    '&::-webkit-scrollbar': {
-                      width: '10px',
+                  "& .MuiDrawer-paper": {
+                    backgroundColor: "#0367a6",
+                    "&::-webkit-scrollbar": {
+                      width: "10px",
                     },
-                    '&::-webkit-scrollbar-thumb': {
-                      backgroundColor: 'rgba(255,255,255,0.5)',
-                      borderRadius: '10px',
+                    "&::-webkit-scrollbar-thumb": {
+                      backgroundColor: "rgba(255,255,255,0.5)",
+                      borderRadius: "10px",
                     },
-                    '&::-webkit-scrollbar-thumb:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.7)',
+                    "&::-webkit-scrollbar-thumb:hover": {
+                      backgroundColor: "rgba(255,255,255,0.7)",
                     },
-                    '&::-webkit-scrollbar-track': {
-                      backgroundColor: 'transparent',
+                    "&::-webkit-scrollbar-track": {
+                      backgroundColor: "transparent",
                     },
                   },
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <Button onClick={handleDrawerClose}>
-                    <CloseIcon sx={{ color: 'white' }} />
+                    <CloseIcon sx={{ color: "white" }} />
                   </Button>
                 </div>
                 <div style={{ width: 250 }}>
@@ -184,22 +230,61 @@ const NavigationBar = () => {
                     <CircularProgress style={{ margin: "50px" }} />
                   ) : (
                     <>
-                      <MenuItem onClick={handleToggleDrawer} component={Link} to="/productos" sx={{ "&:hover": { backgroundColor: "#ffffff1a" }, color: "white" }}>
-                        <Typography variant="button">Todos los productos</Typography>
+                      <MenuItem
+                        onClick={handleToggleDrawer}
+                        component={Link}
+                        to="/productos"
+                        sx={{
+                          "&:hover": { backgroundColor: "#ffffff1a" },
+                          color: "white",
+                        }}
+                      >
+                        <Typography variant="button">
+                          Todos los productos
+                        </Typography>
                       </MenuItem>
                       {categories.map((category, index) => (
-                        <MenuItem key={index} onClick={handleToggleDrawer} component={Link} to={`/productos/?categoriaId=${category.id_categoria}&categoriaName=${encodeURIComponent(category.nombre)}`} sx={{ "&:hover": { backgroundColor: "#ffffff1a", color: "white" }, color: "white", marginLeft: '16px' }}>
-                          <Typography variant="button">{category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()}</Typography>
+                        <MenuItem
+                          key={index}
+                          onClick={handleToggleDrawer}
+                          component={Link}
+                          to={`/productos/?categoriaId=${
+                            category.id_categoria
+                          }&categoriaName=${encodeURIComponent(
+                            category.nombre
+                          )}`}
+                          sx={{
+                            "&:hover": {
+                              backgroundColor: "#ffffff1a",
+                              color: "white",
+                            },
+                            color: "white",
+                            marginLeft: "16px",
+                          }}
+                        >
+                          <Typography variant="button">
+                            {category.nombre.charAt(0).toUpperCase() +
+                              category.nombre.slice(1).toLowerCase()}
+                          </Typography>
                         </MenuItem>
                       ))}
                     </>
                   )}
                 </div>
               </Drawer>
-              <Button color="inherit" component={Link} to="/carrito">
-                <ShoppingCartIcon sx={{ color: 'black' }} />
-              </Button>
-              <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
+              <ShoppingCart />
+              <Avatar
+                {...styles}
+                component={Link}
+                to="/profile"
+                sx={{
+                  width: 38,
+                  height: 38,
+                  marginRight: "10px",
+                  bgcolor: stringToColor(user?.name),
+                  textDecoration: "None",
+                }}
+              />
             </Box>
           </>
         )}
@@ -211,8 +296,9 @@ const NavigationBar = () => {
               aria-label="menu"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              sx={{ marginRight: '4px', color: 'black' }}
-              variant="contained" onClick={handleToggleDrawer}
+              sx={{ marginRight: "4px", color: "black" }}
+              variant="contained"
+              onClick={handleToggleDrawer}
             >
               <MenuIcon />
             </IconButton>
@@ -222,51 +308,89 @@ const NavigationBar = () => {
               onClose={handleToggleDrawer}
               transitionDuration={500}
               sx={{
-                '& .MuiDrawer-paper': {
-                  backgroundColor: '#0367a6',
-                  '&::-webkit-scrollbar': {
-                    width: '10px',
+                "& .MuiDrawer-paper": {
+                  backgroundColor: "#0367a6",
+                  "&::-webkit-scrollbar": {
+                    width: "10px",
                   },
-                  '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: 'rgba(255,255,255,0.5)',
-                    borderRadius: '10px',
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "rgba(255,255,255,0.5)",
+                    borderRadius: "10px",
                   },
-                  '&::-webkit-scrollbar-thumb:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.7)',
+                  "&::-webkit-scrollbar-thumb:hover": {
+                    backgroundColor: "rgba(255,255,255,0.7)",
                   },
-                  '&::-webkit-scrollbar-track': {
-                    backgroundColor: 'transparent',
+                  "&::-webkit-scrollbar-track": {
+                    backgroundColor: "transparent",
                   },
                 },
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <IconButton onClick={handleDrawerClose}>
-                  <CloseIcon sx={{ color: 'white' }} />
+                  <CloseIcon sx={{ color: "white" }} />
                 </IconButton>
               </div>
-              <List> 
+              <List>
                 <ListItem>
                   <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
                 </ListItem>
-                <ListItem selected={locationPath === ""} component={Link} to="/" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
-                  <ListItemText primary="Inicio" />
+                 <ListItem
+                  selected={locationPath === ""}
+                  component={Link}
+                  to="/"
+                  onClick={handleToggleDrawer}
+                  style={{ color: "white" }}
+                  sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
+                >
+                <ListItemText primary="Inicio" />
                 </ListItem>
-                <ListItem selected={locationPath === "nosotros"} component={Link} to="/nosotros" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
+                <ListItem
+                  selected={locationPath === "nosotros"}
+                  component={Link}
+                  to="/nosotros"
+                  onClick={handleToggleDrawer}
+                  style={{ color: "white" }}
+                  sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
+                >
                   <ListItemText primary="Nosotros" />
                 </ListItem>
-                <ListItem selected={locationPath === "productos"} onClick={toggleProductos} component={Link} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
+                <ListItem
+                  selected={locationPath === "productos"}
+                  onClick={toggleProductos}
+                  component={Link}
+                  style={{ color: "white" }}
+                  sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
+                >
                   <ListItemText primary="Productos" />
                   {openProductos ? <ExpandLess /> : <ExpandMore />}
                 </ListItem>
                 <Collapse in={openProductos} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem component={Link} to="/productos" onClick={handleToggleDrawer} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
+                    <ListItem
+                      component={Link}
+                      to="/productos"
+                      onClick={handleToggleDrawer}
+                      style={{ color: "white" }}
+                      sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
+                    >
                       <ListItemText primary="Todos los productos" />
                     </ListItem>
                     {categories.map((category) => (
-                      <ListItem key={category.id_categoria} onClick={handleToggleDrawer} component={Link} to={`/productos/${category.id_categoria}`} style={{ color: 'white' }} sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}>
-                        <ListItemText primary={category.nombre.charAt(0).toUpperCase() + category.nombre.slice(1).toLowerCase()} />
+                      <ListItem
+                        key={category.id_categoria}
+                        onClick={handleToggleDrawer}
+                        component={Link}
+                        to={`/productos/${category.id_categoria}`}
+                        style={{ color: "white" }}
+                        sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
+                      >
+                        <ListItemText
+                          primary={
+                            category.nombre.charAt(0).toUpperCase() +
+                            category.nombre.slice(1).toLowerCase()
+                          }
+                        />
                       </ListItem>
                     ))}
                   </List>
@@ -276,15 +400,12 @@ const NavigationBar = () => {
             <div>
               <Logo imgSize="10px" />
             </div>
-            <Button color="inherit" component={Link} to="/carrito">
-              <ShoppingCartIcon sx={{ color: 'black' }} />
-            </Button>
+
+            <ShoppingCart />
           </>
         )}
       </Toolbar>
-      {isMobileOrTablet && (
-        <Search />
-      )}
+      {isMobileOrTablet && <Search />}
       <BarColors />
     </AppBar>
   );

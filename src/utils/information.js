@@ -1,6 +1,4 @@
-import axios from "axios";
 import axiosInstance from "./axiosInstance";
-
 
 // GET
 
@@ -84,6 +82,18 @@ export async function updateHomeText(id, data) {
   }
 }
 
+export async function updateInfobar(id, data) {
+  try {
+    const { response } = await axiosInstance.patch(
+      `/info/api/infobar/${id}/`,
+      data
+    );
+    return response;
+  } catch (error) {
+    console.error("Error Updating Infobar Text: ", error);
+  }
+}
+
 export async function updateStartImage(id, data) {
   try {
     const { response } = await axiosInstance.patch(
@@ -103,7 +113,7 @@ export async function updateStartImage(id, data) {
 
 export async function updateCombinationsImage(id, data) {
   try {
-    const { response } = await axios.patch(
+    const { response } = await axiosInstance.patch(
       `/info/api/home/combinations/${id}/`,
       data,
       {
@@ -114,7 +124,7 @@ export async function updateCombinationsImage(id, data) {
     );
     return response;
   } catch (error) {
-    console.error("Error Updating Home Start Image: ", error);
+    console.error("Error Updating Home Combinations Image: ", error);
   }
 }
 
@@ -131,7 +141,7 @@ export async function updateProductsImage(id, data) {
     );
     return response;
   } catch (error) {
-    console.error("Error Updating Home Start Image: ", error);
+    console.error("Error Updating Home Products Image: ", error);
   }
 }
 
@@ -148,6 +158,6 @@ export async function updateAlliesImage(id, data) {
     );
     return response;
   } catch (error) {
-    console.error("Error Updating Home Start Image: ", error);
+    console.error("Error Updating Home Allies Image: ", error);
   }
 }

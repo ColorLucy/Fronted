@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
-import { Grid, Typography } from '@mui/material';
-import OrderComponent from './OrderComponent';
+import React, { useState } from "react";
+import { Box, Button, Grid, Typography, ThemeProvider } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { theme } from "../../styles/theme";
+import Logo from "../../components/logo";
+import ReplyIcon from "@mui/icons-material/Reply";
+import OrderComponent from "./OrderComponent";
 
 export default function Orders() {
-  const [stateProduct, setStateProduct] = useState('Pendiente');
+  const [stateProduct, setStateProduct] = useState("Pendiente");
+  const navigate = useNavigate();
 
   const handleProductState = (state) => {
     setStateProduct(state);
@@ -26,7 +31,7 @@ export default function Orders() {
       direction: "CL 5 #100-34 Antioquia",
       tel: 3902707070,
       formOfPayment: "Efectivo",
-      costoEnvioPreguntar: 6800
+      costoEnvioPreguntar: 6800,
     },
     {
       id_order: 102,
@@ -44,7 +49,7 @@ export default function Orders() {
       direction: "CL 5 #18-34 Valle del Cauca",
       tel: 3202707070,
       formOfPayment: "Efectivo",
-      costoEnvioPreguntar: 23000
+      costoEnvioPreguntar: 23000,
     },
     {
       id_order: 103,
@@ -62,7 +67,7 @@ export default function Orders() {
       direction: "Calle 10 #25-15 Bogotá",
       tel: 3101234567,
       formOfPayment: "Tarjeta crédito",
-      costoEnvioPreguntar: 10000
+      costoEnvioPreguntar: 10000,
     },
     {
       id_order: 104,
@@ -80,7 +85,7 @@ export default function Orders() {
       direction: "CL 15 #30-45 Medellín",
       tel: 3009876543,
       formOfPayment: "Transferencia bancaria",
-      costoEnvioPreguntar: 15000
+      costoEnvioPreguntar: 15000,
     },
     {
       id_order: 105,
@@ -98,24 +103,60 @@ export default function Orders() {
       direction: "Carrera 7 #12-34 Barranquilla",
       tel: 3158765432,
       formOfPayment: "Efectivo",
-      costoEnvioPreguntar: 16000
-    }
-  ]
+      costoEnvioPreguntar: 16000,
+    },
+  ];
 
   return (
-    <div display="flex">
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <Typography variant="h5" align="center" justify="center" gutterBottom paddingTop={15}>
-            Pedidos
-          </Typography>
-        </Grid>
-        {orders.map((order) => (
-          <Grid key={order.id_order} item xs={12}>
-            <OrderComponent instance={order} handleProductState={handleProductState} />
+    <ThemeProvider theme={theme}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "1rem 2rem",
+        }}
+      >
+        <Logo imgSize={40} minLen={true} />
+        <Button
+          id="return-button"
+          color="lucy_pink"
+          variant="contained"
+          startIcon={<ReplyIcon />}
+          sx={{
+            color: "white",
+            "&:hover": {
+              backgroundColor: theme.palette.lucy_red.main,
+            },
+          }}
+          onClick={() => navigate("/admin/")}
+        >
+          Volver
+        </Button>
+      </Box>
+      <div display="flex">
+        <Grid container spacing={0}>
+          <Grid item xs={12}>
+            <Typography
+              variant="h5"
+              align="center"
+              justify="center"
+              gutterBottom
+              paddingTop="16px"
+            >
+              Pedidos
+            </Typography>
           </Grid>
-        ))}
-      </Grid>
-    </div>
+          {orders.map((order) => (
+            <Grid key={order.id_order} item xs={12}>
+              <OrderComponent
+                instance={order}
+                handleProductState={handleProductState}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      </div>
+    </ThemeProvider>
   );
 }
