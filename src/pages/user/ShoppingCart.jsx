@@ -3,14 +3,26 @@ import { CartContext } from "../../context/CartContext";
 import "./shoppingcart.css";
 import { ItemCart } from "../../components/ItemCart";
 import numeral from "numeral";
-import { Box, Divider, Link, Paper, Typography } from "@mui/material";
-import { color } from "framer-motion";
+import {
+  Box,
+  Divider,
+  Link,
+  Paper,
+  Typography,
+  TextField,
+} from "@mui/material";
+import { WhatsApp } from "@mui/icons-material";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
 
 const ShoppingCart = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [productsLength, setProductsLength] = useState(0);
-
+  const [userName, setUserName] = useState("");
   const { cartItems } = useContext(CartContext);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     setProductsLength(
@@ -23,6 +35,39 @@ const ShoppingCart = () => {
       previous + current.amount * parseFloat(current.detalles[0].precio),
     0
   );
+
+  const handleDialogOpen = () => {
+    setOpenDialog(true);
+  };
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleWhatsAppOrder = () => {
+    if (userName === "") {
+      alert("Por favor ingrese su nombre antes de continuar");
+      return;
+    } else {
+      const cartInfo = cartItems.map(
+        (item) =>
+          `${item.nombre}: ${item.fabricante} - ${
+            item.amount
+          } unidades - ${numeral(parseFloat(item.detalles[0].precio)).format(
+            "$0,0"
+          )} la unidad,`
+      );
+      const message = `Hola, soy ${userName}, me gustaría ordenar lo siguiente:\n${cartInfo.join(
+        "\n"
+      )}\nTotal: ${numeral(total).format("$0,0")}`;
+      const whatsappLink = `https://wa.me/573117232695/?text=${encodeURIComponent(
+        message
+      )}`;
+
+      window.open(whatsappLink, "_blank");
+      handleDialogClose();
+    }
+  };
 
   return (
     <Box className="cartContainer">
@@ -86,16 +131,75 @@ const ShoppingCart = () => {
           {cartItems.length === 0 ? (
             <Typography className="cartNull">Tu carrito está vacío</Typography>
           ) : (
-            <Box>
-              {cartItems.map((item, i) => (
-                <ItemCart key={i} item={item} />
-              ))}
-            </Box>
+            <>
+              <Box
+                sx={{
+                  maxHeight: "450px",
+                  overflowY: "auto",
+                  overflowX: "hidden",
+                }}
+              >
+                {cartItems.map((item, i) => (
+                  <ItemCart key={i} item={item} />
+                ))}
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+                <Typography className="total" sx={{ marginTop: "10px" }}>
+                  Total: {numeral(total).format("$0,0")}
+                </Typography>
+                <Box
+                  variant="contained"
+                  color="success"
+                  sx={{
+                    display: "flex",
+                    padding: "5px 10px",
+                    height: "40px",
+                    borderRadius: "5px",
+                    backgroundColor: "#2e7d32",
+                    color: "white",
+                    border: "1px solid #2e7d32",
+                    transition: "background-color 0.3s, color 0.3s",
+                  }}
+                  onClick={() => handleDialogOpen()}
+                >
+                  <WhatsApp sx={{ color: "white" }} />
+                  <Typography color="white">Terminar compra</Typography>
+                </Box>
+              </Box>
+            </>
           )}
-          <Typography className="total">
-            Total: {numeral(total).format("$0,0")}
-          </Typography>
         </Paper>
+      )}
+      {openDialog && (
+        <Dialog
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          open={openDialog}
+        >
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Por favor ingrese su nombre
+            </DialogContentText>
+            <TextField
+              label="Nombre"
+              variant="outlined"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              fullWidth
+              sx={{ marginBottom: "10px" }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Box onClick={handleDialogClose}>Cerrar</Box>
+            <Box
+              onClick={() => {
+                handleWhatsAppOrder();
+              }}
+            >
+              Aceptar
+            </Box>
+          </DialogActions>
+        </Dialog>
       )}
     </Box>
   );
