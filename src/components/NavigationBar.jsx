@@ -332,7 +332,10 @@ const NavigationBar = () => {
                 </IconButton>
               </div>
               <List>
-                <ListItem
+                <ListItem>
+                  <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
+                </ListItem>
+                 <ListItem
                   selected={locationPath === ""}
                   component={Link}
                   to="/"
@@ -340,7 +343,7 @@ const NavigationBar = () => {
                   style={{ color: "white" }}
                   sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
                 >
-                  <ListItemText primary="Inicio" />
+                <ListItemText primary="Inicio" />
                 </ListItem>
                 <ListItem
                   selected={locationPath === "nosotros"}
