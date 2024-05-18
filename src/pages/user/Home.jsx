@@ -153,13 +153,14 @@ export default function Home() {
   });
 
   return (
-    <Box sx={{ minHeight: "calc(100vh - 160px)" }}>
+    <Box sx={{ minHeight: "calc(100dvh - 160px)" }}>
       <Grid
         container
         spacing={2}
         justifyContent="center"
         alignItems="center"
-        paddingTop={2}
+        width={"100%"}
+        margin={0}
         style={
           isMobileOrTablet ? { paddingLeft: "10px", paddingRight: "10px" } : {}
         }
@@ -173,17 +174,19 @@ export default function Home() {
             xs={12}
             style={{
               backgroundImage: `url(${startImages[0].url})`,
-              backgroundSize: "cover",
+              backgroundSize: isMobileOrTablet ? "contain":"cover",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               width: "100%",
-              minHeight: "100vh",
+              height: "min-content",
+              minHeight: isMobileOrTablet ? "65dvh":"100dvh",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               color: "white",
               textAlign: "center",
               zIndex: 0,
+
             }}
           >
             {/* Contenido de texto superpuesto */}
@@ -278,7 +281,7 @@ export default function Home() {
                       elevation={0}
                       sx={{
                         maxWidth: "100%",
-                        height: "50vh",
+                        height: "50dvh",
                         width: "100%",
                         justifyContent: "center",
                         display: "flex",

@@ -182,7 +182,7 @@ const NavigationBar = () => {
       style={{ backgroundColor: "#F2F3F4" }}
     >
       <Toolbar
-        sx={{ justifyContent: "space-between", padding: "0px !important" }}
+        sx={{ justifyContent: "space-between", padding: "0px !important", gap: "10px" }}
       >
         {!isMobileOrTablet && (
           <>
