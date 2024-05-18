@@ -3,33 +3,75 @@ import axiosInstance from "./axiosInstance";
 // GET
 
 export async function getInfoBarInfo() {
-  try {
-    const { data } = await axiosInstance.get(`/info/api/infobar/`);
-    // console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching InfoBar info: ", error);
+  let dataInfo = {}
+  const now = new Date().getTime();
+  const infoData = localStorage.getItem('info_data');
+  const storedTime = localStorage.getItem('info_data_time');
+  const lastFetchTime = storedTime ? parseInt(storedTime, 10) : 0;
+  if (infoData && (now - lastFetchTime) < 28800000) {
+    dataInfo = JSON.parse(infoData);
+  } else {
+    await axiosInstance.get(`/info/api/infobar/`)
+      .then(({ data }) => {
+        localStorage.setItem('info_data', JSON.stringify(data));
+        localStorage.setItem('info_data_time', now.toString());
+        dataInfo = data
+      })
+      .catch((error) => {
+        localStorage.removeItem("info_data")
+        localStorage.removeItem("info_data_time")
+        console.error("Error fetching InfoBar info: ", error);
+      });
   }
+  return dataInfo;
 }
 
 export async function getHomeInfo() {
-  try {
-    const { data } = await axiosInstance.get(`/info/api/home/text/`);
-    // console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching Home text info: ", error);
+  let dataInfo = {}
+  const now = new Date().getTime();
+  const homeData = localStorage.getItem('home_data');
+  const storedTime = localStorage.getItem('home_data_time');
+  const lastFetchTime = storedTime ? parseInt(storedTime, 10) : 0;
+  if (homeData && (now - lastFetchTime) < 28800000) {
+    dataInfo = JSON.parse(homeData);
+  } else {
+    await axiosInstance.get(`/info/api/home/text/`)
+      .then(({ data }) => {
+        localStorage.setItem('home_data', JSON.stringify(data));
+        localStorage.setItem('home_data_time', now.toString());
+        dataInfo = data
+      })
+      .catch((error) => {
+        localStorage.removeItem("home_data")
+        localStorage.removeItem("home_data_time")
+        console.error("Error fetching InfoBar info: ", error);
+      });
   }
+  return dataInfo;
 }
 
 export async function getStartImages() {
-  try {
-    const { data } = await axiosInstance.get(`/info/api/home/start/`);
-    // console.log(data);
-    return data;
-  } catch (error) {
-    console.error("Error fetching Start images: ", error);
+  let dataInfo = []
+  const now = new Date().getTime();
+  const startImgs = localStorage.getItem('start_Imgs');
+  const storedTime = localStorage.getItem('start_Imgs_time');
+  const lastFetchTime = storedTime ? parseInt(storedTime, 10) : 0;
+  if (startImgs && (now - lastFetchTime) < 28800000) {
+    dataInfo = JSON.parse(startImgs);
+  } else {
+    await axiosInstance.get(`/info/api/home/start/`)
+      .then(({ data }) => {
+        localStorage.setItem('start_Imgs', JSON.stringify(data));
+        localStorage.setItem('start_Imgs_time', now.toString());
+        dataInfo = data
+      })
+      .catch((error) => {
+        localStorage.removeItem("start_Imgs")
+        localStorage.removeItem("start_Imgs_time")
+        console.error("Error fetching start images info: ", error);
+      });
   }
+  return dataInfo;
 }
 
 export async function getCombinationsImages() {
