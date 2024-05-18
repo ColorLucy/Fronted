@@ -136,16 +136,29 @@ const NavigationBar = () => {
 
   const styles = user ? { ...stringAvatar(user.name) } : null;
   useEffect(() => {
-    axiosInstance
-      .get("/products/view-categories/")
-      .then((response) => {
-        setCategories(response.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        setLoading(true);
-        console.error("Error al obtener los datos de categorias:", error);
-      });
+    const now = new Date().getTime();
+    const storedCategories = localStorage.getItem('categories');
+    const storedTime = localStorage.getItem('categories_time');
+    const lastFetchTime = storedTime ? parseInt(storedTime, 10) : 0;
+    if (storedCategories && (now - lastFetchTime) < 28800000) {
+      setCategories(JSON.parse(storedCategories));
+    } else {
+      axiosInstance
+        .get("/products/view-categories/")
+        .then((response) => {
+          setCategories(response.data);
+          localStorage.setItem('categories', JSON.stringify(response.data));
+          localStorage.setItem('categories_time', now.toString());
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(true);
+          localStorage.removeItem("categories")
+          localStorage.removeItem("categories_time")
+          console.error("Error al obtener los datos de categorias:", error);
+        });
+    }
+
   }, []);
 
   const toggleProductos = () => {
@@ -175,7 +188,7 @@ const NavigationBar = () => {
           <>
             <Logo imgSize="50px" />
             <Search />
-            <Box sx={{ display: "flex", alignItems: "end", color: "black" }}>
+            <Box sx={{ display: "flex", alignItems: "center", color: "black" }}>
               <Button
                 variant={locationPath === "" ? "contained" : ""}
                 component={Link}
@@ -202,6 +215,7 @@ const NavigationBar = () => {
                 onClose={handleToggleDrawer}
                 transitionDuration={500}
                 sx={{
+                  display: "flex",
                   "& .MuiDrawer-paper": {
                     backgroundColor: "#0367a6",
                     "&::-webkit-scrollbar": {
@@ -220,7 +234,9 @@ const NavigationBar = () => {
                   },
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <div style={{
+                  display: "flex", justifyContent: "center"
+                }}>
                   <Button onClick={handleDrawerClose}>
                     <CloseIcon sx={{ color: "white" }} />
                   </Button>
@@ -248,11 +264,10 @@ const NavigationBar = () => {
                           key={index}
                           onClick={handleToggleDrawer}
                           component={Link}
-                          to={`/productos/?categoriaId=${
-                            category.id_categoria
-                          }&categoriaName=${encodeURIComponent(
-                            category.nombre
-                          )}`}
+                          to={`/productos/?categoriaId=${category.id_categoria
+                            }&categoriaName=${encodeURIComponent(
+                              category.nombre
+                            )}`}
                           sx={{
                             "&:hover": {
                               backgroundColor: "#ffffff1a",
@@ -280,7 +295,7 @@ const NavigationBar = () => {
                 sx={{
                   width: 38,
                   height: 38,
-                  marginRight: "10px",
+                  marginInline: "10px",
                   bgcolor: stringToColor(user?.name),
                   textDecoration: "None",
                 }}
@@ -335,7 +350,7 @@ const NavigationBar = () => {
                 <ListItem>
                   <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
                 </ListItem>
-                 <ListItem
+                <ListItem
                   selected={locationPath === ""}
                   component={Link}
                   to="/"
@@ -343,7 +358,7 @@ const NavigationBar = () => {
                   style={{ color: "white" }}
                   sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
                 >
-                <ListItemText primary="Inicio" />
+                  <ListItemText primary="Inicio" />
                 </ListItem>
                 <ListItem
                   selected={locationPath === "nosotros"}

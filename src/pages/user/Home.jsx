@@ -103,31 +103,26 @@ export default function Home() {
     const fetchTextInfo = async () => {
       const data = await getHomeInfo();
       setTextInfo(data[0]);
-      // console.log("Home Text: ", data[0]);
     };
     const fetchStartImages = async () => {
       const data = await getStartImages();
       setStartImages(data);
-      // console.log("Start: ", data);
       setLoadingStart(false);
     };
     const fetchCombinationsImages = async () => {
       const data = await getCombinationsImages();
       setCombinationsImages(data);
-      // console.log("Combinations: ", data);
       setLoadingCombinations(false);
     };
     const fetchProductsImages = async () => {
       const data = await getProductsImages();
       setProductsImages(data);
-      // console.log("Products: ", data);
       setLoadingProducts(false);
     };
     const fetchAlliesImages = async () => {
       const data = await getAlliesImages();
       setAlliesImages(data);
       setLoadingAllies(false);
-      // console.log("Allies: ", data);
     };
     fetchTextInfo();
     fetchStartImages();
