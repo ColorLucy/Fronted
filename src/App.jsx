@@ -35,7 +35,7 @@ const Admin = () => {
         <Route Component={() => <AdminDashboard><EditCard /></AdminDashboard>} path="edit/:id_product" />
         <Route Component={() => <AdminDashboard><HomeEdit /></AdminDashboard>} path="/home/edit" />
         <Route Component={() => <AdminDashboard><ProductDashboard /></AdminDashboard>} path="products" />
-        <Route Component={Orders} path="orders/" />
+        <Route Component={() => <AdminDashboard><Orders /></AdminDashboard>} path="orders/" />
         <Route Component={() => <Navigate replace to="/admin/products" />} path="/" />
       </Routes>
     </AuthProvider>
