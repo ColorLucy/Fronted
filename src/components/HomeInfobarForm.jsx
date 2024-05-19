@@ -77,12 +77,6 @@ const HomeInfobarForm = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography
-              textAlign="center"
-              sx={{ fontWeight: "bold", fontSize: "1.5rem" }}
-            >
-              Sección Contacto
-            </Typography>
             <TextField
               id="title"
               name="title"

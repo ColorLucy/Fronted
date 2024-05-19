@@ -70,7 +70,7 @@ const ShoppingCart = () => {
 
   return (
     <Box className="cartContainer">
-      <Box onClick={() => setCartOpen(true)} className="buttonCartContainer" sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <Box onClick={() => setCartOpen(true)} className="buttonCartContainer" sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "10px" }}>
         <Box className="buttonCart">
           <svg
             width={"35px"}

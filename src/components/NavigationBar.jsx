@@ -188,7 +188,7 @@ const NavigationBar = () => {
           <>
             <Logo imgSize="50px" />
             <Search />
-            <Box sx={{ display: "flex", alignItems: "center", color: "black" }}>
+            <Box sx={{ display: "flex", alignItems: "center", color: "black", }}>
               <Button
                 variant={locationPath === "" ? "contained" : ""}
                 component={Link}
