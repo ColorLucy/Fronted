@@ -89,7 +89,7 @@ useEffect(()=> modifyTitle("Productos"), [])
   };
 
   const handleEditProduct = (id) => {
-    navigate("/admin/edit/" + id);
+    navigate("/admin/product/edit/" + id);
     handleClose();
   };
 
