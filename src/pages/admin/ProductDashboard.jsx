@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
@@ -56,14 +56,14 @@ function createData(imagen, producto, precio, unidad, color) {
 }
 
 const ProductDashboard = ({ modifyTitle, search }) => {
-  const [data, setData] = React.useState([]);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [page, setPage] = React.useState(0);
-  const [productCount, setProductCount] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [loading, setLoading] = React.useState(true);
+  const [data, setData] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [page, setPage] = useState(0);
+  const [productCount, setProductCount] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  modifyTitle("Productos")
+
   async function obtenerProductos() {
     const datos = await consultarProductos();
     setProductCount(datos.length);
@@ -79,7 +79,7 @@ const ProductDashboard = ({ modifyTitle, search }) => {
   };
 
 
-
+useEffect(()=> modifyTitle("Productos"), [])
   const handleViewProduct = (nombre, id_producto) => {
     window.open(
       window.location.origin +
@@ -128,7 +128,7 @@ const ProductDashboard = ({ modifyTitle, search }) => {
           {setLoading(false)}
         </>
       ) : (
-        <Box sx={{ margin: "0 2rem" }} component={Paper}>
+        <Box sx={{}} component={Paper}>
           <TableContainer
             sx={{ overflowX: "auto", borderRadius: "0.25rem" }}
             component={Paper}

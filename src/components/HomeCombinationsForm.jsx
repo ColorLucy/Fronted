@@ -208,12 +208,7 @@ const HomeCombinationsForm = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography
-              textAlign="center"
-              sx={{ fontWeight: "bold", fontSize: "1.5rem" }}
-            >
-              Sección Combinaciones
-            </Typography>
+
             <TextField
               id="combinations_title"
               name="combinations_title"

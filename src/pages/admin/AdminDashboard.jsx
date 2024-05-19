@@ -1,11 +1,17 @@
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
+import GroupsIcon from '@mui/icons-material/Groups';
+import ListIcon from '@mui/icons-material/List';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import SearchIcon from "@mui/icons-material/Search";
-import { Button, InputAdornment, TextField } from '@mui/material';
+import SettingsPhoneIcon from '@mui/icons-material/SettingsPhone';
+import TvIcon from '@mui/icons-material/Tv';
+import { Button, Collapse, InputAdornment, TextField } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -19,11 +25,11 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { cloneElement, useState } from 'react';
-import Logo from '../../components/logo';
 import { useNavigate } from "react-router-dom";
-const drawerWidth = 240;
+import Logo from '../../components/logo';
+const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -91,10 +97,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function AdminDashboard({ children }) {
-  const theme = useTheme();
+  const queryParams = new URLSearchParams(location.search);
+  const editPage = decodeURIComponent(queryParams.get("edit-page"));
   const [open, setOpen] = useState(true);
   const [title, setTitle] = useState("");
   const [search, setSearch] = useState("");
+  const [editSect, setEditSect] = useState(editPage);
+  const [openHomeE, setOpenHomeE] = useState(!(editPage === "null"));
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
@@ -107,11 +116,22 @@ function AdminDashboard({ children }) {
   const icons = {
     'Productos': <FormatPaintIcon />,
     'Pedidos': <AssignmentIcon />,
-    'Pagina de Inicio': <DisplaySettingsIcon />,
+    'Editar Pagina de Inicio': <DisplaySettingsIcon />,
+  }
+  const pagesUrls = {
+    'Productos': "/admin/products/",
+    'Pedidos': "/admin/orders/",
+    'Editar Pagina de Inicio': "/admin/home/edit",
   }
   const modifyTitle = (newTitle) => {
     setTitle(newTitle)
   };
+
+  const editSections = {
+    "Sección de Inicio": <TvIcon />, "Sección de Combinaciones": <ListAltIcon />,
+    "Sección de Productos": <ListIcon />, "Sección de Aliados": <GroupsIcon />, "Sección de Contacto": <SettingsPhoneIcon />
+  }
+
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -176,11 +196,13 @@ function AdminDashboard({ children }) {
           {Object.entries(icons).map(([text, icon], index) => (
             <ListItem key={text} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
+                selected={title === text}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                 }}
+                onClick={(e) => text === "Editar Pagina de Inicio" ? setOpenHomeE(prev => !prev) : navigate(pagesUrls[text])}
               >
                 <ListItemIcon
                   sx={{
@@ -192,7 +214,26 @@ function AdminDashboard({ children }) {
                   {icon}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                {text === "Editar Pagina de Inicio" ? openHomeE ? <ExpandLess /> : <ExpandMore /> : <></>}
               </ListItemButton>
+              {text === "Editar Pagina de Inicio" && <Collapse in={openHomeE} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  {Object.entries(editSections).map(([textEdit, icon], index) =>
+                    <ListItemButton key={textEdit} sx={{ pl: 4 }}
+                      onClick={(e) => {
+                        setEditSect(textEdit);
+                        navigate(pagesUrls['Editar Pagina de Inicio'] + `?edit-page=${encodeURIComponent(textEdit)}`)
+                      }}
+                      selected={text === "Editar Pagina de Inicio" && textEdit === editSect}
+                    >
+                      <ListItemIcon>
+                        {icon}
+                      </ListItemIcon>
+                      <ListItemText primary={textEdit} />
+                    </ListItemButton>
+                  )}
+                </List>
+              </Collapse>}
             </ListItem>
           ))}
         </List>

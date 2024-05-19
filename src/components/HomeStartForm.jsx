@@ -68,7 +68,7 @@ const HomeStartForm = () => {
         let newImages = [];
         let newImagesFile = [];
         for (const item of data) {
-          console.log("Item", item);
+
           initialImages.push(item.url);
           newImages.push(item.url);
           newImagesFile.push(null);
@@ -76,7 +76,6 @@ const HomeStartForm = () => {
         setInitialStartImageURL(initialImages);
         setNewStartImageURL(newImages);
         setNewImageFile(newImagesFile);
-        // console.log(data);
       }
       setLoadingStartImages(false);
     };
@@ -88,15 +87,6 @@ const HomeStartForm = () => {
    * @param {Object} values - An object with the values to edit
    */
   const submitStartData = async (values) => {
-    /*console.log(values);
-    console.log(initialStartImageURL);
-    console.log(newStartImageURL);
-    console.log(initialStartImageURL !== newStartImageURL);
-    let start_image = newStartImageURL;
-    alert(JSON.stringify({ ...values }, null, 2));
-    alert(JSON.stringify({ start_image }, null, 2));
-    console.log({ ...values });
-    console.log({ start_image });*/
 
     const data = JSON.stringify({ ...values }, null, 2);
 
@@ -215,12 +205,7 @@ const HomeStartForm = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography
-              textAlign="center"
-              sx={{ fontWeight: "bold", fontSize: "1.5rem" }}
-            >
-              Sección Inicio
-            </Typography>
+
             <TextField
               id="start_title"
               name="start_title"

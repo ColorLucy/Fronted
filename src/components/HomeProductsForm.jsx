@@ -193,12 +193,7 @@ const HomeProductsForm = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography
-              textAlign="center"
-              sx={{ fontWeight: "bold", fontSize: "1.5rem" }}
-            >
-              Sección Productos
-            </Typography>
+
             <TextField
               id="products_text"
               name="products_text"

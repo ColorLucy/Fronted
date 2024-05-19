@@ -193,12 +193,6 @@ const HomeAlliesForm = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Typography
-              textAlign="center"
-              sx={{ fontWeight: "bold", fontSize: "1.5rem" }}
-            >
-              Sección Productos
-            </Typography>
             <TextField
               id="allies_text"
               name="allies_text"

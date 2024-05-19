@@ -31,11 +31,10 @@ const Admin = () => {
     <AuthProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
-        <Route Component={AddCard} path="add-product/" />
-        <Route Component={EditCard} path="edit/:id_product" />
-        <Route Component={HomeEdit} path="/home/edit" />
-
-        <Route Component={() => <AdminDashboard><ProductDashboard/></AdminDashboard>} path="products" />
+        <Route Component={() => <AdminDashboard><AddCard /></AdminDashboard>} path="add-product/" />
+        <Route Component={() => <AdminDashboard><EditCard /></AdminDashboard>} path="edit/:id_product" />
+        <Route Component={() => <AdminDashboard><HomeEdit /></AdminDashboard>} path="/home/edit" />
+        <Route Component={() => <AdminDashboard><ProductDashboard /></AdminDashboard>} path="products" />
         <Route Component={Orders} path="orders/" />
         <Route Component={() => <Navigate replace to="/admin/products" />} path="/" />
       </Routes>
