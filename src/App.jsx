@@ -1,5 +1,5 @@
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
 import NavigationBar from "./components/NavigationBar";
@@ -21,6 +21,7 @@ import WhatsApp from "./components/WhatsApp";
 import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
 import Profile from "./pages/user/Profile";
+import ProductDashboard from "./pages/admin/ProductDashboard";
 
 /**
  * Vista del admin
@@ -33,9 +34,10 @@ const Admin = () => {
         <Route Component={AddCard} path="add-product/" />
         <Route Component={EditCard} path="edit/:id_product" />
         <Route Component={HomeEdit} path="/home/edit" />
-        <Route Component={AdminDashboard} path="/" />
-        <Route Component={ProductTable} path="products/" />
+
+        <Route Component={() => <AdminDashboard><ProductDashboard/></AdminDashboard>} path="products" />
         <Route Component={Orders} path="orders/" />
+        <Route Component={() => <Navigate replace to="/admin/products" />} path="/" />
       </Routes>
     </AuthProvider>
   );

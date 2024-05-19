@@ -50,8 +50,7 @@ axiosInstance.interceptors.response.use((response) => {
   // Haz algo con los datos de la respuesta
   return response;
 }, function (error) {
-  console.log("HOla", error, error.response.status )
-  if (error.response.status === 403) {
+  if (error.response.status === 403 || error.response.status === 401) {
     window.location.href = "/admin/login?invalid=true";
   }
   return Promise.reject(error);
