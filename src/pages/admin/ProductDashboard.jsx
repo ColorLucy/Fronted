@@ -1,11 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import ReplyIcon from "@mui/icons-material/Reply";
 import {
   Table,
   TableBody,
@@ -58,14 +55,13 @@ function createData(imagen, producto, precio, unidad, color) {
   };
 }
 
-const ProductDashboard = () => {
-  const [data, setData] = React.useState([]);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [page, setPage] = React.useState(0);
-  const [productCount, setProductCount] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [loading, setLoading] = React.useState(true);
-  const [search, setSearch] = React.useState("");
+const ProductDashboard = ({ modifyTitle, search }) => {
+  const [data, setData] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [page, setPage] = useState(0);
+  const [productCount, setProductCount] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   async function obtenerProductos() {
@@ -82,21 +78,18 @@ const ProductDashboard = () => {
     setAnchorEl(null);
   };
 
-  const handleAddProduct = () => {
-    navigate("/admin/add-product/");
-    handleClose();
-  };
 
+useEffect(()=> modifyTitle("Productos"), [])
   const handleViewProduct = (nombre, id_producto) => {
     window.open(
       window.location.origin +
-        `/productos/${encodeURIComponent(nombre)}-${id_producto}`
+      `/productos/${encodeURIComponent(nombre)}-${id_producto}`
     );
     handleClose();
   };
 
   const handleEditProduct = (id) => {
-    navigate("/admin/edit/" + id);
+    navigate("/admin/product/edit/" + id);
     handleClose();
   };
 
@@ -125,59 +118,7 @@ const ProductDashboard = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "1rem 2rem",
-        }}
-      >
-        <Logo imgSize={40} minLen={true} />
-        <h3 className={`${styles.dashboardTitle}`}>Productos</h3>
-        <TextField
-          color="lucy_yellow"
-          label="Search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          placeholder={"Buscar"}
-          onChange={(e) => setSearch(e.target.value.toLowerCase())}
-        ></TextField>
-        <Button
-          sx={{
-            backgroundColor: "#C63CA2",
-            color: "white",
-            fontFamily: "Roboto",
-            "&:hover": {
-              backgroundColor: "#D7194A",
-            },
-          }}
-          startIcon={<AddIcon />}
-          onClick={handleAddProduct}
-        >
-          Añadir Producto
-        </Button>
-        <Button
-          sx={{
-            backgroundColor: "#C63CA2",
-            color: "white",
-            fontFamily: "Roboto",
-            "&:hover": {
-              backgroundColor: "#D7194A",
-            },
-          }}
-          startIcon={<ReplyIcon />}
-          onClick={() => navigate("/admin/")}
-        >
-          Volver
-        </Button>
-      </Box>
+
       {loading ? (
         <>
           {
@@ -187,7 +128,7 @@ const ProductDashboard = () => {
           {setLoading(false)}
         </>
       ) : (
-        <Box sx={{ margin: "0 2rem" }} component={Paper}>
+        <Box sx={{}} component={Paper}>
           <TableContainer
             sx={{ overflowX: "auto", borderRadius: "0.25rem" }}
             component={Paper}
@@ -290,12 +231,12 @@ const ProductDashboard = () => {
                 backgroundColor: "#D7194A",
               },
               ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows":
-                {
-                  color: "white",
-                  fontFamily: "Roboto",
-                  fontWeight: "bold",
-                  marginTop: "1rem",
-                },
+              {
+                color: "white",
+                fontFamily: "Roboto",
+                fontWeight: "bold",
+                marginTop: "1rem",
+              },
               ".MuiTablePagination-select, .MuiTablePagination-actions": {
                 fontFamily: "Roboto",
                 borderRadius: "5px",

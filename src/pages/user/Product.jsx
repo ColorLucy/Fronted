@@ -176,7 +176,7 @@ const Product = () => {
 
   if (!product) {
     return (
-      <div style={{ textAlign: "center", height: "calc(100vh - 180px)" }}>
+      <div style={{ textAlign: "center", height: "calc(100dvh - 180px)" }}>
         <CircularProgress style={{ margin: "100px" }} />
         <Typography>
           Cargando la informacion del producto {nombre_producto}...
@@ -243,7 +243,7 @@ const Product = () => {
         display: "flex",
         flexDirection: "column",
         p: 2,
-        minHeight: "calc(100vh - 180px)",
+        minHeight: "calc(100dvh - 180px)",
       }}
     >
       <Bread_crumb

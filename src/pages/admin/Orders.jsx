@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Grid, Typography, ThemeProvider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { theme } from "../../styles/theme";
@@ -6,14 +6,14 @@ import Logo from "../../components/logo";
 import ReplyIcon from "@mui/icons-material/Reply";
 import OrderComponent from "./OrderComponent";
 
-export default function Orders() {
+export default function Orders({ modifyTitle }) {
   const [stateProduct, setStateProduct] = useState("Pendiente");
-  const navigate = useNavigate();
+
 
   const handleProductState = (state) => {
     setStateProduct(state);
   };
-
+  useEffect(() => modifyTitle("Pedidos"), [])
   const orders = [
     {
       id_order: 101,
@@ -109,44 +109,9 @@ export default function Orders() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "1rem 2rem",
-        }}
-      >
-        <Logo imgSize={40} minLen={true} />
-        <Button
-          id="return-button"
-          color="lucy_pink"
-          variant="contained"
-          startIcon={<ReplyIcon />}
-          sx={{
-            color: "white",
-            "&:hover": {
-              backgroundColor: theme.palette.lucy_red.main,
-            },
-          }}
-          onClick={() => navigate("/admin/")}
-        >
-          Volver
-        </Button>
-      </Box>
       <div display="flex">
         <Grid container spacing={0}>
-          <Grid item xs={12}>
-            <Typography
-              variant="h5"
-              align="center"
-              justify="center"
-              gutterBottom
-              paddingTop="16px"
-            >
-              Pedidos
-            </Typography>
-          </Grid>
+
           {orders.map((order) => (
             <Grid key={order.id_order} item xs={12}>
               <OrderComponent

@@ -51,8 +51,7 @@ const ShoppingCart = () => {
     } else {
       const cartInfo = cartItems.map(
         (item) =>
-          `${item.nombre}: ${item.fabricante} - ${
-            item.amount
+          `${item.nombre}: ${item.fabricante} - ${item.amount
           } unidades - ${numeral(parseFloat(item.detalles[0].precio)).format(
             "$0,0"
           )} la unidad,`
@@ -71,7 +70,7 @@ const ShoppingCart = () => {
 
   return (
     <Box className="cartContainer">
-      <Box onClick={() => setCartOpen(true)} className="buttonCartContainer">
+      <Box onClick={() => setCartOpen(true)} className="buttonCartContainer" sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "10px" }}>
         <Box className="buttonCart">
           <svg
             width={"35px"}

@@ -80,7 +80,7 @@ export default function InfoBar() {
             color="inherit"
             onClick={() => {
               window.open(
-                "https://api.whatsapp.com/send/?phone=%2B573155176725&text&type=phone_number&app_absent=0",
+                "https://api.whatsapp.com/send/?phone=%2B573155176725&text=Hola,%20deseo%20asesor%C3%ADa&type=phone_number&app_absent=0",
                 "_blank"
               );
             }}
