@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconButton, InputBase, Paper, Popper, Fade, CircularProgress, Typography, useMediaQuery, ListItem} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
-import homeColorLucyImg from "../../public/homeColorLucy1.png";
 import axiosInstance from '../utils/axiosInstance';
 import axios from 'axios';
 
@@ -15,12 +14,35 @@ const SearchBar = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [loadingSearch, setLoadingSearch] = useState(false);
   const [placement, setPlacement] = useState();
+  const popperRef = useRef(null)
   
   const handleClick = (newPlacement) => (event) => {
     setAnchorEl(event.currentTarget);
     setOpen((prev) => placement !== newPlacement || !prev);
     setPlacement(newPlacement);
   };
+
+  const handleClosePopper = () => {
+    setOpen(false);
+  };
+
+  const handleClickOutside = (event) => {
+    if (
+      popperRef.current &&
+      !popperRef.current.contains(event.target) &&
+      anchorEl &&
+      !anchorEl.contains(event.target)
+    ) {
+      handleClosePopper();
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [anchorEl]);
 
   useEffect(() => {
     window.addEventListener('resize', handleClosePopper);
@@ -29,10 +51,6 @@ const SearchBar = () => {
       window.removeEventListener('resize', handleClosePopper);
     };
   }, []);
-
-  const handleClosePopper = () => {
-    setOpen(false);
-  };
 
   useEffect(() => {
     let cancel;
@@ -50,9 +68,10 @@ const SearchBar = () => {
         } catch (error) {
           if (axios.isCancel(error)) {
             console.log('Solicitud cancelada:', error.message);
+            setLoadingSearch(true);
           } else {
             console.error('Error al obtener los resultados de búsqueda:', error);
-            setLoadingSearch(false);
+            setLoadingSearch(true);
           }
         }
       } else {
@@ -121,11 +140,28 @@ const SearchBar = () => {
           open={open}
           anchorEl={anchorEl}
           placement={placement}
+          ref={popperRef}
           transition
         >
           {({ TransitionProps }) => (
             <Fade {...TransitionProps} timeout={400}>
-              <Paper sx={{ maxHeight: '300px', overflowY: 'auto' , width: isMobileOrTablet ? '100%' : 600, marginTop: '3px'}}>
+              <Paper sx={{ maxHeight: '300px', 
+                          overflowY: 'auto' , 
+                          width: isMobileOrTablet ? '100%' : 600, 
+                          marginTop: '3px',
+                          '&::-webkit-scrollbar': {
+                            width: '15px', 
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            backgroundColor: '#888', 
+                            borderRadius: '10px',
+                          },
+                          '&::-webkit-scrollbar-thumb:hover': {
+                            backgroundColor: '#555', 
+                          },
+                          '&::-webkit-scrollbar-track': {
+                            backgroundColor: '#f1f1f1', 
+                          },}}>
                 {loadingSearch ? (
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '16px' }}>
                     <CircularProgress />
@@ -147,7 +183,7 @@ const SearchBar = () => {
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                               
                                 <img
-                                  src={result.detalles[0].imagenes.length > 0 ? result.detalles[0].imagenes[0].url: homeColorLucyImg}
+                                  src={result.detalles[0].imagenes.length > 0 ? result.detalles[0].imagenes[0].url: "homeColorLucy1.png"}
                                   alt={result.detalles[0].nombre}
                                   style={{ width: "50px", height: "50px", marginRight: "10px" }}
                                 />

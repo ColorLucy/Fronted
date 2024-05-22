@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import { Link } from 'react-router-dom';
 import { CartContext } from "../../context/CartContext";
 import "./shoppingcart.css";
 import { ItemCart } from "../../components/ItemCart";
@@ -6,10 +7,10 @@ import numeral from "numeral";
 import {
   Box,
   Divider,
-  Link,
   Paper,
   Typography,
   TextField,
+  Button,
 } from "@mui/material";
 import { WhatsApp } from "@mui/icons-material";
 import Dialog from "@mui/material/Dialog";
@@ -59,7 +60,7 @@ const ShoppingCart = () => {
       const message = `Hola, soy ${userName}, me gustaría ordenar lo siguiente:\n${cartInfo.join(
         "\n"
       )}\nTotal: ${numeral(total).format("$0,0")}`;
-      const whatsappLink = `https://wa.me/573117232695/?text=${encodeURIComponent(
+      const whatsappLink = `https://wa.me/573155176725/?text=${encodeURIComponent(
         message
       )}`;
 
@@ -133,7 +134,7 @@ const ShoppingCart = () => {
             <>
               <Box
                 sx={{
-                  maxHeight: "450px",
+                  maxHeight: "350px",
                   overflowY: "auto",
                   overflowX: "hidden",
                 }}
@@ -142,29 +143,50 @@ const ShoppingCart = () => {
                   <ItemCart key={i} item={item} />
                 ))}
               </Box>
-              <Box sx={{ display: "flex", justifyContent: "space-around" }}>
-                <Typography className="total" sx={{ marginTop: "10px" }}>
-                  Total: {numeral(total).format("$0,0")}
-                </Typography>
-                <Box
-                  variant="contained"
-                  color="success"
-                  sx={{
-                    display: "flex",
-                    padding: "5px 10px",
-                    height: "40px",
-                    borderRadius: "5px",
-                    backgroundColor: "#2e7d32",
-                    color: "white",
-                    border: "1px solid #2e7d32",
-                    transition: "background-color 0.3s, color 0.3s",
-                  }}
-                  onClick={() => handleDialogOpen()}
-                >
-                  <WhatsApp sx={{ color: "white" }} />
-                  <Typography color="white">Terminar compra</Typography>
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
+                  <Box sx={{ flex: 1 , maxWidth: '150px'}}>
+                    <Typography className="total" sx={{ marginTop: "10px" }}>
+                      Total: {numeral(total).format("$0,0")}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "10px" }}>
+                    <Button
+                      variant="contained"
+                      color="success"
+                      sx={{
+                        display: "flex",
+                        padding: "5px 10px",
+                        
+                        borderRadius: "5px",
+                        backgroundColor: "#2e7d32",
+                        color: "white",
+                        border: "1px solid #2e7d32",
+                        transition: "background-color 0.3s, color 0.3s",
+                      }}
+                      onClick={() => {
+                        handleDialogOpen();
+                        setCartOpen(false);
+                      }}
+                    >
+                      <WhatsApp sx={{ color: "white", marginRight: '2px' }} />
+                      <Typography color="white">Enviar a un asesor</Typography>
+                    </Button>
+                    <Link to="/pedido" style={{ textDecoration: "none", width: "100%" }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                          marginTop: "10px",
+                          height: "40px",
+                          width: "100%"
+                        }}
+                        onClick={() => setCartOpen(false)}
+                      >
+                        <Typography color="white">Finalizar compra</Typography>
+                      </Button>
+                    </Link>
+                  </Box>
                 </Box>
-              </Box>
             </>
           )}
         </Paper>
