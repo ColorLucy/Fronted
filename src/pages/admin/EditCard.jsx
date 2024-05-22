@@ -270,57 +270,56 @@ const EditCard = () => {
       sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}
     >
       <form onSubmit={handleUpdate}>
-        <Grid item xs={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <Typography variant="h5" component="div" gutterBottom>
-            Producto
-          </Typography>
-          <TextField
-            fullWidth
-            label="Nombre"
-            name="nombre"
-            value={productData.nombre}
-            onChange={handleInputChange}
-            variant="outlined"
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Fabricante"
-            name="fabricante"
-            value={productData.fabricante}
-            onChange={handleInputChange}
-            variant="outlined"
-            sx={{ marginBottom: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Descripción"
-            name="descripcion"
-            value={productData.descripcion ? productData.descripcion : ""}
-            onChange={handleInputChange}
-            variant="outlined"
-            sx={{ marginBottom: 2 }}
-          />
-          <InputLabel id="Categoria">Categoría del producto</InputLabel>
-          <Select
-            fullWidth
-            labelId="Categoria"
-            id="demo-simple-select"
-            value={productData.categoria}
-            onChange={handleCategory}
-            sx={{ marginBottom: 2 }}
-          >
-            {categories.map((category) => (
-              <MenuItem
-                key={category.id_categoria}
-                value={category.id_categoria}
-              >
-                {category.nombre} (id {category.id_categoria})
-              </MenuItem>
-            ))}
-          </Select>
+        <Grid container direction={"column"} justifyContent={"center"} alignItems={"center"} marginTop={"30px"} >
+          <Grid item xs>
+            <TextField
+              fullWidth
+              label="Nombre del Producto"
+              name="nombre"
+              value={productData.nombre}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 3 }}
+            />
+            <TextField
+              fullWidth
+              label="Fabricante"
+              name="fabricante"
+              value={productData.fabricante}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 3 }}
+            />
+            <TextField
+              fullWidth
+              label="Descripción"
+              name="descripcion"
+              value={productData.descripcion ? productData.descripcion : ""}
+              onChange={handleInputChange}
+              variant="outlined"
+              sx={{ marginBottom: 3 }}
+            />
+            {/*<InputLabel id="Categoria">Categoría del producto</InputLabel>*/}
+            <Select
+              fullWidth
+              labelId="Categoria"
+              id="demo-simple-select"
+              value={productData.categoria}
+              onChange={handleCategory}
+              sx={{ marginBottom: 2 }}
+            >
+              {categories.map((category) => (
+                <MenuItem
+                  key={category.id_categoria}
+                  value={category.id_categoria}
+                >
+                  {category.nombre} (id {category.id_categoria})
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
         </Grid>
-        <Grid container spacing={2} direction={"row"} justifyContent={"center"} alignItems={"center"} >
+        <Grid container spacing={0} direction={"row"} justifyContent={"center"} alignItems={"flex-start"} marginTop={"30px"}>
             <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
               {showAddDetailButton && (
                 <IconButton aria-label="add" onClick={handleAddDetail}>
@@ -346,109 +345,109 @@ const EditCard = () => {
                 })}
               </Tabs>
             </Grid>
-            <Grid item xs={10} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
+            <Grid item xs={9} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
               <Grid container spacing={1}>
                 <Grid item xs={6}>
-                  {details.map((detail, index) => {
-                    return (
-                      <TabPanel key={index} value={numberDetail} index={index} >
-                        <TextField
-                          fullWidth
-                          label="Nombre"
-                          name="nombre"
-                          onClick={() => setFocus({ nombre: true, precio: false, unidad: false, color: false })}
-                          value={detail.nombre}
-                          autoFocus={focus.nombre}
-                          onBlur={() => setFocus({ ...focus, nombre: false })}
-                          onChange={handleInputChangeDetail}
-                          variant="outlined"
-                          sx={{ marginBottom: 2 }}
-                        />
-                        <TextField
-                          fullWidth
-                          label="Precio"
-                          name="precio"
-                          onClick={() => setFocus({ nombre: false, precio: true, unidad: false, color: false })}
-                          value={detail.precio}
-                          autoFocus={focus.precio}
-                          onBlur={() => setFocus({ ...focus, precio: false })}
-                          onChange={handleInputChangeDetail}
-                          variant="outlined"
-                          sx={{ marginBottom: 2 }}
-                        />
-                        <TextField
-                          fullWidth
-                          label="Cantidad"
-                          name="unidad"
-                          value={detail.unidad}
-                          autoFocus={focus.unidad}
-                          onBlur={() => setFocus({ ...focus, unidad: false })}
-                          onChange={handleInputChangeDetail}
-                          variant="outlined"
-                          sx={{ marginBottom: 2 }}
-                        />
-                        <TextField
-                          fullWidth
-                          label="Color"
-                          name="color"
-                          value={detail.color}
-                          autoFocus={focus.color}
-                          onBlur={() => setFocus({ ...focus, color: false })}
-                          onChange={handleInputChangeDetail}
-                          variant="outlined"
-                          sx={{ marginBottom: 2 }}
-                        />
-                        <div>
-                          {!showAddImageTarget && (
-                            <div>
-                              <Button variant="outlined" color="error" onClick={(e) => handleRemoveDetail(currentDetailId, e)} size="small" >
-                                Eliminar este detalle
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </TabPanel>
-                    );
-                  })}
-                </Grid>
-                <Grid item xs={6} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
-                  <div style={{ width: "100%", height: "100%", marginBottom: "5px", }} >
-                    {detailImagesInterface.length > 0 ? (
-                      <CustomCarousel autoPlay={autoPlay} onImageChange={handleImageChange} >
-                        {detailImagesInterface.map((image, index) => (
-                          <img
-                            key={index}
-                            src={image.url}
-                            alt={`Product Image ${index}`}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                            }}
+                  <Grid item xs>
+                    {details.map((detail, index) => {
+                      return (
+                        <TabPanel key={index} value={numberDetail} index={index} >
+                          <TextField
+                            fullWidth
+                            label="Nombre del Detalle"
+                            name="nombre"
+                            onClick={() => setFocus({ nombre: true, precio: false, unidad: false, color: false })}
+                            value={detail.nombre}
+                            autoFocus={focus.nombre}
+                            onBlur={() => setFocus({ ...focus, nombre: false })}
+                            onChange={handleInputChangeDetail}
+                            variant="outlined"
+                            sx={{ marginBottom: 3 }}
                           />
-                        ))}
-                      </CustomCarousel>
-                    ) : (
-                      <div style={{ width: "100%", height: "100%", border: "1px dashed #ccc", display: "flex", alignItems: "center", justifyContent: "center", }} >
-                        <div>No hay imágenes para mostrar</div>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    {!showAddImageTarget && (
-                      <div>
-                        <IconButton aria-label="add" onClick={(e) => handleAddImage(e)} >
-                          <AddCircleIcon />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={(e) => handleRemoveImage(selectedImageIndex, e)} >
-                          <DeleteIcon />
-                        </IconButton>
-                      </div>
-                    )}
-                    {showAddImageTarget && (
-                      <AddImage imageUploadedClou={handleImageUrlClou} onClose={handleCloseUrlClou} />
-                    )}
-                  </div>
+                          <TextField
+                            fullWidth
+                            label="Precio"
+                            name="precio"
+                            onClick={() => setFocus({ nombre: false, precio: true, unidad: false, color: false })}
+                            value={detail.precio}
+                            autoFocus={focus.precio}
+                            onBlur={() => setFocus({ ...focus, precio: false })}
+                            onChange={handleInputChangeDetail}
+                            variant="outlined"
+                            sx={{ marginBottom: 3 }}
+                          />
+                          <TextField
+                            fullWidth
+                            label="Cantidad"
+                            name="unidad"
+                            value={detail.unidad}
+                            autoFocus={focus.unidad}
+                            onBlur={() => setFocus({ ...focus, unidad: false })}
+                            onChange={handleInputChangeDetail}
+                            variant="outlined"
+                            sx={{ marginBottom: 3 }}
+                          />
+                          <TextField
+                            fullWidth
+                            label="Color"
+                            name="color"
+                            value={detail.color}
+                            autoFocus={focus.color}
+                            onBlur={() => setFocus({ ...focus, color: false })}
+                            onChange={handleInputChangeDetail}
+                            variant="outlined"
+                            sx={{ marginBottom: 3 }}
+                          />  
+                        </TabPanel>
+                      );
+                    })}
+                  </Grid>
+                  <Grid item xs sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", }} >
+                    <Button variant="outlined" color="error" onClick={(e) => handleRemoveDetail(currentDetailId, e)} size="small" >
+                      Eliminar este detalle
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid item xs={6} >
+                  <Grid container spacing={1} direction="column" justifyContent="center" alignItems="center">
+                    <Grid item xs={10} sx={{ width: "330px", height: "390px"}}>
+                        {detailImagesInterface.length > 0 ? (
+                          <CustomCarousel autoPlay={autoPlay} onImageChange={handleImageChange} >
+                            {detailImagesInterface.map((image, index) => (
+                              <img
+                                key={index}
+                                src={image.url}
+                                alt={`Product Image ${index}`}
+                                style={{
+                                  width: "100%",
+                                  height: "100%",
+                                  objectFit: "cover",
+                                }}
+                              />
+                            ))}
+                          </CustomCarousel>
+                        ) : (
+                          <div style={{ width: "100%", height: "100%", border: "1px dashed #ccc", display: "flex", alignItems: "center", justifyContent: "center",  }} >
+                            <div>El detalle actual no contiene  imágenes</div>
+                          </div>
+                        )}
+                    </Grid>
+                    <Grid item xs={2} sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "330px"}}>
+                      {!showAddImageTarget && (
+                        <div>
+                          <IconButton aria-label="add" onClick={(e) => handleAddImage(e)} >
+                            <AddCircleIcon />
+                          </IconButton>
+                          <IconButton aria-label="delete" onClick={(e) => handleRemoveImage(selectedImageIndex, e)} >
+                            <DeleteIcon />
+                          </IconButton>
+                        </div>
+                      )}
+                      {showAddImageTarget && (
+                        <AddImage imageUploadedClou={handleImageUrlClou} onClose={handleCloseUrlClou} />
+                      )} 
+                    </Grid> 
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

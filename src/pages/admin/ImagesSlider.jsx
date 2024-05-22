@@ -113,6 +113,7 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
           {"<"}
         </button>
       </div>
+      <div className="container">
       <div className="container__slider__links">
         {children.map((item, index) => {
           return (
@@ -130,6 +131,7 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
             ></button>
           );
         })}
+      </div>
       </div>
     </>
   );

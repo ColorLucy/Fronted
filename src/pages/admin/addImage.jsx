@@ -63,7 +63,7 @@ const AddImage = ({ imageUploadedClou,  onClose}) => {
                         endIcon={<IosShareIcon />}
                         onClick={handleSubmitImage}
                     >
-                        Enviar
+                        Subir
                     </Button>
                 )}
                 <Button
