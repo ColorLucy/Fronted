@@ -22,6 +22,7 @@ import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
 import Profile from "./pages/user/Profile";
 import ProductDashboard from "./pages/admin/ProductDashboard";
+import Order from "./pages/user/Order";
 
 /**
  * Vista del admin
@@ -60,6 +61,7 @@ const Homepage = () => {
           <Route path="/productos" element={<Products />} />
           <Route path="/productos/:info_producto" element={<Product />} />
           <Route path="/productos/:searchTerm" element={<Product />} />
+          <Route path="/pedido" element={<Order />} />
           <Route Component={Home} path="/" />
         </Routes>
       </CartProvider>
