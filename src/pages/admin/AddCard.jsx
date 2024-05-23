@@ -18,7 +18,7 @@ import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { deleteProduct, getCategories, getProduct, postProduct, updateProduct } from "../../utils/crudProducts";
-import AddImage from "./addImage";
+
 
 /**
  * Manages RUD operations for editing and deleting products, and CRUD for adding/removing details and images.

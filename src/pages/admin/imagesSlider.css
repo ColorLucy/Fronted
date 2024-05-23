@@ -32,9 +32,17 @@
     position: absolute;
     left: 0;
   }
+
+  .container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+  }
   
   .container__slider__links {
-    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 4px;
   }
   
   .container__slider__links-small {
