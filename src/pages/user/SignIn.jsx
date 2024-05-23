@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Alert, Box, Button, FilledInput, FormControl, Grow, IconButton, InputAdornment, InputLabel, Snackbar, TextField } from '@mui/material';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from "jwt-decode";
 import axiosInstance from '../../utils/axiosInstance';
 
 const SignIn = () => {
@@ -32,6 +34,21 @@ const SignIn = () => {
             setShowLoginError(true); 
           });
     };
+    // Manejador de éxito del inicio de sesión con Google
+    const onGoogleLoginSuccess = async (response) => {
+        const dataResponse = jwtDecode(response.credential); // Decodifica el token JWT
+        await axiosInstance.post("/auth/google/", { email: dataResponse.email, name: dataResponse.name })
+            .then(({ data }) => {
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${data.access}`; // Configura el token de acceso en los encabezados
+                localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh })); // Guarda los tokens en localStorage
+                localStorage.setItem('user', JSON.stringify(data.user)); // Guarda los datos del usuario en localStorage
+                navigate('/profile'); // Navega a la página de perfil
+            }).catch((e) => {
+                console.error("Error al iniciar sesión con Google:", e);
+                setShowLoginError(true); // Muestra el error de inicio de sesión
+            });
+    };
+    
     
 
     return (
@@ -99,6 +116,16 @@ const SignIn = () => {
                         <p style={{ width: '37ch', margin: "15px" }}>Registrarse</p>
                     </Link>
                 </Box>
+                {/* Componente GoogleLogin para el inicio de sesión con Google */}
+                <GoogleLogin
+                onSuccess={onGoogleLoginSuccess} // Manejador de éxito
+                onError={() => {
+                    setShowLoginError(true); // Manejador de error
+                }}
+    size='large'
+    width={"100%"}
+/>
+                
             </div>
         </div>
     )
