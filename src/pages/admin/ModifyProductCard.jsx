@@ -28,7 +28,7 @@ import Product from "../user/Product";
  * 
  * @returns {JSX.Element} A JSX element that permits manipulate products data 
  */
-const EditCard = () => {
+const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const navigate = useNavigate();
   const { id_product } = useParams();
   const [autoPlay, setAutoPlay] = useState(false);
@@ -98,7 +98,7 @@ const EditCard = () => {
     setDetails(updatedDetails);
     setFocus({ ...focus, [name]: true })
     setProduct(prev => {
-      prev.detalles = prev.detalles.map((detalle, index) => 
+      prev.detalles = prev.detalles.map((detalle, index) =>
         index === numberDetail ? { ...detalle, [name]: value } : detalle)
       return prev
     })
@@ -238,8 +238,7 @@ const EditCard = () => {
    * @param id from product to delete
    * @param {Event} e - the event from the form or button click that triggers the function
    */
-  async function handleUpdate(e) {
-    e.preventDefault();
+  async function handleUpdate() {
     const data = {
       producto: productData,
       detalles: details,
@@ -265,8 +264,8 @@ const EditCard = () => {
    * handles the deletion of an existing product by sending a DELETE request to the server
    * @param {Event} e - the event from the button click or form submission that triggers the function
    */
-  async function handleDelete(e) {
-    e.preventDefault();
+  async function handleDelete() {
+
     let ok = confirm("¿Confirmas la eliminación del producto?");
     if (ok) {
       const response = await deleteProduct(id_product);
@@ -279,12 +278,63 @@ const EditCard = () => {
       }
     }
   }
+  /**
+ * handles the update of an existing product by sending a PUT request to the server
+ * @param id from product to delete
+ * @param {Event} e - the event from the form or button click that triggers the function
+ */
+  async function handleCreate(e) {
+    e.preventDefault();
+    const data = {
+      producto: productData,
+      detalles: details,
+      imagenes: detailImagesSaved,
+    };
+    const response = await postProduct(data);
+    if (response) {
+      alert("El producto ha sido creado correctamente.");
+    } else {
+      alert("La creación del producto ha fallado, vuelve a intentarlo.");
+    }
+    setNewDetail({
+      nombre: "NUEVO DETALLE",
+      precio: "",
+      unidad: "",
+      color: "",
+    })
+    setShowAddDetailButton(false)
+    navigate("/admin/");
+
+  }
+  useEffect(() => {
+    setModifyProduct({
+      update: handleUpdate,
+      delete: handleDelete,
+      create: handleCreate
+    })
+  }, [productData, details, detailImagesSaved])
 
   /**
    * handles the retrieval of all categories and the interaction with details-images data
    */
   useEffect(() => {
-    fetchData(id_product);
+    if (id_product) { 
+      fetchData(id_product)
+      modifyTitle("Editar Producto")
+    }
+    else{ 
+      setProduct({
+      detalles: [{
+        nombre: "NUEVO DETALLE",
+        precio: "",
+        unidad: "",
+        color: "",
+        imagenes: []
+      }],
+      categoria: {}
+    })
+    modifyTitle("Añadir Producto")
+  }
     fetchCategories();
   }, [id_product]);
 
@@ -492,14 +542,6 @@ const EditCard = () => {
             </Grid>
           </Grid>
         </Paper>
-        <Box>
-          <Button variant="contained" color="primary" onClick={handleUpdate}>
-            Guardar cambios
-          </Button>
-          <Button variant="contained" color="error" onClick={handleDelete} style={{ marginLeft: "8px" }} >
-            Eliminar producto
-          </Button>
-        </Box>
       </Grid>
       <Grid item width={"100%"}>
         <Product productData={product} detailId={numberDetail} />
@@ -508,4 +550,4 @@ const EditCard = () => {
   );
 };
 
-export default EditCard;
+export default ModifyProductCard;

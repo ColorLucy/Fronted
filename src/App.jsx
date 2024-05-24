@@ -1,28 +1,26 @@
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
+import InfoBar from "./components/InfoBar";
 import NavigationBar from "./components/NavigationBar";
+import WhatsApp from "./components/WhatsApp";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
+import HomeEdit from "./pages/admin/HomeEdit";
+import ModifyProductCard from "./pages/admin/ModifyProductCard";
+import Orders from "./pages/admin/Orders";
+import ProductDashboard from "./pages/admin/ProductDashboard";
 import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
-import Products from "./pages/user/Products";
-import EditCard from "./pages/admin/EditCard";
-import AddCard from "./pages/admin/AddCard";
-import ProductTable from "./pages/admin/ProductDashboard";
-import Orders from "./pages/admin/Orders";
+import Order from "./pages/user/Order";
 import Product from "./pages/user/Product";
-import HomeEdit from "./pages/admin/HomeEdit";
-import InfoBar from "./components/InfoBar";
-import WhatsApp from "./components/WhatsApp";
+import Products from "./pages/user/Products";
+import Profile from "./pages/user/Profile";
 import SignIn from "./pages/user/SignIn";
 import SignUp from "./pages/user/SignUp";
-import Profile from "./pages/user/Profile";
-import ProductDashboard from "./pages/admin/ProductDashboard";
-import Order from "./pages/user/Order";
 
 /**
  * Vista del admin
@@ -32,10 +30,8 @@ const Admin = () => {
     <AuthProvider>
       <CartProvider>
         <Routes>
-
-          <Route Component={() => <AdminDashboard><AddCard /></AdminDashboard>} path="add-product/" />
-          <Route Component={() => <AdminDashboard><EditCard /></AdminDashboard>} path="product/edit/:id_product" />
-
+          <Route Component={() => <AdminDashboard><ModifyProductCard /></AdminDashboard>} path="add-product/" />
+          <Route Component={() => <AdminDashboard><ModifyProductCard /></AdminDashboard>} path="product/edit/:id_product" />
         </Routes>
       </CartProvider>
       <Routes>
