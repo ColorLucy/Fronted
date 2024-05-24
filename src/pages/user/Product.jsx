@@ -289,7 +289,7 @@ const Product = ({ productData, detailId }) => {
         nombreProducto={product.nombre}
         fabricanteProducto={product.fabricante}
       />
-      <Grid container spacing={2} height={"100%"} justifyContent={"center"}>
+      <Grid container spacing={2} height={"100%"} justifyContent={"center"} gap={"10px"}>
         <Grid item xs={12} md={7}>
           <Carousel
             autoPlay={false}
@@ -370,16 +370,18 @@ const Product = ({ productData, detailId }) => {
           flexDirection={"column"}
           justifyContent={"center"}
           component={Paper}
+          elevation={4}
           sx={{ maxWidth: "400px !important", padding: "16px", margin: "auto" }}
         >
           <Typography variant="h3">{selectedDetail.nombre} </Typography>
           <Typography variant="h5" color="text.secondary">
             {product.fabricante}
           </Typography>
+          <Typography variant="body1">{product.descripcion}</Typography>
           <Typography variant="h4" sx={{ my: 2 }}>
             {numeral(selectedDetail.precio).format("$0,0.00")}
           </Typography>
-          <Typography variant="body1">{selectedDetail.descripcion}</Typography>
+
           <Box display="flex" flexDirection="column" margin={"10px"}>
             <Typography variant="h7" color="text.secondary">
               Presentación: {selectedDetail.unidad}

@@ -75,6 +75,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       ...prevData,
       categoria: value,
     }));
+    setProduct((prevData) => ({
+      ...prevData,
+      categoria: categories.find(category => category.id_categoria === value),
+    }));
   };
 
   const handleInputChange = (e) => {
@@ -83,7 +87,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       ...prevData,
       [name]: value,
     }));
-
+    setProduct(prev => ({
+      ...prev,
+      [name]: value,
+    }))
   };
 
   const handleInputChangeDetail = (e) => {
@@ -279,10 +286,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     }
   }
   /**
- * handles the update of an existing product by sending a PUT request to the server
- * @param id from product to delete
- * @param {Event} e - the event from the form or button click that triggers the function
- */
+  * handles the update of an existing product by sending a PUT request to the server
+  * @param id from product to delete
+  * @param {Event} e - the event from the form or button click that triggers the function
+  */
   async function handleCreate(e) {
     e.preventDefault();
     const data = {
@@ -318,23 +325,23 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    * handles the retrieval of all categories and the interaction with details-images data
    */
   useEffect(() => {
-    if (id_product) { 
+    if (id_product) {
       fetchData(id_product)
       modifyTitle("Editar Producto")
     }
-    else{ 
+    else {
       setProduct({
-      detalles: [{
-        nombre: "NUEVO DETALLE",
-        precio: "",
-        unidad: "",
-        color: "",
-        imagenes: []
-      }],
-      categoria: {}
-    })
-    modifyTitle("Añadir Producto")
-  }
+        detalles: [{
+          nombre: "NUEVO DETALLE",
+          precio: "",
+          unidad: "",
+          color: "",
+          imagenes: []
+        }],
+        categoria: {}
+      })
+      modifyTitle("Añadir Producto")
+    }
     fetchCategories();
   }, [id_product]);
 

@@ -31,6 +31,7 @@ import { useNavigate } from "react-router-dom";
 import Logo from '../../components/logo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
+import { BarColors } from "../../components/NavigationBar";
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -147,6 +148,10 @@ function AdminDashboard({ children }) {
     e.preventDefault()
     modifyProduct.delete()
   }
+  const handleCreateProduct = (e) => {
+    e.preventDefault()
+    modifyProduct.create()
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -222,14 +227,33 @@ function AdminDashboard({ children }) {
                   </Button>
                 </Box>
               </Box> :
-              <Typography variant="h6" noWrap component="div">
-                {title}
-              </Typography>}
+              title === "Añadir Producto" ?
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                    width: "100%",
+                    padding: "10px"
+                  }}
+                >
+                  <Typography variant="h6" noWrap component="div">
+                    {title}
+                  </Typography>
+                  <Button variant="contained" color="primary" onClick={handleCreateProduct} endIcon={<SaveIcon />}>
+                    Guardar cambios
+                  </Button>
+                </Box> :
+                <Typography variant="h6" noWrap component="div">
+                  {title}
+                </Typography>}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader sx={{ display: "flex", justifyContent: "center" }}>
+        <DrawerHeader sx={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
           <Logo imgSize={40} minLen={true} />
+          <BarColors cantIntermediate={3}/>
         </DrawerHeader>
         <Divider />
         <List>
