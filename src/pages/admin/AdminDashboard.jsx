@@ -97,7 +97,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function AdminDashboard({ children }) {
-  console.log(location)
   const queryParams = new URLSearchParams(location.search);
   const editPage = decodeURIComponent(queryParams.get("edit-page"));
   const [open, setOpen] = useState(true);
