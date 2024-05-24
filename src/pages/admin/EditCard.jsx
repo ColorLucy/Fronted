@@ -83,6 +83,7 @@ const EditCard = () => {
       ...prevData,
       [name]: value,
     }));
+
   };
 
   const handleInputChangeDetail = (e) => {
@@ -96,6 +97,11 @@ const EditCard = () => {
     updatedDetails[numberDetail][name] = value;
     setDetails(updatedDetails);
     setFocus({ ...focus, [name]: true })
+    setProduct(prev => {
+      prev.detalles = prev.detalles.map((detalle, index) => 
+        index === numberDetail ? { ...detalle, [name]: value } : detalle)
+      return prev
+    })
   };
 
   const handleImageChange = (index) => {
@@ -148,9 +154,25 @@ const EditCard = () => {
     setDetailImagesSaved(updatedImagesSaved);
   };
 
-  const handleAddDetail = () => {
-    setShowAddDetailButton(false)
+  const handleAddDetail = (e) => {
+    e.preventDefault()
+    const newDetailItem = {
+      nombre: "NUEVO DETALLE",
+      precio: "",
+      unidad: "",
+      color: "NA",
+      producto: id_product,
+      id_detalle: null,
+      imagenes: []
+    };
+    setShowAddDetailButton(false);
     setDetails(prevDetails => [...prevDetails, newDetail]);
+    setProduct((prev) => ({
+      ...prev,
+      detalles: [...prev.detalles, newDetailItem]
+    }));
+    setNumberDetail(details.length)
+    setDetailImagesInterface([])
   };
 
   const handleRemoveDetail = (id, e) => {
@@ -177,10 +199,6 @@ const EditCard = () => {
       </div>
     );
   }
-
-  const handleCancel = () => {
-    navigate("/admin/");
-  };
 
   /**
    * handles the retrieval of data from an existing product in the database
@@ -361,11 +379,9 @@ const EditCard = () => {
         </Paper>
         <Paper elevation={4} square={false} sx={{ gap: "20px", display: "flex", flexDirection: "column", width: "100%", }}>
           <Grid item xs={2} sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", overflowX: "auto" }} >
-            {showAddDetailButton && (
-              <IconButton aria-label="add" onClick={handleAddDetail}>
-                <AddCircleIcon />
-              </IconButton>
-            )}
+            <IconButton onClick={handleAddDetail}>
+              <AddCircleIcon />
+            </IconButton>
             <Tabs
               orientation="horizontal"
               variant="scrollable"

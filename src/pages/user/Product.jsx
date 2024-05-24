@@ -212,7 +212,7 @@ const Product = ({ productData, detailId }) => {
     else if (!product || product.id_producto !== id_producto) {
       fetchProducto();
     }
-  }, [id_producto, detailId]);
+  }, [id_producto, detailId, productData, productData?.detalles]);
 
   if (!product) {
     return (
