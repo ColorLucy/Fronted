@@ -30,10 +30,16 @@ import Order from "./pages/user/Order";
 const Admin = () => {
   return (
     <AuthProvider>
+      <CartProvider>
+        <Routes>
+
+          <Route Component={() => <AdminDashboard><AddCard /></AdminDashboard>} path="add-product/" />
+          <Route Component={() => <AdminDashboard><EditCard /></AdminDashboard>} path="product/edit/:id_product" />
+
+        </Routes>
+      </CartProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
-        <Route Component={() => <AdminDashboard><AddCard /></AdminDashboard>} path="add-product/" />
-        <Route Component={() => <AdminDashboard><EditCard /></AdminDashboard>} path="product/edit/:id_product" />
         <Route Component={() => <AdminDashboard><HomeEdit /></AdminDashboard>} path="/home/edit" />
         <Route Component={() => <AdminDashboard><ProductDashboard /></AdminDashboard>} path="products" />
         <Route Component={() => <AdminDashboard><Orders /></AdminDashboard>} path="orders/" />
