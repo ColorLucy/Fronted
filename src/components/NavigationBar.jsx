@@ -235,16 +235,19 @@ const NavigationBar = () => {
                 }}
               >
                 <div style={{
-                  display: "flex", justifyContent: "center"
+                  display: "flex", justifyContent: "end"
                 }}>
                   <Button onClick={handleDrawerClose}>
                     <CloseIcon sx={{ color: "white" }} />
                   </Button>
                 </div>
-                <div style={{ width: 250 }}>
-                  {loading ? (
-                    <CircularProgress style={{ margin: "50px" }} />
-                  ) : (
+                <div style={{ width: 250}}>
+                    {loading ? (
+                      <div style={{ display: 'flex', width: 250 , height: "100vh", justifyContent: "center", alignItems: "center"}}>
+                        <CircularProgress style={{ color: "white"}} />
+                      </div> 
+                    )
+                  : (
                     <>
                       <MenuItem
                         onClick={handleToggleDrawer}

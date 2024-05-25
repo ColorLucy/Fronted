@@ -98,12 +98,15 @@ export default function Order() {
   const [showLoginError, setShowLoginError] = React.useState(false);
   const [showSignUpError, setShowSignUpError] = React.useState(false);
   const [showSignUpErrorGoogle, setShowSignUpErrorGoogle] = React.useState(false);
-  const { cartItems } = React.useContext(CartContext);
-  const [productsLength, setProductsLength] = React.useState(0);
+  const { cartItems, clearCart } = React.useContext(CartContext);
+  const [cantidadProductos, setCantidadProductos] = React.useState(0);
   const [openModal, setOpenModal] = React.useState(false);
   const [orderInfo, setOrderInfo] = React.useState(null);
   const [isExpanded, setIsExpanded] = React.useState(false);
   const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
+  const [subtotal, setSubtotal] = React.useState(0);
+  const [total, setTotal] = React.useState(0);
+  
 
   React.useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -111,6 +114,24 @@ export default function Order() {
       setUserData(user);
     }
   }, []);
+
+  // Actualizar el estado del botón de "Siguiente" cuando cambia el paso activo
+  React.useEffect(() => {
+    setIsNextButtonDisabled(!areRequiredFieldsCompleted());
+  }, [activeStep, userData, orderInfo, tipoEnvio]);
+
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleClickShowNewPassword = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const handleClickShowConfirmPassword = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
   const toggleDrawer = () => {
     setIsExpanded(!isExpanded);
@@ -132,23 +153,17 @@ export default function Order() {
     return completedSteps() === totalSteps();
   };
 
-  // Función para verificar si todos los campos requeridos en el paso actual están completos
+  // Verificar si todos los campos requeridos en el paso actual están completos
   const areRequiredFieldsCompleted = () => {
     if (activeStep === 0) {
       // Lógica para verificar los campos requeridos en el paso 0
       return !!userData && !!orderInfo && !!orderInfo.phoneNumber && !!orderInfo.address;
     } else if (activeStep === 1) {
       // Lógica para verificar los campos requeridos en el paso 1
-      return !!tipoEnvio; // O cualquier otra lógica que necesites
+      return !!tipoEnvio; 
     }
-    // En otros pasos, se asume que los campos requeridos están completos
     return true;
   };
-
-  // Efecto para actualizar el estado del botón de "Siguiente" cuando cambia el paso activo
-  React.useEffect(() => {
-    setIsNextButtonDisabled(!areRequiredFieldsCompleted());
-  }, [activeStep, userData, orderInfo, tipoEnvio]);
 
   const handleNext = () => {
     if (isLastStep() && !allStepsCompleted()) {
@@ -161,6 +176,9 @@ export default function Order() {
         }
       }
       setActiveStep(incompleteStepIndex);
+      if (incompleteStepIndex === 2) {
+        enviarPedido();
+      }
     } else {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
@@ -178,47 +196,17 @@ export default function Order() {
     const newCompleted = completed;
     newCompleted[activeStep] = true;
     setCompleted(newCompleted);
-    handleNext();
+    if (activeStep === steps.length - 1) {
+      enviarPedido();
+    } else {
+      handleNext();
+    }
   };
 
   const handleReset = () => {
     setActiveStep(0);
     setCompleted({});
   };
-
-  const handleEnvioChange = (event) => {
-    setTipoEnvio(event.target.value);
-  };
-
-  const [value, setValue] = React.useState('1');
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleClickShowNewPassword = () => {
-    setShowNewPassword(!showNewPassword);
-  };
-
-  const handleClickShowConfirmPassword = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
-
-  React.useEffect(() => {
-    setProductsLength(
-      cartItems.reduce((previous, current) => previous + current.amount, 0)
-    );
-  }, [cartItems]);
-
-  const total = cartItems.reduce(
-    (previous, current) =>
-      previous + current.amount * parseFloat(current.detalles[0].precio),
-    0
-  );
 
   const onGoogleLoginSuccess = async (response) => {
     setLoading(true)
@@ -291,18 +279,98 @@ export default function Order() {
       handleDialogClose();
   };
 
+  const enviarPedido = async () => {
+    try {
+      const orderData = JSON.parse(localStorage.getItem('order'));
+      const cartProductsData = JSON.parse(localStorage.getItem('cartProducts'));
+      const userData = JSON.parse(localStorage.getItem('user'));
+
+      const pedido = {
+        phone_number: orderData.phoneNumber,
+        address: orderData.address,
+        tipo_envio: orderData.tipoEnvio,
+        subtotal: orderData.subtotal,
+        total: orderData.total,
+        user: userData.id,
+        cantidad_productos: orderData.cantidad_productos,
+        productos: cartProductsData.map(producto => {
+          const detalles = Array.isArray(producto.detalles) ? producto.detalles[0] : producto.detalles;
+          return {
+            detalle: detalles.id_detalle,
+            cantidad: producto.amount
+          };
+        })
+      };
+
+      console.log('Datos del pedido:', pedido);
+      const response = await axiosInstance.post('/shopping/create-pedido/', pedido);
+      console.log('Pedido enviado con éxito:', response.data);
+      clearCart();
+      return response.data;
+    } catch (error) {
+      console.error('Error al enviar el pedido:', error);
+      return { error: error.message };
+    }
+  };
+
   React.useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem('order'));
-    if (orderData) {
+    if (orderData && (!orderData.address || !orderData.phoneNumber)) {
+      setOpenModal(true);
+    } else if (orderData) {
       setOrderInfo(orderData);
     } else {
       setOpenModal(true);
     }
   }, []);
 
+  React.useEffect(() => {
+    const newSubtotal = cartItems.reduce(
+      (previous, current) =>
+        previous + current.amount * parseFloat(current.detalles[0].precio),
+      0
+    );
+    setSubtotal(newSubtotal);
+    setCantidadProductos(cartItems.reduce((prev, curr) => prev + curr.amount, 0));
+
+    // Actualizar el localStorage cuando cambie el carrito
+    const orderData = JSON.parse(localStorage.getItem('order')) || {};
+    const updatedOrderData = { ...orderData, subtotal: newSubtotal, cantidad_productos: cantidadProductos };
+    localStorage.setItem('order', JSON.stringify(updatedOrderData));
+  }, [cartItems, cantidadProductos]);
+
+  React.useEffect(() => {
+    const costoEnvio = 0; 
+    const newTotal = tipoEnvio === 'Domicilio' ? subtotal + costoEnvio : subtotal;
+    setTotal(newTotal);
+
+    // Actualizar el localStorage cuando cambie el tipo de envío
+    const orderData = JSON.parse(localStorage.getItem('order')) || {};
+    const updatedOrderData = { ...orderData, total: newTotal };
+    localStorage.setItem('order', JSON.stringify(updatedOrderData));
+  }, [subtotal, tipoEnvio]);
+
+  const [value, setValue] = React.useState('1');
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+  const handleEnvioChange = (event) => {
+    const selectedTipoEnvio = event.target.value;
+    setTipoEnvio(selectedTipoEnvio);
+
+    // Actualizar el localStorage cuando cambie el tipo de envío
+    const orderData = JSON.parse(localStorage.getItem('order')) || {};
+    const updatedOrderData = { ...orderData, tipoEnvio: selectedTipoEnvio };
+    localStorage.setItem('order', JSON.stringify(updatedOrderData));
+  };
+
   const handleSaveOrderInfo = (data) => {
-    localStorage.setItem('order', JSON.stringify(data));
-    setOrderInfo(data);
+    // Agregar el tipo de envío seleccionado al objeto data
+    const updatedData = { ...data, tipoEnvio, subtotal, total, cantidad_productos : cartItems.length};
+    // Guardar el objeto actualizado en el localStorage
+    localStorage.setItem('order', JSON.stringify(updatedData));
+    setOrderInfo(updatedData);
     setOpenModal(false);
   };
 
@@ -609,16 +677,16 @@ export default function Order() {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <StoreIcon sx={{ fontSize: 48 }} />
                     <Box sx={{ ml: 2 }}>
-                      <Typography variant="body1">
+                      <Typography fontSize={14} color='gray'>
                         Tienda: Cra. 16 #10-93, Bretana, Cali, Valle del Cauca, Colombia
                       </Typography>
-                      <Typography variant="body1" sx={{ mt: 1 }}>
+                      <Typography fontSize={14} color='gray' sx={{ mt: 1 }}>
                         Horario de atención: 10:00am-07:00pm (Lunes a Sábado)
                       </Typography>
                     </Box>
                   </Box>
                   <RadioGroup
-                    aria-label="Tipo de envío"
+                    aria-label="tipoEnvio"
                     name="tipoEnvio"
                     value={tipoEnvio}
                     onChange={handleEnvioChange}
@@ -633,9 +701,19 @@ export default function Order() {
               </Card>
               <Card variant="outlined" sx={{ mt: 2, mb: 2, ml: 4, mr: 4}}>
                 <CardContent>
-                  <LocalShippingIcon sx={{ fontSize: 48 }} />
+                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <LocalShippingIcon sx={{ fontSize: 48 }} />
+                    <Box sx={{ ml: 2 }}>
+                      <Typography variant="body1">
+                        Envíos en todo Cali
+                      </Typography>
+                      <Typography variant="body1" sx={{ mt: 1 }}>
+                        Costo de envío: $5.000
+                      </Typography>
+                    </Box>
+                  </Box>
                   <RadioGroup
-                    aria-label="Tipo de envío"
+                    aria-label="tipoEnvio"
                     name="tipoEnvio"
                     value={tipoEnvio}
                     onChange={handleEnvioChange}
@@ -724,8 +802,11 @@ export default function Order() {
                       ))
                     )}
                   </Card>
-                  <Box sx={{ bottom: 0, mt: 2 }}>
-                    <Typography variant="h6">
+                  <Box sx={{ bottom: 0, mt: 2, paddingBottom: '10px' }}>
+                    <Typography fontSize={14}>
+                      Subtotal: {numeral(subtotal).format("$0,0")}
+                    </Typography>
+                    <Typography fontSize={18} fontWeight='bold' >
                       Total: {numeral(total).format("$0,0")}
                     </Typography>
                   </Box>
@@ -747,7 +828,10 @@ export default function Order() {
               )}
             </Card>
             <div style={{ bottom: 0, marginTop:'20px'}}>
-              <Typography variant="h6">
+              <Typography variant="h7">
+                Subtotal: {numeral(subtotal).format("$0,0")}
+              </Typography>
+              <Typography variant="h5" fontWeight='bold'>
                 Total: {numeral(total).format("$0,0")}
               </Typography>
             </div>
