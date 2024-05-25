@@ -44,7 +44,6 @@ export async function getHomeInfo() {
       .catch((error) => {
         localStorage.removeItem("home_data")
         localStorage.removeItem("home_data_time")
-        console.error("Error fetching InfoBar info: ", error);
       });
   }
   return dataInfo;
@@ -68,7 +67,6 @@ export async function getStartImages() {
       .catch((error) => {
         localStorage.removeItem("start_Imgs")
         localStorage.removeItem("start_Imgs_time")
-        console.error("Error fetching start images info: ", error);
       });
   }
   return dataInfo;
@@ -77,10 +75,9 @@ export async function getStartImages() {
 export async function getCombinationsImages() {
   try {
     const { data } = await axiosInstance.get(`/info/api/home/combinations/`);
-    // console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching Combinations images: ", error);
+    return []
   }
 }
 
@@ -90,17 +87,16 @@ export async function getProductsImages() {
     // console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching Products info: ", error);
+    return []
   }
 }
 
 export async function getAlliesImages() {
   try {
     const { data } = await axiosInstance.get(`/info/api/home/allies/`);
-    // console.log(data);
     return data;
   } catch (error) {
-    console.error("Error fetching Allies info: ", error);
+    return []
   }
 }
 

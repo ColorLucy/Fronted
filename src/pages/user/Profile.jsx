@@ -25,7 +25,7 @@ const Profile = () => {
     };
 
     return (
-        <div className="userProfilePage" style={{ height: "calc(100vh - 80px)" }}>
+        <div className="userProfilePage" style={{ minHeight: "calc(100vh - 180px)" }}>
             <div className="cardUserProfile">
                 
                 <h2 style={{ color: "black", margin: "0" }}>Perfil de Usuario</h2>
