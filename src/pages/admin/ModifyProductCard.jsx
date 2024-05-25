@@ -1,7 +1,7 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReplyIcon from "@mui/icons-material/Reply";
-import { CircularProgress, Grid, Paper } from "@mui/material";
+import { CircularProgress, Grid, Paper, InputLabel } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -16,11 +16,11 @@ import { useNavigate } from "react-router-dom";
 import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
+import { deleteProduct, getCategories, getProduct, updateProduct, postProduct } from "../../utils/crudProducts";
 import Product from "../user/Product";
 
 /**
- * Manages RUD operations for editing and deleting products, and CRUD for adding/removing details and images.
+ * Manages CRUD operations for editing and deleting products, and CRUD for adding/removing details and images.
  * This function encapsulates all product editing functionality.
  * 
  * @description This function handles various operations related to products, details and images. Orchestra 
@@ -50,7 +50,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   });
 
   const [newDetail, setNewDetail] = useState({
-    nombre: "NUEVO DETALLE",
+    nombre: "",
     precio: "",
     unidad: "",
     color: "",
@@ -214,6 +214,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    */
   async function fetchData(id_product) {
     const responseData = await getProduct(id_product);
+    console.log(responseData)
     const firstDetail = responseData.detalles.length > 0 ? responseData.detalles[0] : {};
     setProductData({
       nombre: responseData.nombre,
@@ -286,17 +287,20 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     }
   }
   /**
-  * handles the update of an existing product by sending a PUT request to the server
-  * @param id from product to delete
+  * handles the creation of a product by sending a POST request to the server
   * @param {Event} e - the event from the form or button click that triggers the function
   */
-  async function handleCreate(e) {
-    e.preventDefault();
+  async function handleCreate() {
+    if (!productData.nombre || !productData.fabricante || !productData.categoria || !newDetail.nombre || !newDetail.precio || !newDetail.unidad) {
+      alert('Por favor, completa los campos obligatorios que contienen "*"')
+      return;
+    }
     const data = {
       producto: productData,
       detalles: details,
       imagenes: detailImagesSaved,
     };
+    console.log(data)
     const response = await postProduct(data);
     if (response) {
       alert("El producto ha sido creado correctamente.");
@@ -304,14 +308,12 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       alert("La creación del producto ha fallado, vuelve a intentarlo.");
     }
     setNewDetail({
-      nombre: "NUEVO DETALLE",
+      nombre: "",
       precio: "",
       unidad: "",
       color: "",
     })
     setShowAddDetailButton(false)
-    navigate("/admin/");
-
   }
   useEffect(() => {
     setModifyProduct({
@@ -390,7 +392,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
         <Paper elevation={4} square={false} sx={{ display: "flex", flexDirection: "column", padding: "20px", width: "100%" }}>
           <TextField
             fullWidth
-            label="Nombre del Producto"
+            label="Nombre del Producto*"
             name="nombre"
             value={productData.nombre}
             onChange={handleInputChange}
@@ -399,7 +401,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
           />
           <TextField
             fullWidth
-            label="Fabricante"
+            label="Fabricante*"
             name="fabricante"
             value={productData.fabricante}
             onChange={handleInputChange}
@@ -415,7 +417,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             variant="outlined"
             sx={{ marginBottom: 3 }}
           />
-          {/*<InputLabel id="Categoria">Categoría del producto</InputLabel>*/}
+          <InputLabel id="Categoria" style={{marginLeft: '15px'}}>Categoría*</InputLabel>
           <Select
             fullWidth
             labelId="Categoria"
@@ -465,7 +467,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                   <TabPanel key={index} value={numberDetail} index={index} >
                     <TextField
                       fullWidth
-                      label="Nombre del Detalle"
+                      label="Nombre del Detalle*"
                       name="nombre"
                       onClick={() => setFocus({ nombre: true, precio: false, unidad: false, color: false })}
                       value={detail.nombre}
@@ -477,7 +479,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                     />
                     <TextField
                       fullWidth
-                      label="Precio"
+                      label="Precio*"
                       name="precio"
                       onClick={() => setFocus({ nombre: false, precio: true, unidad: false, color: false })}
                       value={detail.precio}
@@ -489,7 +491,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                     />
                     <TextField
                       fullWidth
-                      label="Cantidad"
+                      label="Presentación*"
                       name="unidad"
                       value={detail.unidad}
                       autoFocus={focus.unidad}
@@ -515,6 +517,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
               <Button variant="outlined" color="error" onClick={(e) => handleRemoveDetail(currentDetailId, e)} size="small" >
                 Eliminar este detalle
               </Button>
+              
             </Grid>
             <Grid item sx={{ width: "330px", height: "390px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               {detailImagesInterface.length > 0 ? (
