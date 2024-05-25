@@ -2,8 +2,8 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
 
-//const baseURL = "https://colorlucyserver.onrender.com";
-const baseURL = "http://127.0.0.1:8000";
+const baseURL = "https://colorlucyserver.onrender.com";
+//const baseURL = "http://127.0.0.1:8000";
 
 let authTokens = localStorage.getItem("authTokens")
   ? JSON.parse(localStorage.getItem("authTokens"))
@@ -33,11 +33,11 @@ axiosInstance.interceptors.request.use(async (req) => {
           "authTokens",
           JSON.stringify({ ...authTokens, access: data.access })
         );
+      }).catch(e => {
+        if (!window.location.pathname.startsWith("/admin")) {
+          return req
+        }
       })
-      .catch((e) => {
-        localStorage.clear();
-        window.location.href = "/admin/login?invalid=true";
-      });
   } else {
     req.headers.Authorization = `Bearer ${authTokens.access}`;
   }
@@ -51,7 +51,12 @@ axiosInstance.interceptors.response.use((response) => {
   return response;
 }, function (error) {
   if (error.response.status === 403 || error.response.status === 401) {
-    window.location.href = "/admin/login?invalid=true";
+    localStorage.clear()
+    if (window.location.pathname.startsWith("/admin")) {
+      window.location.href = "/admin/login?invalid=true";
+    }else{
+      window.location.href = "/signIn?invalid=true";
+    }
   }
   return Promise.reject(error);
 });

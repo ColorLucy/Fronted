@@ -1,6 +1,6 @@
+import { Button, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Typography, Box, Container } from "@mui/material";
-import { BsTiktok, BsFacebook, BsInstagram, BsWhatsapp } from "react-icons/bs";
+import { BsFacebook, BsInstagram, BsTiktok, BsWhatsapp } from "react-icons/bs";
 import { getInfoBarInfo } from "../utils/information";
 
 export default function InfoBar() {

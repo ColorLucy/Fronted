@@ -253,7 +253,7 @@ function AdminDashboard({ children }) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader sx={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
           <Logo imgSize={40} minLen={true} />
-          <BarColors cantIntermediate={3}/>
+          {open && <BarColors cantIntermediate={3} />}
         </DrawerHeader>
         <Divider />
         <List>

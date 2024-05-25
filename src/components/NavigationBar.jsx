@@ -1,7 +1,6 @@
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
-import ShoppingCart from "../pages/user/ShoppingCart";
 import {
   AppBar,
   Avatar,
@@ -24,6 +23,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo, { generateIntermediateColors } from "../components/logo";
 import Search from "../components/searchBar";
+import ShoppingCart from "../pages/user/ShoppingCart";
 import axiosInstance from "../utils/axiosInstance";
 import "./components.css";
 const colors = ["#EDC208", "#D7194A", "#0AA64D", "#0367A6", "#C63CA2"];
@@ -142,6 +142,7 @@ const NavigationBar = () => {
     const lastFetchTime = storedTime ? parseInt(storedTime, 10) : 0;
     if (storedCategories && (now - lastFetchTime) < 28800000) {
       setCategories(JSON.parse(storedCategories));
+      setLoading(false);
     } else {
       axiosInstance
         .get("/products/view-categories/")
@@ -234,60 +235,53 @@ const NavigationBar = () => {
                   },
                 }}
               >
-                <div style={{
-                  display: "flex", justifyContent: "end"
-                }}>
-                  <Button onClick={handleDrawerClose}>
-                    <CloseIcon sx={{ color: "white" }} />
-                  </Button>
-                </div>
-                <div style={{ width: 250}}>
-                    {loading ? (
-                      <div style={{ display: 'flex', width: 250 , height: "100vh", justifyContent: "center", alignItems: "center"}}>
-                        <CircularProgress style={{ color: "white"}} />
-                      </div> 
-                    )
-                  : (
-                    <>
-                      <MenuItem
-                        onClick={handleToggleDrawer}
-                        component={Link}
-                        to="/productos"
-                        sx={{
-                          "&:hover": { backgroundColor: "#ffffff1a" },
-                          color: "white",
-                        }}
-                      >
-                        <Typography variant="button">
-                          Todos los productos
-                        </Typography>
-                      </MenuItem>
-                      {categories.map((category, index) => (
+                <div style={{ width: 250, marginTop: "5px" }}>
+                  {loading ? (
+                    <div style={{ display: 'flex', width: 250, height: "100vh", justifyContent: "center", alignItems: "center" }}>
+                      <CircularProgress style={{ color: "white" }} />
+                    </div>
+                  )
+                    : (
+                      <>
                         <MenuItem
-                          key={index}
                           onClick={handleToggleDrawer}
                           component={Link}
-                          to={`/productos/?categoriaId=${category.id_categoria
-                            }&categoriaName=${encodeURIComponent(
-                              category.nombre
-                            )}`}
+                          to="/productos"
                           sx={{
-                            "&:hover": {
-                              backgroundColor: "#ffffff1a",
-                              color: "white",
-                            },
+                            "&:hover": { backgroundColor: "#ffffff1a" },
                             color: "white",
-                            marginLeft: "16px",
                           }}
                         >
                           <Typography variant="button">
-                            {category.nombre.charAt(0).toUpperCase() +
-                              category.nombre.slice(1).toLowerCase()}
+                            Todos los productos
                           </Typography>
                         </MenuItem>
-                      ))}
-                    </>
-                  )}
+                        {categories.map((category, index) => (
+                          <MenuItem
+                            key={index}
+                            onClick={handleToggleDrawer}
+                            component={Link}
+                            to={`/productos/?categoriaId=${category.id_categoria
+                              }&categoriaName=${encodeURIComponent(
+                                category.nombre
+                              )}`}
+                            sx={{
+                              "&:hover": {
+                                backgroundColor: "#ffffff1a",
+                                color: "white",
+                              },
+                              color: "white",
+                              marginLeft: "16px",
+                            }}
+                          >
+                            <Typography variant="button">
+                              {category.nombre.charAt(0).toUpperCase() +
+                                category.nombre.slice(1).toLowerCase()}
+                            </Typography>
+                          </MenuItem>
+                        ))}
+                      </>
+                    )}
                 </div>
               </Drawer>
               <ShoppingCart />

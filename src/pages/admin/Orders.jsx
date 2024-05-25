@@ -1,10 +1,7 @@
+import { Grid, ThemeProvider } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Box, Button, Grid, Typography, ThemeProvider } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import OrderComponent from "../../components/OrderComponent";
 import { theme } from "../../styles/theme";
-import Logo from "../../components/logo";
-import ReplyIcon from "@mui/icons-material/Reply";
-import OrderComponent from "./OrderComponent";
 
 export default function Orders({ modifyTitle }) {
   const [stateProduct, setStateProduct] = useState("Pendiente");

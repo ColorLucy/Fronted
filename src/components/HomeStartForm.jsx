@@ -205,7 +205,6 @@ const HomeStartForm = () => {
             alignItems="center"
             justifyContent="center"
           >
-
             <TextField
               id="start_title"
               name="start_title"

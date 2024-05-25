@@ -19,15 +19,13 @@ const Profile = () => {
 
     const handleLogout = () => {
         //limpiar el almacenamiento local y redirigir a la página de inicio de sesión.
-        localStorage.removeItem("authTokens");
-        localStorage.removeItem("user");
-        navigate("/signin"); 
+        localStorage.clear()
+        navigate("/signin");
     };
 
     return (
-        <div className="userProfilePage" style={{ height: "calc(100vh - 80px)" }}>
+        <div className="userProfilePage" style={{ minHeight: "calc(100vh - 180px)" }}>
             <div className="cardUserProfile">
-                
                 <h2 style={{ color: "black", margin: "0" }}>Perfil de Usuario</h2>
                 <p>Bienvenido, {userName}</p>
                 <button onClick={handleLogout}>Cerrar sesión</button>
