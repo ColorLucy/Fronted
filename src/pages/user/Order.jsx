@@ -382,13 +382,13 @@ export default function Order() {
   };
 
   return (
-    <Box sx={{ display: 'flex'}}>
+    <Box sx={{ display: 'flex', minHeight: "calc(100dvh - 180px)"}}>
       <Modal open={openModal} onClose={handleClose}>
         <Box>
           <OrderForm onSave={handleSaveOrderInfo} />
         </Box>
       </Modal>
-      <Box sx={{ flex: '1 1 50%'}}>
+      <Box sx={{ flex: '1 1 50%',  minHeight: "calc(100dvh - 180px)"}}>
         <Stepper nonLinear activeStep={activeStep} sx={{ mt: 2, width: '100%', overflow: 'hidden' }}>
           {steps.map((label, index) => (
             <Step key={label} completed={completed[index]}>
@@ -398,15 +398,15 @@ export default function Order() {
             </Step>
           ))}
         </Stepper>
-        <div>
+        <div style={{height: "calc(100% - 50px)", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
           {activeStep === 0 && (
-            <div>
+            <div >
               {loading ? (           
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                   <CircularProgress />
                 </Box>
               ) : userData ? (
-                <div style={{minHeight:'400px'}}>
+                <div style={{}}>
                   <Card variant="outlined" sx={{ mt: 2, mb: 2, ml: 4, mr: 4, p: 2 }}>
                   <div>
                     <Typography variant="h6" gutterBottom component="span" sx={{ fontWeight: 'bold' }}>
@@ -752,7 +752,7 @@ export default function Order() {
               </Card>
             </Box>
           )}
-          <Box  sx={{  display: 'flex', flexDirection: 'row', bottom: 0, overflow: 'hidden' }}>
+          <Box  sx={{  display: 'flex', flexDirection: 'row' }}>
             <Button
               color="inherit"
               disabled={activeStep === 0}
