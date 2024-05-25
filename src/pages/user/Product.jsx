@@ -51,9 +51,8 @@ const Bread_crumb = ({ categoria, nombreProducto, fabricanteProducto }) => {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/productos/?categoriaId=${
-          categoria.id_categoria
-        }&categoriaName=${encodeURIComponent(categoria.nombre)}`}
+        href={`/productos/?categoriaId=${categoria.id_categoria
+          }&categoriaName=${encodeURIComponent(categoria.nombre)}`}
       >
         {categoria.nombre}
       </Link>
@@ -98,11 +97,11 @@ const urlDetail = (detail) => {
  *
  * @returns {JSX.Element} A JSX element containing the UI for product details.
  */
-const Product = () => {
+const Product = ({ productData, detailId }) => {
   const { addItemToCart } = useContext(CartContext);
   const { info_producto } = useParams();
-  const id_producto = info_producto.split("-")[1];
-  const nombre_producto = decodeURIComponent(info_producto.split("-")[0]);
+  const id_producto = info_producto?.split("-")[1];
+  const nombre_producto = decodeURIComponent(info_producto?.split("-")[0]);
   const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
@@ -158,9 +157,9 @@ const Product = () => {
         const detailSelected = detailsUnitys.includes(unityURL)
           ? colorsText.includes(colorURL)
             ? data.detalles.find(
-                (detail) =>
-                  detail.unidad === unityURL && detail.color === colorURL
-              )
+              (detail) =>
+                detail.unidad === unityURL && detail.color === colorURL
+            )
             : data.detalles.find((detail) => detail.unidad === unityURL)
           : data.detalles[0];
         setSelectedDetail(detailSelected);
@@ -169,10 +168,51 @@ const Product = () => {
         console.error("Error fetching product details:", error);
       }
     };
-    if (!product || product.id_producto !== id_producto) {
+    if (productData) {
+      setProduct(productData);
+      setDetails(productData.detalles);
+      const detailsUnitys = productData.detalles
+        .map((detalle) => detalle.unidad)
+        .filter((value, index, array) => array.indexOf(value) === index);
+      setDetailsUnity(detailsUnitys);
+      setUnity(
+        detailsUnitys.includes(unityURL) ? unityURL : productData.detalles[detailId].unidad
+      );
+      const colorsText = productData.detalles
+        .map((detalle) => detalle.color)
+        .filter(
+          (value, index, array) =>
+            value !== "NA" && array.indexOf(value) === index
+        );
+      setDetailsColors(colorsText);
+      setDetailsColorsHTML(
+        colorsText.map((colorText) => convertirColor(colorText))
+      );
+      setDetailsUnityColors(
+        colorsAvailable(
+          productData.detalles,
+          detailsUnitys.includes(unityURL)
+            ? unityURL
+            : productData.detalles[detailId].unidad
+        )
+      );
+      setColor(
+        colorsText.includes(colorURL) ? colorURL : productData.detalles[detailId].color
+      );
+      const detailSelected = detailsUnitys.includes(unityURL)
+        ? colorsText.includes(colorURL)
+          ? data.detalles.find(
+            (detail) =>
+              detail.unidad === unityURL && detail.color === colorURL
+          )
+          : productData.detalles.find((detail) => detail.unidad === unityURL)
+        : productData.detalles[detailId];
+      setSelectedDetail(detailSelected);
+    }
+    else if (!product || product.id_producto !== id_producto) {
       fetchProducto();
     }
-  }, [id_producto]);
+  }, [id_producto, detailId, productData, productData?.detalles]);
 
   if (!product) {
     return (
@@ -185,9 +225,7 @@ const Product = () => {
     );
   }
 
-  const handleDetailSelect = (detail) => {
-    setSelectedDetail(detail);
-  };
+
   const handleUnityChange = (event, newUnity) => {
     setUnity(newUnity);
     const colors = colorsAvailable(product.detalles, newUnity);
@@ -199,7 +237,7 @@ const Product = () => {
           (detail) => detail.unidad === newUnity && detail.color === colors[0]
         )
       );
-      navigate(
+      if (!productData) navigate(
         `?unidad=${encodeURIComponent(newUnity)}&color=${encodeURIComponent(
           colors[0]
         )}`
@@ -210,13 +248,13 @@ const Product = () => {
           (detail) => detail.unidad === newUnity && detail.color === color
         )
       );
-      navigate(
+      if (!productData) navigate(
         `?unidad=${encodeURIComponent(newUnity)}&color=${encodeURIComponent(
           color
         )}`
       );
     } else {
-      navigate(`?unidad=${encodeURIComponent(newUnity)}}`);
+      if (!productData) navigate(`?unidad=${encodeURIComponent(newUnity)}}`);
     }
   };
   const handleColorChange = (e) => {
@@ -226,7 +264,7 @@ const Product = () => {
         (detail) => detail.unidad === unity && detail.color === e.target.value
       )
     );
-    navigate(
+    if (!productData) navigate(
       `?unidad=${encodeURIComponent(unity)}&color=${encodeURIComponent(
         e.target.value
       )}`
@@ -251,7 +289,7 @@ const Product = () => {
         nombreProducto={product.nombre}
         fabricanteProducto={product.fabricante}
       />
-      <Grid container spacing={2} height={"100%"}>
+      <Grid container spacing={2} height={"100%"} justifyContent={"center"} gap={"10px"}>
         <Grid item xs={12} md={7}>
           <Carousel
             autoPlay={false}
@@ -332,16 +370,18 @@ const Product = () => {
           flexDirection={"column"}
           justifyContent={"center"}
           component={Paper}
+          elevation={4}
           sx={{ maxWidth: "400px !important", padding: "16px", margin: "auto" }}
         >
           <Typography variant="h3">{selectedDetail.nombre} </Typography>
           <Typography variant="h5" color="text.secondary">
             {product.fabricante}
           </Typography>
+          <Typography variant="body1">{product.descripcion}</Typography>
           <Typography variant="h4" sx={{ my: 2 }}>
             {numeral(selectedDetail.precio).format("$0,0.00")}
           </Typography>
-          <Typography variant="body1">{selectedDetail.descripcion}</Typography>
+
           <Box display="flex" flexDirection="column" margin={"10px"}>
             <Typography variant="h7" color="text.secondary">
               Presentación: {selectedDetail.unidad}
@@ -400,27 +440,29 @@ const Product = () => {
               </FormControl>
             </Box>
           )}
-          <Divider color="black" />
-          <Button
-            variant="contained"
-            sx={{ paddingInline: "10px" }}
-            startIcon={<AddShoppingCartIcon />}
-            fullWidth
-            onClick={() => {
-              addItemToCart(product);
-            }}
-          >
-            AÑADIR AL CARRITO
-          </Button>
-          <Button
-            variant="contained"
-            color="success"
-            sx={{ paddingInline: "10px" }}
-            startIcon={<WhatsApp sx={{ color: "white" }} />}
-            fullWidth
-          >
-            RECIBIR ASESORÍA
-          </Button>
+          {productData ? <></> : <>
+            <Divider color="black" />
+            <Button
+              variant="contained"
+              sx={{ paddingInline: "10px" }}
+              startIcon={<AddShoppingCartIcon />}
+              fullWidth
+              onClick={() => {
+                addItemToCart(product);
+              }}
+            >
+              AÑADIR AL CARRITO
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ paddingInline: "10px" }}
+              startIcon={<WhatsApp sx={{ color: "white" }} />}
+              fullWidth
+            >
+              RECIBIR ASESORÍA
+            </Button>
+          </>}
         </Grid>
       </Grid>
     </Box>

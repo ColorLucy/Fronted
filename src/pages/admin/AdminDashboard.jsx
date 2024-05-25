@@ -29,6 +29,9 @@ import { styled } from '@mui/material/styles';
 import { cloneElement, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Logo from '../../components/logo';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SaveIcon from '@mui/icons-material/Save';
+import { BarColors } from "../../components/NavigationBar";
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -97,14 +100,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function AdminDashboard({ children }) {
-  console.log(location)
   const queryParams = new URLSearchParams(location.search);
   const editPage = decodeURIComponent(queryParams.get("edit-page"));
   const [open, setOpen] = useState(true);
-  const [title, setTitle] = useState(location.pathname.startsWith("/admin/product/edit")? "Editar Producto":"");
+  const [title, setTitle] = useState("");
   const [search, setSearch] = useState("");
   const [editSect, setEditSect] = useState(editPage);
   const [openHomeE, setOpenHomeE] = useState(!(editPage === "null"));
+  const [modifyProduct, setModifyProduct] = useState({
+    update: null,
+    delete: null,
+    create: null
+  })
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
@@ -133,6 +140,18 @@ function AdminDashboard({ children }) {
     "Sección de Productos": <ListIcon />, "Sección de Aliados": <GroupsIcon />, "Sección de Contacto": <SettingsPhoneIcon />
   }
 
+  const handleUpdateProduct = (e) => {
+    e.preventDefault()
+    modifyProduct.update()
+  }
+  const handleDeleteProduct = (e) => {
+    e.preventDefault()
+    modifyProduct.delete()
+  }
+  const handleCreateProduct = (e) => {
+    e.preventDefault()
+    modifyProduct.create()
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
@@ -142,55 +161,99 @@ function AdminDashboard({ children }) {
             {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
 
-          {title === "Productos" ? <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: "10px",
-              width: "100%",
-              padding: "10px"
-            }}
-          >
-            <Typography variant="h6" noWrap component="div">
-              {title}
-            </Typography>
-            <TextField
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              variant="outlined"
-              placeholder={"Buscar"}
-              fullWidth
-              sx={{ maxWidth: "500px" }}
-              onChange={(e) => setSearch(e.target.value.toLowerCase())}
-            ></TextField>
-            <Button
+          {title === "Productos" ?
+            <Box
               sx={{
-                backgroundColor: "#C63CA2",
-                color: "white",
-                fontFamily: "Roboto",
-                "&:hover": {
-                  backgroundColor: "#D7194A",
-                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: "10px",
+                width: "100%",
+                padding: "10px"
               }}
-              startIcon={<AddIcon />}
-              onClick={handleAddProduct}
             >
-              Añadir Producto
-            </Button>
-          </Box> : <Typography variant="h6" noWrap component="div">
-            {title}
-          </Typography>}
+              <Typography variant="h6" noWrap component="div">
+                {title}
+              </Typography>
+              <TextField
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                variant="outlined"
+                placeholder={"Buscar"}
+                fullWidth
+                sx={{ maxWidth: "500px" }}
+                onChange={(e) => setSearch(e.target.value.toLowerCase())}
+              ></TextField>
+              <Button
+                sx={{
+                  backgroundColor: "#C63CA2",
+                  color: "white",
+                  fontFamily: "Roboto",
+                  "&:hover": {
+                    backgroundColor: "#D7194A",
+                  },
+                }}
+                startIcon={<AddIcon />}
+                onClick={handleAddProduct}
+              >
+                Añadir Producto
+              </Button>
+            </Box> :
+            title === "Editar Producto" ?
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "10px",
+                  width: "100%",
+                  padding: "10px"
+                }}
+              >
+                <Typography variant="h6" noWrap component="div">
+                  {title}
+                </Typography>
+                <Box>
+                  <Button variant="contained" color="primary" onClick={handleUpdateProduct} endIcon={<SaveIcon />}>
+                    Guardar cambios
+                  </Button>
+                  <Button variant="contained" color="error" onClick={handleDeleteProduct} style={{ marginLeft: "8px" }} endIcon={<DeleteIcon />}>
+                    Eliminar producto
+                  </Button>
+                </Box>
+              </Box> :
+              title === "Añadir Producto" ?
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                    width: "100%",
+                    padding: "10px"
+                  }}
+                >
+                  <Typography variant="h6" noWrap component="div">
+                    {title}
+                  </Typography>
+                  <Button variant="contained" color="primary" onClick={handleCreateProduct} endIcon={<SaveIcon />}>
+                    Guardar cambios
+                  </Button>
+                </Box> :
+                <Typography variant="h6" noWrap component="div">
+                  {title}
+                </Typography>}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
-        <DrawerHeader sx={{ display: "flex", justifyContent: "center" }}>
+        <DrawerHeader sx={{ display: "flex", justifyContent: "center", flexDirection: "column" }}>
           <Logo imgSize={40} minLen={true} />
+          <BarColors cantIntermediate={3}/>
         </DrawerHeader>
         <Divider />
         <List>
@@ -243,7 +306,7 @@ function AdminDashboard({ children }) {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        {cloneElement(children, { modifyTitle, search })}
+        {cloneElement(children, { modifyTitle, search, setModifyProduct })}
       </Box>
     </Box>
   );
