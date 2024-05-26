@@ -18,6 +18,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import { deleteProduct, getCategories, getProduct, updateProduct, postProduct } from "../../utils/crudProducts";
 import Product from "../user/Product";
+import { all } from "axios";
 
 /**
  * Manages CRUD operations for editing and deleting products, and CRUD for adding/removing details and images.
@@ -91,6 +92,11 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       ...prev,
       [name]: value,
     }))
+    console.log(currentDetailId, numberDetail)
+    console.log(product)
+    console.log(productData)
+    console.log(details)
+    console.log(detailImagesSaved)
   };
 
   const handleInputChangeDetail = (e) => {
@@ -116,12 +122,16 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   };
 
   const handleImageUrlClou = (imgUrl) => {
-    const imgToSave = {
-      url: imgUrl,
-      detalle: currentDetailId,
-    };
+    const imgToSave = id_product ?
+    { url: imgUrl, detalle: currentDetailId } :
+    { url: imgUrl, detalle: 0 };
     setDetailImagesSaved((prevImages) => [...prevImages, imgToSave]);
     setDetailImagesInterface((prevImages) => [...prevImages, imgToSave]);
+    setProduct(prev => {
+      const updatedDetalles = prev.detalles.map((detalle, index) =>
+        index === numberDetail ? { ...detalle, imagenes: [...detalle.imagenes, imgToSave]} : detalle );
+      return { ...prev, detalles: updatedDetalles}
+    })
   };
 
   const handleSubmitImage = async (e) => {
@@ -147,22 +157,45 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     } catch (error) {
       console.error('Error al subir la imagen:', error);
     }
-    onClose();
   }
 
   const handleRemoveImage = (index, e) => {
     const removedImage = detailImagesInterface[index];
+    
     const updatedImagesInterface = [...detailImagesInterface];
     updatedImagesInterface.splice(index, 1);
     setDetailImagesInterface(updatedImagesInterface);
+
     const updatedImagesSaved = detailImagesSaved.filter(
       (img) => img.id_imagen !== removedImage.id_imagen
     );
     setDetailImagesSaved(updatedImagesSaved);
+
+    setProduct(prev => {
+      const updatedDetalles = prev.detalles.map((detalle, index) => {
+        if (index === numberDetail) {
+          const updatedImagenes = detalle.imagenes.filter(
+            (img) => img.id_imagen !== removedImage.id_imagen
+          );
+          return { ...detalle, imagenes: updatedImagenes };
+        }
+        return detalle;
+      });
+      return { ...prev, detalles: updatedDetalles };
+    });
   };
 
   const handleAddDetail = (e) => {
     e.preventDefault()
+    const idNewDetail = details.length
+    setNewDetail({
+      nombre: "",
+      precio: "",
+      unidad: "",
+      color: "",
+      producto: id_product,
+    })
+    console.log(idNewDetail)
     const newDetailItem = {
       nombre: "NUEVO DETALLE",
       precio: "",
@@ -178,8 +211,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       ...prev,
       detalles: [...prev.detalles, newDetailItem]
     }));
-    setNumberDetail(details.length)
+    setNumberDetail(idNewDetail)
     setDetailImagesInterface([])
+    setCurrentDetailId(null)
   };
 
   const handleRemoveDetail = (id, e) => {
@@ -189,8 +223,29 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     setDetails(updatedDetails);
     setDetailImagesSaved(updatedImages);
     setShowAddDetailButton(true)
+    setNewDetail({
+      nombre: "nombre",
+      precio: "0",
+      unidad: "unidad",
+      color: "NA",
+      producto: id_product,
+    })
     alert("El detalle ha sido quitado")
   };
+
+  const handleReviewEmptySpaces = () => {
+    if (!productData.nombre || !productData.fabricante || !productData.categoria) {
+      alert('Por favor, completa los campos obligatorios que contienen "*"');
+      return false;
+    }
+    details.forEach((detail) => {
+      if (!detail.nombre || !detail.precio || !detail.unidad) {
+        alert('Por favor, completa los campos obligatorios que contienen "*" para todos los detalles');
+        return false;
+      }
+    });
+    return true;
+  }
 
   function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -213,8 +268,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    * @param {Event} e - the event from the form that triggers the function
    */
   async function fetchData(id_product) {
-    const responseData = await getProduct(id_product);
-    console.log(responseData)
+    const allResponseData = await getProduct(id_product);
+    let  responseData= JSON.parse(JSON.stringify(allResponseData))
+    
     const firstDetail = responseData.detalles.length > 0 ? responseData.detalles[0] : {};
     setProductData({
       nombre: responseData.nombre,
@@ -222,23 +278,37 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       descripcion: responseData.descripcion,
       categoria: responseData.categoria.id_categoria,
     });
-    setDetails(responseData.detalles);
-    setCurrentDetailId(firstDetail.id_detalle);
 
     let images = [];
     responseData.detalles.forEach((detail) => {
       images = images.concat(detail.imagenes);
     })
     setDetailImagesSaved(images);
-
+    
     let imgData = [];
     images.forEach((img) => {
       if (img.detalle === firstDetail.id_detalle) {
         imgData.push(img);
       }
     });
-    setProduct(responseData)
     setDetailImagesInterface(imgData);
+
+    responseData.detalles.forEach(detail => {
+      if (detail.imagenes) {
+        delete detail.imagenes;
+      }
+    })
+    
+    setDetails(responseData.detalles);
+    setCurrentDetailId(firstDetail.id_detalle);
+    setNewDetail({
+      nombre: "",
+      precio: "",
+      unidad: "",
+      color: "",
+      producto: id_product,
+    })
+    setProduct(allResponseData)
   }
 
   /**
@@ -247,25 +317,29 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    * @param {Event} e - the event from the form or button click that triggers the function
    */
   async function handleUpdate() {
-    const data = {
-      producto: productData,
-      detalles: details,
-      imagenes: detailImagesSaved,
-    };
-    const response = await updateProduct(id_product, data);
-    if (!response) {
-      alert("El producto ha sido actualizado correctamente.");
-    } else {
-      alert("La actualización del producto ha fallado, vuelve a intentarlo.");
+    let makeUpdate = handleReviewEmptySpaces()
+     
+    if (makeUpdate) {
+      const data = {
+        producto: productData,
+        detalles: details,
+        imagenes: detailImagesSaved,
+      };
+      const response = await updateProduct(id_product, data);
+      if (!response) {
+        alert("El producto ha sido actualizado correctamente.");
+      } else {
+        alert("La actualización del producto ha fallado, vuelve a intentarlo.");
+      }
+      setNewDetail({
+        nombre: "NUEVO DETALLE",
+        precio: "",
+        unidad: "",
+        color: "",
+        producto: id_product,
+      })
+      setShowAddDetailButton(true)
     }
-    setNewDetail({
-      nombre: "NUEVO DETALLE",
-      precio: "",
-      unidad: "",
-      color: "",
-      producto: id_product,
-    })
-    setShowAddDetailButton(true)
   }
 
   /**
@@ -273,8 +347,8 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    * @param {Event} e - the event from the button click or form submission that triggers the function
    */
   async function handleDelete() {
-
     let ok = confirm("¿Confirmas la eliminación del producto?");
+
     if (ok) {
       const response = await deleteProduct(id_product);
       if (!response) {
@@ -291,29 +365,29 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   * @param {Event} e - the event from the form or button click that triggers the function
   */
   async function handleCreate() {
-    if (!productData.nombre || !productData.fabricante || !productData.categoria || !newDetail.nombre || !newDetail.precio || !newDetail.unidad) {
-      alert('Por favor, completa los campos obligatorios que contienen "*"')
-      return;
+    let makeCreation = handleReviewEmptySpaces()
+
+    if (makeCreation) {
+      const data = {
+        producto: productData,
+        detalles: details,
+        imagenes: detailImagesSaved,
+      };
+      console.log(data)
+      const response = await postProduct(data);
+      if (response) {
+        alert("El producto ha sido creado correctamente.");
+      } else {
+        alert("La creación del producto ha fallado, vuelve a intentarlo.");
+      }
+      setNewDetail({
+        nombre: "",
+        precio: "",
+        unidad: "",
+        color: "",
+      })
+      setShowAddDetailButton(false)
     }
-    const data = {
-      producto: productData,
-      detalles: details,
-      imagenes: detailImagesSaved,
-    };
-    console.log(data)
-    const response = await postProduct(data);
-    if (response) {
-      alert("El producto ha sido creado correctamente.");
-    } else {
-      alert("La creación del producto ha fallado, vuelve a intentarlo.");
-    }
-    setNewDetail({
-      nombre: "",
-      precio: "",
-      unidad: "",
-      color: "",
-    })
-    setShowAddDetailButton(false)
   }
   useEffect(() => {
     setModifyProduct({
@@ -397,7 +471,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             value={productData.nombre}
             onChange={handleInputChange}
             variant="outlined"
-            sx={{ marginBottom: 3 }}
+            sx={{ marginBottom: 2 }}
           />
           <TextField
             fullWidth
@@ -406,7 +480,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             value={productData.fabricante}
             onChange={handleInputChange}
             variant="outlined"
-            sx={{ marginBottom: 3 }}
+            sx={{ marginBottom: 2 }}
           />
           <TextField
             fullWidth
@@ -415,9 +489,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             value={productData.descripcion ? productData.descripcion : ""}
             onChange={handleInputChange}
             variant="outlined"
-            sx={{ marginBottom: 3 }}
+            sx={{ marginBottom: 2 }}
           />
-          <InputLabel id="Categoria" style={{marginLeft: '15px'}}>Categoría*</InputLabel>
+          {/*<InputLabel id="Categoria" style={{marginLeft: '15px'}}>Categoría*</InputLabel>*/}
           <Select
             fullWidth
             labelId="Categoria"
@@ -460,7 +534,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
               })}
             </Tabs>
           </Grid>
-          <Grid container direction={"column-reverse"} spacing={2} padding={"16px"} alignItems={"center"}>
+          <Grid container direction={"column"} spacing={2} padding={"16px"} alignItems={"center"}>
             <Grid item xs sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               {details.map((detail, index) => {
                 return (
@@ -475,7 +549,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                       onBlur={() => setFocus({ ...focus, nombre: false })}
                       onChange={handleInputChangeDetail}
                       variant="outlined"
-                      sx={{ marginBottom: 3 }}
+                      sx={{ marginBottom: 2 }}
                     />
                     <TextField
                       fullWidth
@@ -487,7 +561,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                       onBlur={() => setFocus({ ...focus, precio: false })}
                       onChange={handleInputChangeDetail}
                       variant="outlined"
-                      sx={{ marginBottom: 3 }}
+                      sx={{ marginBottom: 2 }}
                     />
                     <TextField
                       fullWidth
@@ -498,7 +572,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                       onBlur={() => setFocus({ ...focus, unidad: false })}
                       onChange={handleInputChangeDetail}
                       variant="outlined"
-                      sx={{ marginBottom: 3 }}
+                      sx={{ marginBottom: 2 }}
                     />
                     <TextField
                       fullWidth
@@ -509,12 +583,12 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                       onBlur={() => setFocus({ ...focus, color: false })}
                       onChange={handleInputChangeDetail}
                       variant="outlined"
-                      sx={{ marginBottom: 3 }}
+                      sx={{ marginBottom: 2 }}
                     />
                   </TabPanel>
                 );
               })}
-              <Button variant="outlined" color="error" onClick={(e) => handleRemoveDetail(currentDetailId, e)} size="small" >
+              <Button variant="outlined" color="error" onClick={(e) => id_product ? handleRemoveDetail(currentDetailId, e) : handleRemoveDetail(currentDetailId, e)} size="small" >
                 Eliminar este detalle
               </Button>
               
