@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import "./shoppingcart.css";
 import { ItemCart } from "../../components/ItemCart";
@@ -33,7 +33,7 @@ const ShoppingCart = () => {
 
   const total = cartItems.reduce(
     (previous, current) =>
-      previous + current.amount * parseFloat(current.detalles[0].precio),
+      previous + current.amount * parseFloat(current.precio),
     0
   );
 
@@ -52,10 +52,9 @@ const ShoppingCart = () => {
     } else {
       const cartInfo = cartItems.map(
         (item) =>
-          `${item.nombre}: ${item.fabricante} - ${item.amount
-          } unidades - ${numeral(parseFloat(item.detalles[0].precio)).format(
-            "$0,0"
-          )} la unidad,`
+          `${item.nombre} - ${item.amount} unidades - ${numeral(
+            parseFloat(item.precio)
+          ).format("$0,0")} la unidad,`
       );
       const message = `Hola, soy ${userName}, me gustaría ordenar lo siguiente:\n${cartInfo.join(
         "\n"
@@ -71,7 +70,16 @@ const ShoppingCart = () => {
 
   return (
     <Box className="cartContainer">
-      <Box onClick={() => setCartOpen(true)} className="buttonCartContainer" sx={{ display: "flex", alignItems: "center", justifyContent: "center", marginLeft: "10px" }}>
+      <Box
+        onClick={() => setCartOpen(true)}
+        className="buttonCartContainer"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginLeft: "10px",
+        }}
+      >
         <Box className="buttonCart">
           <svg
             width={"35px"}
@@ -109,8 +117,15 @@ const ShoppingCart = () => {
               width: "95%",
             }}
           >
-            <Typography>ITEMS</Typography>
-
+            <Typography sx={{ cursor: "not-allowed" }}>
+              ITEMS: {productsLength}
+            </Typography>
+            <Link
+              style={{ textDecoration: "none", color: "black" }}
+              to={"/carrito"}
+            >
+              VER CARRITO
+            </Link>
             <Box onClick={() => setCartOpen(false)}>
               <svg
                 width="15"
@@ -129,7 +144,9 @@ const ShoppingCart = () => {
           <Divider variant="middle" sx={{ margin: "0 10px 15px 10px" }} />
 
           {cartItems.length === 0 ? (
-            <Typography className="cartNull">Tu carrito está vacío</Typography>
+            <Typography className="cartNull" color="GrayText">
+              Tu carrito está vacío
+            </Typography>
           ) : (
             <>
               <Box
@@ -143,50 +160,67 @@ const ShoppingCart = () => {
                   <ItemCart key={i} item={item} />
                 ))}
               </Box>
-                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start" }}>
-                  <Box sx={{ flex: 1 , maxWidth: '150px'}}>
-                    <Typography className="total" sx={{ marginTop: "10px" }}>
-                      Total: {numeral(total).format("$0,0")}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", padding: "10px" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "flex-start",
+                }}
+              >
+                <Box sx={{ flex: 1, maxWidth: "150px" }}>
+                  <Typography className="total" sx={{ marginTop: "10px" }}>
+                    Total: {numeral(total).format("$0,0")}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    color="success"
+                    sx={{
+                      display: "flex",
+                      padding: "5px 10px",
+
+                      borderRadius: "5px",
+                      backgroundColor: "#2e7d32",
+                      color: "white",
+                      border: "1px solid #2e7d32",
+                      transition: "background-color 0.3s, color 0.3s",
+                    }}
+                    onClick={() => {
+                      handleDialogOpen();
+                      setCartOpen(false);
+                    }}
+                  >
+                    <WhatsApp sx={{ color: "white", marginRight: "2px" }} />
+                    <Typography color="white">Enviar a un asesor</Typography>
+                  </Button>
+                  <Link
+                    to="/pedido"
+                    style={{ textDecoration: "none", width: "100%" }}
+                  >
                     <Button
                       variant="contained"
-                      color="success"
+                      color="primary"
                       sx={{
-                        display: "flex",
-                        padding: "5px 10px",
-                        
-                        borderRadius: "5px",
-                        backgroundColor: "#2e7d32",
-                        color: "white",
-                        border: "1px solid #2e7d32",
-                        transition: "background-color 0.3s, color 0.3s",
+                        marginTop: "10px",
+                        height: "40px",
+                        width: "100%",
                       }}
-                      onClick={() => {
-                        handleDialogOpen();
-                        setCartOpen(false);
-                      }}
+                      onClick={() => setCartOpen(false)}
                     >
-                      <WhatsApp sx={{ color: "white", marginRight: '2px' }} />
-                      <Typography color="white">Enviar a un asesor</Typography>
+                      <Typography color="white">Finalizar compra</Typography>
                     </Button>
-                    <Link to="/pedido" style={{ textDecoration: "none", width: "100%" }}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          marginTop: "10px",
-                          height: "40px",
-                          width: "100%"
-                        }}
-                        onClick={() => setCartOpen(false)}
-                      >
-                        <Typography color="white">Finalizar compra</Typography>
-                      </Button>
-                    </Link>
-                  </Box>
+                  </Link>
                 </Box>
+              </Box>
             </>
           )}
         </Paper>
@@ -211,11 +245,14 @@ const ShoppingCart = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Box onClick={handleDialogClose}>Cerrar</Box>
+            <Box onClick={handleDialogClose} sx={{ cursor: "pointer" }}>
+              Cerrar
+            </Box>
             <Box
               onClick={() => {
                 handleWhatsAppOrder();
               }}
+              sx={{ cursor: "pointer" }}
             >
               Aceptar
             </Box>

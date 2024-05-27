@@ -96,7 +96,7 @@ function ProductCard({ product }) {
           startIcon={<AddShoppingCartIcon />}
           fullWidth
           onClick={() => {
-            addItemToCart(product);
+            addItemToCart(product.detalles[0]);
           }}
         >
           AÑADIR AL CARRITO

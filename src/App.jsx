@@ -1,6 +1,11 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Navigate, Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from "react-router-dom";
 import "./App.css";
 import InfoBar from "./components/InfoBar";
 import NavigationBar from "./components/NavigationBar";
@@ -15,6 +20,7 @@ import Orders from "./pages/admin/Orders";
 import ProductDashboard from "./pages/admin/ProductDashboard";
 import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
+import Cart from "./pages/user/Cart";
 import Order from "./pages/user/Order";
 import Product from "./pages/user/Product";
 import Products from "./pages/user/Products";
@@ -30,16 +36,54 @@ const Admin = () => {
     <AuthProvider>
       <CartProvider>
         <Routes>
-          <Route Component={() => <AdminDashboard><ModifyProductCard /></AdminDashboard>} path="add-product/" />
-          <Route Component={() => <AdminDashboard><ModifyProductCard /></AdminDashboard>} path="product/edit/:id_product" />
+          <Route
+            Component={() => (
+              <AdminDashboard>
+                <ModifyProductCard />
+              </AdminDashboard>
+            )}
+            path="add-product/"
+          />
+          <Route
+            Component={() => (
+              <AdminDashboard>
+                <ModifyProductCard />
+              </AdminDashboard>
+            )}
+            path="product/edit/:id_product"
+          />
         </Routes>
       </CartProvider>
       <Routes>
         <Route Component={AdminLogin} path="login/" />
-        <Route Component={() => <AdminDashboard><HomeEdit /></AdminDashboard>} path="/home/edit" />
-        <Route Component={() => <AdminDashboard><ProductDashboard /></AdminDashboard>} path="products" />
-        <Route Component={() => <AdminDashboard><Orders /></AdminDashboard>} path="orders/" />
-        <Route Component={() => <Navigate replace to="/admin/products" />} path="/" />
+        <Route
+          Component={() => (
+            <AdminDashboard>
+              <HomeEdit />
+            </AdminDashboard>
+          )}
+          path="/home/edit"
+        />
+        <Route
+          Component={() => (
+            <AdminDashboard>
+              <ProductDashboard />
+            </AdminDashboard>
+          )}
+          path="products"
+        />
+        <Route
+          Component={() => (
+            <AdminDashboard>
+              <Orders />
+            </AdminDashboard>
+          )}
+          path="orders/"
+        />
+        <Route
+          Component={() => <Navigate replace to="/admin/products" />}
+          path="/"
+        />
       </Routes>
     </AuthProvider>
   );
@@ -58,6 +102,7 @@ const Homepage = () => {
           <Route path="/signIn" element={<SignIn />} />
           <Route path="/profile/*" element={<Profile />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/carrito" element={<Cart />} />
           <Route path="/nosotros" element={<AboutUs />} />
           <Route path="/registro" element={<SignUp />} />
           <Route path="/productos" element={<Products />} />
