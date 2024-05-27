@@ -52,7 +52,7 @@ function Cart() {
     } else {
       const cartInfo = cartItems.map(
         (item) =>
-          `${item.nombre} - ${item.amount} unidades - ${numeral(
+          `${item.nombre} - ${item.unidad}- ${item.amount} unidades - ${numeral(
             parseFloat(item.precio)
           ).format("$0,0")} la unidad,`
       );
