@@ -393,7 +393,10 @@ const NavigationBar = () => {
                         key={category.id_categoria}
                         onClick={handleToggleDrawer}
                         component={Link}
-                        to={`/productos/${category.id_categoria}`}
+                        to={`/productos/?categoriaId=${category.id_categoria
+                          }&categoriaName=${encodeURIComponent(
+                            category.nombre
+                          )}`}
                         style={{ color: "white" }}
                         sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
                       >

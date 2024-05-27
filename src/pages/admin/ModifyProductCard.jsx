@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { deleteProduct, getCategories, getProduct, updateProduct } from "../../utils/crudProducts";
+import { deleteProduct, getCategories, getProduct, updateProduct, postProduct } from "../../utils/crudProducts";
 import Product from "../user/Product";
 
 /**
@@ -291,7 +291,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   * @param {Event} e - the event from the form or button click that triggers the function
   */
   async function handleCreate(e) {
-    e.preventDefault();
+    console.log("Hiii")
     const data = {
       producto: productData,
       detalles: details,
@@ -489,7 +489,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                     />
                     <TextField
                       fullWidth
-                      label="Cantidad"
+                      label="Presentación"
                       name="unidad"
                       value={detail.unidad}
                       autoFocus={focus.unidad}

@@ -1,24 +1,21 @@
-import React, { useContext } from "react";
-import { CartContext } from "../context/CartContext";
-import homeColorLucyImg from "../../public/homeColorLucy1.png";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import {
   Box,
-  Button,
-  Card,
   CardActionArea,
   CardContent,
   CardMedia,
+  Grid,
   Typography,
 } from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import numeral from "numeral";
-import { Grid } from "@mui/material";
-import { blue } from "@mui/material/colors";
+import React, { useContext } from "react";
+import homeColorLucyImg from "../../public/homeColorLucy1.png";
+import { CartContext } from "../context/CartContext";
 
 export const ItemCart = ({ item }) => {
   const { deleteItemToCart, addItemToCart } = useContext(CartContext);
-
+  const locat = window.location.pathname === "/carrito";
   const { id } = item;
   const total = parseFloat(item.precio);
 
@@ -49,12 +46,16 @@ export const ItemCart = ({ item }) => {
             {" "}
             {/*grid para el nombre del producto */}
             <Typography fontSize={"15px"}>
-              {item.nombre.length > 18
+              {!locat && item.nombre.length > 18
                 ? item.nombre.slice(0, 18) + "..."
                 : item.nombre}
             </Typography>
-            {/* 
-            <Typography fontSize={"10px"}>{item.fabricante}</Typography> */}
+            {locat && (
+              <>
+                <Typography fontSize={"10px"}>{item.color}</Typography>
+                <Typography fontSize={"10px"}>{item.unidad}</Typography>
+              </>
+            )}
           </Grid>
           <Grid item xs={3} sx={{ display: "flex" }}>
             {" "}
