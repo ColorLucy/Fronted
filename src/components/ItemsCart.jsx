@@ -16,7 +16,7 @@ import numeral from "numeral";
 import { Grid } from "@mui/material";
 import { blue } from "@mui/material/colors";
 
-export const ItemCart = ({ item }) => {
+export const ItemsCart = ({ item }) => {
   const { deleteItemToCart, addItemToCart } = useContext(CartContext);
 
   const { id } = item;
@@ -45,18 +45,13 @@ export const ItemCart = ({ item }) => {
               />
             </CardContent>
           </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             {" "}
             {/*grid para el nombre del producto */}
-            <Typography fontSize={"15px"}>
-              {item.nombre.length > 18
-                ? item.nombre.slice(0, 18) + "..."
-                : item.nombre}
-            </Typography>
-            {/* 
-            <Typography fontSize={"10px"}>{item.fabricante}</Typography> */}
+            <Typography fontSize={"15px"}>{item.nombre}</Typography>
+            <Typography fontSize={"10px"}>{item.color}</Typography>
           </Grid>
-          <Grid item xs={3} sx={{ display: "flex" }}>
+          <Grid item xs={2} sx={{ display: "flex" }}>
             {" "}
             {/*grid para los botones y el contador */}
             <Box

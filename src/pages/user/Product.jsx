@@ -51,8 +51,9 @@ const Bread_crumb = ({ categoria, nombreProducto, fabricanteProducto }) => {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/productos/?categoriaId=${categoria.id_categoria
-          }&categoriaName=${encodeURIComponent(categoria.nombre)}`}
+        href={`/productos/?categoriaId=${
+          categoria.id_categoria
+        }&categoriaName=${encodeURIComponent(categoria.nombre)}`}
       >
         {categoria.nombre}
       </Link>
@@ -157,9 +158,9 @@ const Product = ({ productData, detailId }) => {
         const detailSelected = detailsUnitys.includes(unityURL)
           ? colorsText.includes(colorURL)
             ? data.detalles.find(
-              (detail) =>
-                detail.unidad === unityURL && detail.color === colorURL
-            )
+                (detail) =>
+                  detail.unidad === unityURL && detail.color === colorURL
+              )
             : data.detalles.find((detail) => detail.unidad === unityURL)
           : data.detalles[0];
         setSelectedDetail(detailSelected);
@@ -176,7 +177,9 @@ const Product = ({ productData, detailId }) => {
         .filter((value, index, array) => array.indexOf(value) === index);
       setDetailsUnity(detailsUnitys);
       setUnity(
-        detailsUnitys.includes(unityURL) ? unityURL : productData.detalles[detailId].unidad
+        detailsUnitys.includes(unityURL)
+          ? unityURL
+          : productData.detalles[detailId].unidad
       );
       const colorsText = productData.detalles
         .map((detalle) => detalle.color)
@@ -197,19 +200,20 @@ const Product = ({ productData, detailId }) => {
         )
       );
       setColor(
-        colorsText.includes(colorURL) ? colorURL : productData.detalles[detailId].color
+        colorsText.includes(colorURL)
+          ? colorURL
+          : productData.detalles[detailId].color
       );
       const detailSelected = detailsUnitys.includes(unityURL)
         ? colorsText.includes(colorURL)
           ? data.detalles.find(
-            (detail) =>
-              detail.unidad === unityURL && detail.color === colorURL
-          )
+              (detail) =>
+                detail.unidad === unityURL && detail.color === colorURL
+            )
           : productData.detalles.find((detail) => detail.unidad === unityURL)
         : productData.detalles[detailId];
       setSelectedDetail(detailSelected);
-    }
-    else if (!product || product.id_producto !== id_producto) {
+    } else if (!product || product.id_producto !== id_producto) {
       fetchProducto();
     }
   }, [id_producto, detailId, productData, productData?.detalles]);
@@ -225,7 +229,6 @@ const Product = ({ productData, detailId }) => {
     );
   }
 
-
   const handleUnityChange = (event, newUnity) => {
     setUnity(newUnity);
     const colors = colorsAvailable(product.detalles, newUnity);
@@ -237,23 +240,26 @@ const Product = ({ productData, detailId }) => {
           (detail) => detail.unidad === newUnity && detail.color === colors[0]
         )
       );
-      if (!productData) navigate(
-        `?unidad=${encodeURIComponent(newUnity)}&color=${encodeURIComponent(
-          colors[0]
-        )}`
-      );
+      if (!productData)
+        navigate(
+          `?unidad=${encodeURIComponent(newUnity)}&color=${encodeURIComponent(
+            colors[0]
+          )}`
+        );
     } else if (colors.includes(color)) {
       setSelectedDetail(
         details.find(
           (detail) => detail.unidad === newUnity && detail.color === color
         )
       );
-      if (!productData) navigate(
-        `?unidad=${encodeURIComponent(newUnity)}&color=${encodeURIComponent(
-          color
-        )}`
-      );
+      if (!productData)
+        navigate(
+          `?unidad=${encodeURIComponent(newUnity)}&color=${encodeURIComponent(
+            color
+          )}`
+        );
     } else {
+      setSelectedDetail(details.find((detail) => detail.unidad === newUnity));
       if (!productData) navigate(`?unidad=${encodeURIComponent(newUnity)}}`);
     }
   };
@@ -264,11 +270,12 @@ const Product = ({ productData, detailId }) => {
         (detail) => detail.unidad === unity && detail.color === e.target.value
       )
     );
-    if (!productData) navigate(
-      `?unidad=${encodeURIComponent(unity)}&color=${encodeURIComponent(
-        e.target.value
-      )}`
-    );
+    if (!productData)
+      navigate(
+        `?unidad=${encodeURIComponent(unity)}&color=${encodeURIComponent(
+          e.target.value
+        )}`
+      );
   };
   const handleStepChange = (step) => {
     setActiveStep(step);
@@ -289,7 +296,13 @@ const Product = ({ productData, detailId }) => {
         nombreProducto={product.nombre}
         fabricanteProducto={product.fabricante}
       />
-      <Grid container spacing={2} height={"100%"} justifyContent={"center"} gap={"10px"}>
+      <Grid
+        container
+        spacing={2}
+        height={"100%"}
+        justifyContent={"center"}
+        gap={"10px"}
+      >
         <Grid item xs={12} md={7}>
           <Carousel
             autoPlay={false}
@@ -392,6 +405,7 @@ const Product = ({ productData, detailId }) => {
               exclusive
               onChange={handleUnityChange}
               aria-label="Unidad"
+              sx={{ display: "flex", flexWrap: "wrap" }}
             >
               {detailsUnity.map((detailUnity, index) => {
                 return (
@@ -440,29 +454,34 @@ const Product = ({ productData, detailId }) => {
               </FormControl>
             </Box>
           )}
-          {productData ? <></> : <>
-            <Divider color="black" />
-            <Button
-              variant="contained"
-              sx={{ paddingInline: "10px" }}
-              startIcon={<AddShoppingCartIcon />}
-              fullWidth
-              onClick={() => {
-                addItemToCart(product);
-              }}
-            >
-              AÑADIR AL CARRITO
-            </Button>
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ paddingInline: "10px" }}
-              startIcon={<WhatsApp sx={{ color: "white" }} />}
-              fullWidth
-            >
-              RECIBIR ASESORÍA
-            </Button>
-          </>}
+          {productData ? (
+            <></>
+          ) : (
+            <>
+              <Divider color="black" />
+              <Button
+                variant="contained"
+                sx={{ paddingInline: "10px" }}
+                startIcon={<AddShoppingCartIcon />}
+                fullWidth
+                onClick={() => {
+                  addItemToCart(selectedDetail);
+                  console.log("mi producto agregado: ", selectedDetail);
+                }}
+              >
+                AÑADIR AL CARRITO
+              </Button>
+              <Button
+                variant="contained"
+                color="success"
+                sx={{ paddingInline: "10px" }}
+                startIcon={<WhatsApp sx={{ color: "white" }} />}
+                fullWidth
+              >
+                RECIBIR ASESORÍA
+              </Button>
+            </>
+          )}
         </Grid>
       </Grid>
     </Box>
