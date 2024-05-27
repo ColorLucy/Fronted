@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "../../context/CartContext";
 import "./shoppingcart.css";
-import { ItemsCart } from "../../components/ItemsCart";
+import { ItemCart } from "../../components/ItemCart";
 import numeral from "numeral";
 import {
   Box,
@@ -69,7 +69,7 @@ function Cart() {
   };
 
   return (
-    <>
+    <Box sx={{ minHeight: "calc(100dvh - 200px)" }}>
       <Box
         sx={{
           display: "flex",
@@ -97,7 +97,7 @@ function Cart() {
             }}
           >
             {cartItems.map((item, i) => (
-              <ItemsCart key={i} item={item} />
+              <ItemCart key={i} item={item} />
             ))}
           </Box>
           <Grid container>
@@ -195,7 +195,7 @@ function Cart() {
           </DialogActions>
         </Dialog>
       )}
-    </>
+    </Box>
   );
 }
 

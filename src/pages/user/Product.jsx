@@ -281,6 +281,16 @@ const Product = ({ productData, detailId }) => {
     setActiveStep(step);
   };
 
+  const handleSendToAssesor = () => {
+    const message = `Hola, me gustaría más información del producto: ${window.location.href}`;
+
+    const whatsappLink = `https://wa.me/573117232695/?text=${encodeURIComponent(
+      message
+    )}`;
+
+    window.open(whatsappLink, "_blank");
+  };
+
   return (
     <Box
       sx={{
@@ -477,6 +487,7 @@ const Product = ({ productData, detailId }) => {
                 sx={{ paddingInline: "10px" }}
                 startIcon={<WhatsApp sx={{ color: "white" }} />}
                 fullWidth
+                onClick={handleSendToAssesor}
               >
                 RECIBIR ASESORÍA
               </Button>
