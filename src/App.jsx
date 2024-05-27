@@ -56,7 +56,7 @@ const Homepage = () => {
         <NavigationBar />
         <Routes>
           <Route path="/signIn" element={<SignIn />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/*" element={<Profile />} />
           <Route path="/home" element={<Home />} />
           <Route path="/nosotros" element={<AboutUs />} />
           <Route path="/registro" element={<SignUp />} />
