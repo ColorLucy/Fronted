@@ -284,7 +284,7 @@ const Product = ({ productData, detailId }) => {
   const handleSendToAssesor = () => {
     const message = `Hola, me gustaría más información del producto: ${window.location.href}`;
 
-    const whatsappLink = `https://wa.me/573117232695/?text=${encodeURIComponent(
+    const whatsappLink = `https://wa.me/573155176725/?text=${encodeURIComponent(
       message
     )}`;
 
