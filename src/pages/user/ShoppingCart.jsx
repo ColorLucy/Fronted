@@ -69,7 +69,7 @@ const ShoppingCart = () => {
   };
 
   return (
-    <Box className="cartContainer">
+    <Box className="cartContainer" >
       <Box
         onClick={() => setCartOpen(true)}
         className="buttonCartContainer"
@@ -108,6 +108,7 @@ const ShoppingCart = () => {
           elevation={4}
           className="cart"
           sx={{ position: "fixed", zIndex: 999 }}
+
         >
           <Box
             sx={{
@@ -126,7 +127,7 @@ const ShoppingCart = () => {
             >
               VER CARRITO
             </Link>
-            <Box onClick={() => setCartOpen(false)}>
+            <Box onClick={() => setCartOpen(false)} >
               <svg
                 width="15"
                 height="15"
