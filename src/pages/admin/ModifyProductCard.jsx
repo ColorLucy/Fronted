@@ -1,23 +1,21 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ReplyIcon from "@mui/icons-material/Reply";
-import { CircularProgress, Grid, Paper } from "@mui/material";
-import { styled } from '@mui/material/styles';
+import { Alert, CircularProgress, Grid, Paper, Snackbar } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import CustomCarousel from "./ImagesSlider";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { deleteProduct, getCategories, getProduct, updateProduct, postProduct } from "../../utils/crudProducts";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteProduct, getCategories, getProduct, postProduct, updateProduct } from "../../utils/crudProducts";
 import Product from "../user/Product";
+import CustomCarousel from "./ImagesSlider";
 
 /**
  * Manages RUD operations for editing and deleting products, and CRUD for adding/removing details and images.
@@ -38,7 +36,8 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const [numberDetail, setNumberDetail] = useState(0);
   const [detailImagesInterface, setDetailImagesInterface] = useState([]);
   const [detailImagesSaved, setDetailImagesSaved] = useState([]);
-  const [showAddDetailButton, setShowAddDetailButton] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Cargando Producto...");
   const [currentDetailId, setCurrentDetailId] = useState();
   const [focus, setFocus] = useState({ nombre: false, precio: false, unidad: false, color: false })
   const [product, setProduct] = useState();
@@ -49,6 +48,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     categoria: "",
   });
 
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertSeverity, setAlertSeverety] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
   const [newDetail, setNewDetail] = useState({
     nombre: "NUEVO DETALLE",
     precio: "",
@@ -97,7 +100,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     e.preventDefault();
     const { name, value } = e.target;
     if (name === "precio" && isNaN(Number(value))) {
-      alert("El precio debe ser valor numérico");
+      setAlertSeverety("error")
+      setAlertMessage("El precio debe ser valor numérico")
+      setOpenAlert(true)
       return;
     }
     let updatedDetails = [...details]
@@ -172,7 +177,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       id_detalle: null,
       imagenes: []
     };
-    setShowAddDetailButton(false);
     setDetails(prevDetails => [...prevDetails, newDetail]);
     setProduct((prev) => ({
       ...prev,
@@ -188,8 +192,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id);
     setDetails(updatedDetails);
     setDetailImagesSaved(updatedImages);
-    setShowAddDetailButton(true)
-    alert("El detalle ha sido quitado")
+    setNumberDetail(0);
+    setAlertSeverety("info")
+    setAlertMessage("El detalle ha sido quitado")
+    setOpenAlert(true)
   };
 
   function TabPanel(props) {
@@ -251,12 +257,18 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       detalles: details,
       imagenes: detailImagesSaved,
     };
+    setLoading(true)
+    setLoadingMessage("Actualizando el producto...")
     const response = await updateProduct(id_product, data);
+    setLoading(false)
     if (!response) {
-      alert("El producto ha sido actualizado correctamente.");
+      setAlertSeverety("success")
+      setAlertMessage("El producto ha sido actualizado correctamente.")
     } else {
-      alert("La actualización del producto ha fallado, vuelve a intentarlo.");
+      setAlertSeverety("error")
+      setAlertMessage("La actualización del producto ha fallado, vuelve a intentarlo.")
     }
+    setOpenAlert(true)
     setNewDetail({
       nombre: "NUEVO DETALLE",
       precio: "",
@@ -264,7 +276,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       color: "",
       producto: id_product,
     })
-    setShowAddDetailButton(true)
   }
 
   /**
@@ -272,16 +283,21 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    * @param {Event} e - the event from the button click or form submission that triggers the function
    */
   async function handleDelete() {
-
     let ok = confirm("¿Confirmas la eliminación del producto?");
     if (ok) {
+      setLoading(true)
+      setLoadingMessage("Eliminando el producto...")
+      setOpenAlert(true)
       const response = await deleteProduct(id_product);
+      setLoading(false)
       if (!response) {
-        alert("El producto ha sido eliminado exitosamente");
-        navigate("/admin/");
+        setAlertSeverety("info")
+        setAlertMessage("El producto ha sido eliminado exitosamente")
+        setTimeout(() => navigate("/admin/"), "3000");
         cleanTextFields();
       } else {
-        alert("Producto no eliminado, vuelve a intentarlo");
+        setAlertSeverety("error")
+        setAlertMessage("Producto no eliminado, vuelve a intentarlo")
       }
     }
   }
@@ -291,26 +307,30 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   * @param {Event} e - the event from the form or button click that triggers the function
   */
   async function handleCreate(e) {
-    console.log("Hiii")
+    setLoading(true)
+    setLoadingMessage("Creando el producto...")
     const data = {
       producto: productData,
       detalles: details,
       imagenes: detailImagesSaved,
     };
     const response = await postProduct(data);
+    setLoading(false)
     if (response) {
-      alert("El producto ha sido creado correctamente.");
+      setAlertSeverety("success")
+      setAlertMessage("El producto ha sido creado correctamente.")
     } else {
-      alert("La creación del producto ha fallado, vuelve a intentarlo.");
+      setAlertSeverety("error")
+      setAlertMessage("La creación del producto ha fallado, vuelve a intentarlo.")
     }
+    setOpenAlert(true)
     setNewDetail({
       nombre: "NUEVO DETALLE",
       precio: "",
       unidad: "",
       color: "",
     })
-    setShowAddDetailButton(false)
-    navigate("/admin/");
+    setTimeout(() => navigate("/admin/"), "3000");
 
   }
   useEffect(() => {
@@ -372,21 +392,34 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     };
   }
 
-  if (!product) {
+  if (!product || loading) {
     return (
       <div style={{ textAlign: "center", height: "calc(100dvh - 180px)" }}>
         <CircularProgress style={{ margin: "100px" }} />
         <Typography>
-          Cargando Producto...
+          {loadingMessage}
         </Typography>
       </div>
     );
   }
+  const handleCloseOpenAlert = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setOpenAlert(false);
+  }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start", justifyContent: "center", gap: "20px" }}>
-      <Grid item sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "20px", maxWidth: "600px", width: "40%" }}
-      >
+      <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseOpenAlert}>
+        <Alert
+          onClose={handleCloseOpenAlert}
+          severity={alertSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+      <Grid item sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "20px", maxWidth: "600px", width: "40%" }}>
         <Paper elevation={4} square={false} sx={{ display: "flex", flexDirection: "column", padding: "20px", width: "100%" }}>
           <TextField
             fullWidth
