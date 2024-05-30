@@ -11,6 +11,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import SearchIcon from "@mui/icons-material/Search";
 import SettingsPhoneIcon from '@mui/icons-material/SettingsPhone';
 import TvIcon from '@mui/icons-material/Tv';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Button, Collapse, InputAdornment, TextField } from '@mui/material';
 import MuiAppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -124,11 +125,13 @@ function AdminDashboard({ children }) {
   const icons = {
     'Productos': <FormatPaintIcon />,
     'Pedidos': <AssignmentIcon />,
+    'Notificaciones': <NotificationsIcon/>,
     'Editar Pagina de Inicio': <DisplaySettingsIcon />,
   }
   const pagesUrls = {
     'Productos': "/admin/products/",
     'Pedidos': "/admin/orders/",
+    'Notificaciones': "/admin/notifications/",
     'Editar Pagina de Inicio': "/admin/home/edit",
   }
   const modifyTitle = (newTitle) => {

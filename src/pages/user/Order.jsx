@@ -435,7 +435,7 @@ export default function Order() {
             </Step>
           ))}
         </Stepper>
-        <div style={{height: "calc(100% - 50px)", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
+        <div style={{height: "calc(100% - 90px)", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
           {activeStep === 0 && (
             <div >
               {loading ? (           
@@ -789,9 +789,10 @@ export default function Order() {
               </Card>
             </Box>
           )}
-          <Box  sx={{  display: 'flex', flexDirection: 'row' }}>
+          <Box  sx={{  display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
             <Button
-              color="inherit"
+              variant="contained"
+              color="primary"
               disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
@@ -803,11 +804,14 @@ export default function Order() {
             </Button> */}
             {activeStep !== steps.length &&
               (completed[activeStep] ? (
-                <Typography variant="caption" sx={{ display: 'inline-block' }}>
+                <Typography variant="caption" sx={{ display: 'inline-block', textAlign: 'center', marginBlock: 'auto' }}>
                   Paso {activeStep + 1} completado
                 </Typography>
               ) : (
-                <Button onClick={handleComplete} disabled={isNextButtonDisabled}>
+                <Button variant="contained"
+                color="primary"
+                onClick={handleComplete} 
+                disabled={isNextButtonDisabled}>
                   {completedSteps() === totalSteps() - 1
                     ? 'Finalizar'
                     : 'Completar paso'}
