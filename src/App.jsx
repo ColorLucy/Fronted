@@ -15,6 +15,7 @@ import { CartProvider } from "./context/CartContext";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminLogin from "./pages/admin/AdminLogin";
 import HomeEdit from "./pages/admin/HomeEdit";
+import Notifications from "./pages/admin/Notifications";
 import ModifyProductCard from "./pages/admin/ModifyProductCard";
 import Orders from "./pages/admin/Orders";
 import ProductDashboard from "./pages/admin/ProductDashboard";
@@ -79,6 +80,14 @@ const Admin = () => {
             </AdminDashboard>
           )}
           path="orders/"
+        />
+        <Route
+          Component={() => (
+            <AdminDashboard>
+              <Notifications />
+            </AdminDashboard>
+          )}
+          path="notifications"
         />
         <Route
           Component={() => <Navigate replace to="/admin/products" />}
