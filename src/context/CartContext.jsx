@@ -29,7 +29,6 @@ export const CartProvider = ({ children }) => {
     const inCart = cartItems.find(
       (productInCart) => productInCart.id_detalle === product.id_detalle
     );
-
     if (inCart) {
       setCartItems(
         cartItems.map((productInCart) => {

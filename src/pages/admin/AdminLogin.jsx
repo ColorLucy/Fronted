@@ -16,6 +16,7 @@ import { useLocation } from 'react-router-dom';
 import Logo from '../../components/logo';
 import AuthContext from '../../context/AuthContext';
 import "./admin.css";
+import { BarColors } from '../../components/NavigationBar';
 
 
 /**
@@ -40,7 +41,6 @@ export default function AdminLogin() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
 
   return (
     <div className='adminPage'>
@@ -75,6 +75,7 @@ export default function AdminLogin() {
       </Snackbar>
       <div className='cardLoginAdmin'>
         <Logo />
+        <BarColors cantIntermediate={3}/>
         <h2 style={{ color: "black", margin: "0", marginTop: "40px" }}>Hola, bienvenido!</h2>
         <p style={{ color: "grey", fontSize: "10px", margin: "0" }}>Ingresa tus credenciales para continuar</p>
         <Box

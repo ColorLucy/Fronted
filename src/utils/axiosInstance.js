@@ -35,6 +35,7 @@ axiosInstance.interceptors.request.use(async (req) => {
         );
       }).catch(e => {
         if (!window.location.pathname.startsWith("/admin")) {
+          localStorage.clear()
           return req
         }
       })
