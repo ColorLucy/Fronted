@@ -16,10 +16,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { deleteProduct, getCategories, getProduct, postProduct, updateProduct } from "../../utils/crudProducts";
 import Product from "../user/Product";
 import CustomCarousel from "./ImagesSlider";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { deleteProduct, getCategories, getProduct, updateProduct, postProduct } from "../../utils/crudProducts";
-import Product from "../user/Product";
 import { all } from "axios";
 
 /**
@@ -95,8 +91,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       ...prev,
       [name]: value,
     }))
-    console.log(product)
-    console.log(currentDetailId)
   };
 
   const handleInputChangeDetail = (e) => {
@@ -199,7 +193,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleRemoveDetail = (id, e) => {
     e.preventDefault()
-    console.log("quitar", currentDetailId)
     const updatedDetails = product.detalles.filter((detail) => detail.id_detalle !== id);
     setProduct((prev) => ({
       ...prev,
@@ -253,7 +246,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   async function fetchData(id_product) {
     const allResponseData = await getProduct(id_product);
     let  responseData= JSON.parse(JSON.stringify(allResponseData))
-    console.log(allResponseData, "primera rta")
     const firstDetail = responseData.detalles.length > 0 ? responseData.detalles[0] : {};
     setProductData({
       nombre: responseData.nombre,
@@ -301,7 +293,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    */
   async function handleUpdate() {
     let makeUpdate = handleReviewEmptySpaces()
-    console.log("DATA", product)
     if (makeUpdate === true) {
       setLoading(true)
       setLoadingMessage("Actualizando el producto...")
@@ -384,7 +375,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       setTimeout(() => navigate("/admin/"), "3000");
     }
   }
-    
+
   useEffect(() => {
     setModifyProduct({
       update: handleUpdate,
