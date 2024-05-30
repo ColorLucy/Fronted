@@ -8,7 +8,7 @@
     align-items: center;
     flex-direction: row;
     flex-wrap: nowrap;
-    background-color: black;
+    background-color: transparent;
   }
   
   .container__slider > button {
@@ -32,12 +32,17 @@
     position: absolute;
     left: 0;
   }
+
+  .container {
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+  }
   
   .container__slider__links {
-    position: absolute;
-    bottom: 5%;
-    left: 50%;
-    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: 4px;
   }
   
   .container__slider__links-small {

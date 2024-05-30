@@ -1,7 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -29,7 +27,7 @@ import { theme } from "../../styles/theme";
 import { consultarProductos } from "../../utils/products";
 import Logo from "../../components/logo";
 import { useNavigate } from "react-router-dom";
-import { deleteProduct} from "../../utils/crudProducts";
+import { deleteProduct } from "../../utils/crudProducts";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -57,19 +55,18 @@ function createData(imagen, producto, precio, unidad, color) {
   };
 }
 
-const ProductDashboard = () => {
-  const [data, setData] = React.useState([]);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [page, setPage] = React.useState(0);
-  const [productCount, setProductCount] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [loading, setLoading] = React.useState(true);
-  const [search, setSearch] = React.useState("");
-  const navigate = useNavigate()
+const ProductDashboard = ({ modifyTitle, search }) => {
+  const [data, setData] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [page, setPage] = useState(0);
+  const [productCount, setProductCount] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   async function obtenerProductos() {
     const datos = await consultarProductos();
-    setProductCount(datos.length);    
+    setProductCount(datos.length);
     setData(datos);
   }
 
@@ -81,33 +78,33 @@ const ProductDashboard = () => {
     setAnchorEl(null);
   };
 
-  const handleAddProduct = () => {
-    navigate("/admin/add-product/");
-    handleClose();
-  };
 
-  const handleViewProduct = () => {
-    window.open("http://localhost:5173", "_blank");
+useEffect(()=> modifyTitle("Productos"), [])
+  const handleViewProduct = (nombre, id_producto) => {
+    window.open(
+      window.location.origin +
+      `/productos/${encodeURIComponent(nombre)}-${id_producto}`
+    );
     handleClose();
   };
 
   const handleEditProduct = (id) => {
-    navigate("/admin/edit/"+id);
+    navigate("/admin/product/edit/" + id);
     handleClose();
   };
 
-  async function handleDeleteProduct(id){
-    let ok = confirm("¿Confirmas la eliminación del producto?")
-    if(ok){
-      const response = await deleteProduct(id)
-      if(!response){
+  async function handleDeleteProduct(id) {
+    let ok = confirm("¿Confirmas la eliminación del producto?");
+    if (ok) {
+      const response = await deleteProduct(id);
+      if (!response) {
         alert("El producto ha sido eliminado exitosamente");
-        location.reload()
+        location.reload();
       } else {
-        alert("Producto no eliminado, vuelve a intentarlo")
+        alert("Producto no eliminado, vuelve a intentarlo");
       }
     }
-  };
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -121,45 +118,7 @@ const ProductDashboard = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "1rem 2rem",
-        }}
-      >
-        <Logo imgSize={40} minLen={true} />
-        <h3 className={`${styles.dashboardTitle}`}>Dashboard</h3>
-        <TextField
-          color="lucy_yellow"
-          label="Search"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          variant="outlined"
-          placeholder={"Buscar"}
-          onChange={(e) => setSearch(e.target.value.toLowerCase())}
-        ></TextField>
-        <Button
-          sx={{
-            backgroundColor: "#C63CA2",
-            color: "white",
-            fontFamily: "Roboto",
-            "&:hover": {
-              backgroundColor: "#D7194A",
-            },
-          }}
-          startIcon={<AddIcon />}
-          onClick={handleAddProduct}
-        >
-          Añadir Producto
-        </Button>
-      </Box>
+
       {loading ? (
         <>
           {
@@ -169,7 +128,7 @@ const ProductDashboard = () => {
           {setLoading(false)}
         </>
       ) : (
-        <Box sx={{ margin: "0 2rem" }} component={Paper}>
+        <Box sx={{}} component={Paper}>
           <TableContainer
             sx={{ overflowX: "auto", borderRadius: "0.25rem" }}
             component={Paper}
@@ -238,13 +197,25 @@ const ProductDashboard = () => {
                             "aria-labelledby": "basic-button",
                           }}
                         >
-                          <MenuItem onClick={() => handleViewProduct()}>
+                          <MenuItem
+                            onClick={() =>
+                              handleViewProduct(row.nombre, row.id_producto)
+                            }
+                          >
                             <VisibilityIcon sx={{ mr: "0.5rem" }} /> Ver
                           </MenuItem>
-                          <MenuItem onClick={() => {handleEditProduct(row.id_producto)}}>
+                          <MenuItem
+                            onClick={() => {
+                              handleEditProduct(row.id_producto);
+                            }}
+                          >
                             <EditIcon sx={{ mr: "0.5rem" }} /> Editar
                           </MenuItem>
-                          <MenuItem onClick={() => {handleDeleteProduct(row.id_producto)}}>
+                          <MenuItem
+                            onClick={() => {
+                              handleDeleteProduct(row.id_producto);
+                            }}
+                          >
                             <DeleteForeverIcon sx={{ mr: "0.5rem" }} /> Eliminar
                           </MenuItem>
                         </Menu>
@@ -260,12 +231,12 @@ const ProductDashboard = () => {
                 backgroundColor: "#D7194A",
               },
               ".MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows":
-                {
-                  color: "white",
-                  fontFamily: "Roboto",
-                  fontWeight: "bold",
-                  marginTop: "1rem",
-                },
+              {
+                color: "white",
+                fontFamily: "Roboto",
+                fontWeight: "bold",
+                marginTop: "1rem",
+              },
               ".MuiTablePagination-select, .MuiTablePagination-actions": {
                 fontFamily: "Roboto",
                 borderRadius: "5px",

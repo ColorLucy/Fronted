@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import "./products.css";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import axiosInstance from '../../utils/axiosInstance';
 
 const container = {
   hidden: { opacity: 1, scale: 0.9 },
@@ -53,13 +54,13 @@ function Products() {
       try {
         let url;
         if (categoria !== 0) {
-          url = `https://colorlucyserver.onrender.com/products/detalles-por-categoria/${categoria}/?page=${page}`;
+          url = `/products/detalles-por-categoria/${categoria}/?page=${page}`;
         } else if (searchTerm) {
-          url = `https://colorlucyserver.onrender.com/products/search/?q=${searchTerm}&page=${page}`;
+          url = `/products/search/?q=${searchTerm}&page=${page}`;
         } else {
-          url = `https://colorlucyserver.onrender.com/products/product-details/?page=${page}`;
+          url = `/products/product-details/?page=${page}`;
         }
-        const { data } = await axios.get(url);
+        const { data } = await axiosInstance.get(url);
         setProductos(data.results);
         setPagesProducts({ ...pagesProducts, [page]: data.results });
         setPagesCount(Math.ceil(data.count / 20));
@@ -72,7 +73,6 @@ function Products() {
       }
       setLoading(false);
     };
-    console.log(!pagesProducts.hasOwnProperty(page), (categoria !== 0 && !bandera), fetchAllProducts)
     if (!pagesProducts.hasOwnProperty(page) || (categoria !== 0 && !bandera) || fetchAllProducts) {
       fetchData();
     }

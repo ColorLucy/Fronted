@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import { Grid, Typography } from '@mui/material';
-import OrderComponent from './OrderComponent';
+import { Grid, ThemeProvider } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import OrderComponent from "../../components/OrderComponent";
+import { theme } from "../../styles/theme";
 
-export default function Orders() {
-  const [stateProduct, setStateProduct] = useState('Pendiente');
+export default function Orders({ modifyTitle }) {
+  const [stateProduct, setStateProduct] = useState("Pendiente");
+
 
   const handleProductState = (state) => {
     setStateProduct(state);
   };
-
+  useEffect(() => modifyTitle("Pedidos"), [])
   const orders = [
     {
       id_order: 101,
@@ -26,7 +28,7 @@ export default function Orders() {
       direction: "CL 5 #100-34 Antioquia",
       tel: 3902707070,
       formOfPayment: "Efectivo",
-      costoEnvioPreguntar: 6800
+      costoEnvioPreguntar: 6800,
     },
     {
       id_order: 102,
@@ -44,7 +46,7 @@ export default function Orders() {
       direction: "CL 5 #18-34 Valle del Cauca",
       tel: 3202707070,
       formOfPayment: "Efectivo",
-      costoEnvioPreguntar: 23000
+      costoEnvioPreguntar: 23000,
     },
     {
       id_order: 103,
@@ -62,7 +64,7 @@ export default function Orders() {
       direction: "Calle 10 #25-15 Bogotá",
       tel: 3101234567,
       formOfPayment: "Tarjeta crédito",
-      costoEnvioPreguntar: 10000
+      costoEnvioPreguntar: 10000,
     },
     {
       id_order: 104,
@@ -80,7 +82,7 @@ export default function Orders() {
       direction: "CL 15 #30-45 Medellín",
       tel: 3009876543,
       formOfPayment: "Transferencia bancaria",
-      costoEnvioPreguntar: 15000
+      costoEnvioPreguntar: 15000,
     },
     {
       id_order: 105,
@@ -98,24 +100,25 @@ export default function Orders() {
       direction: "Carrera 7 #12-34 Barranquilla",
       tel: 3158765432,
       formOfPayment: "Efectivo",
-      costoEnvioPreguntar: 16000
-    }
-  ]
+      costoEnvioPreguntar: 16000,
+    },
+  ];
 
   return (
-    <div display="flex">
-      <Grid container spacing={0}>
-        <Grid item xs={12}>
-          <Typography variant="h5" align="center" justify="center" gutterBottom paddingTop={15}>
-            Pedidos
-          </Typography>
+    <ThemeProvider theme={theme}>
+      <div display="flex">
+        <Grid container spacing={0}>
+
+          {orders.map((order) => (
+            <Grid key={order.id_order} item xs={12}>
+              <OrderComponent
+                instance={order}
+                handleProductState={handleProductState}
+              />
+            </Grid>
+          ))}
         </Grid>
-        {orders.map((order) => (
-          <Grid key={order.id_order} item xs={12}>
-            <OrderComponent instance={order} handleProductState={handleProductState} />
-          </Grid>
-        ))}
-      </Grid>
-    </div>
+      </div>
+    </ThemeProvider>
   );
 }
