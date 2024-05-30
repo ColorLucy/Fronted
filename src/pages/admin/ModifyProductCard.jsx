@@ -33,7 +33,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const [autoPlay, setAutoPlay] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [details, setDetails] = useState([]);
   const [numberDetail, setNumberDetail] = useState(0);
   const [detailImagesInterface, setDetailImagesInterface] = useState([]);
   const [detailImagesSaved, setDetailImagesSaved] = useState([]);
@@ -42,14 +41,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const [currentDetailId, setCurrentDetailId] = useState();
   const [focus, setFocus] = useState({ nombre: false, precio: false, unidad: false, color: false })
   const [product, setProduct] = useState();
-  const [productData, setProductData] = useState({
-    nombre: "",
-    fabricante: "",
-    descripcion: "",
-    categoria: "",
-  });
-
-
   const [openAlert, setOpenAlert] = useState(false);
   const [alertSeverity, setAlertSeverety] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
@@ -75,10 +66,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleCategory = (e) => {
     const { value } = e.target;
-    setProductData((prevData) => ({
-      ...prevData,
-      categoria: value,
-    }));
     setProduct((prevData) => ({
       ...prevData,
       categoria: categories.find(category => category.id_categoria === value),
@@ -108,6 +95,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
         index === numberDetail ? { ...detalle, [name]: value } : detalle)
       return prev
     })
+    console.log(product)
   };
 
   const handleImageChange = (index) => {
@@ -173,7 +161,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleAddDetail = (e) => {
     e.preventDefault()
-    const idNewDetail = details.length
+    const idxNewDetail = product.detalles.length
     const newDetailItem = {
       nombre: "",
       precio: "",
@@ -183,12 +171,11 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       id_detalle: null,
       imagenes: []
     };
-    setDetails(prevDetails => [...prevDetails, newDetail]);
     setProduct((prev) => ({
       ...prev,
       detalles: [...prev.detalles, newDetailItem]
     }));
-    setNumberDetail(idNewDetail)
+    setNumberDetail(idxNewDetail)
   };
 
   const handleRemoveDetail = (id, e) => {
@@ -247,12 +234,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     const allResponseData = await getProduct(id_product);
     let  responseData= JSON.parse(JSON.stringify(allResponseData))
     const firstDetail = responseData.detalles.length > 0 ? responseData.detalles[0] : {};
-    setProductData({
-      nombre: responseData.nombre,
-      fabricante: responseData.fabricante,
-      descripcion: responseData.descripcion,
-      categoria: responseData.categoria.id_categoria,
-    });
 
     let images = [];
     responseData.detalles.forEach((detail) => {
@@ -274,7 +255,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       }
     })
     
-    setDetails(responseData.detalles);
     setCurrentDetailId(firstDetail.id_detalle);
     setNewDetail({
       nombre: "",
@@ -293,6 +273,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    */
   async function handleUpdate() {
     let makeUpdate = handleReviewEmptySpaces()
+    
     if (makeUpdate === true) {
       setLoading(true)
       setLoadingMessage("Actualizando el producto...")
@@ -345,18 +326,13 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   * handles the creation of a product by sending a POST request to the server
   * @param {Event} e - the event from the form or button click that triggers the function
   */
-  async function handleCreate(e) {
+  async function handleCreate() {
     let makeCreation = handleReviewEmptySpaces()
     
     if (makeCreation === true) {
       setLoading(true)
       setLoadingMessage("Creando el producto...")
-      const data = {
-        producto: productData,
-        detalles: details,
-        imagenes: detailImagesSaved,
-      };
-      const response = await postProduct(data);
+      const response = await postProduct(product);
       setLoading(false)
       if (response) {
         setAlertSeverety("success")
