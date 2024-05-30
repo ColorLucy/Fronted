@@ -89,6 +89,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       [name]: value,
     }))
     console.log(product)
+    console.log(currentDetailId)
   };
 
   const handleInputChangeDetail = (e) => {
@@ -153,11 +154,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     updatedImagesInterface.splice(index, 1);
     setDetailImagesInterface(updatedImagesInterface);
 
-    // const updatedImagesSaved = detailImagesSaved.filter(
-    //   (img) => img.id_imagen !== removedImage.id_imagen
-    // );
-    // setDetailImagesSaved(updatedImagesSaved);
-
     setProduct(prev => {
       const updatedDetalles = prev.detalles.map((detalle, index) => {
         if (index === numberDetail) {
@@ -195,22 +191,14 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleRemoveDetail = (id, e) => {
     e.preventDefault()
-    // const updatedDetails = details.filter((detail) => detail.id_detalle !== id);
-    // const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id);
-    // setDetails(updatedDetails);
-    // setDetailImagesSaved(updatedImages);
-    // setShowAddDetailButton(true)
+    console.log("quitar", currentDetailId)
+    const updatedDetails = product.detalles.filter((detail) => detail.id_detalle !== id);
     setProduct((prev) => ({
       ...prev,
-      detalles: [...prev.detalles, newDetailItem]
+      detalles: [...updatedDetails]
     }));
-    setNewDetail({
-      nombre: "nombre",
-      precio: "0",
-      unidad: "unidad",
-      color: "NA",
-      producto: id_product,
-    })
+
+    numberDetail > 0 ? changeDetailIndex(numberDetail-1) : 
     alert("El detalle ha sido quitado")
   };
 
@@ -415,9 +403,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   };
 
   const changeDetailIndex = (newIndex) => {
-    setDetailImagesInterface(getDetailImages(details[newIndex].id_detalle));
+    setDetailImagesInterface(getDetailImages(product.detalles[newIndex].id_detalle));
     setNumberDetail(newIndex);
-    setCurrentDetailId(details[newIndex].id_detalle);
+    setCurrentDetailId(product.detalles[newIndex].id_detalle);
   };
   function a11yProps(index) {
     return {
@@ -566,7 +554,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                   </TabPanel>
                 );
               })}
-              <Button variant="outlined" color="error" onClick={(e) => id_product ? handleRemoveDetail(currentDetailId, e) : handleRemoveDetail(currentDetailId, e)} size="small" >
+              <Button variant="outlined" color="error" onClick={(e) => product.detalles.length > 1 ? handleRemoveDetail(currentDetailId, e) : alert("El producto debe tener al menos un detalle")} size="small" >
                 Eliminar este detalle
               </Button>
               
