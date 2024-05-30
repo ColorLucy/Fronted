@@ -245,7 +245,7 @@ function AdminDashboard({ children }) {
                     {title}
                   </Typography>
                   <Button variant="contained" color="primary" onClick={handleCreateProduct} endIcon={<SaveIcon />}>
-                    Guardar cambios
+                    Guardar producto
                   </Button>
                 </Box> :
                 <Typography variant="h6" noWrap component="div">

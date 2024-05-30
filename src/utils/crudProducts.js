@@ -12,7 +12,6 @@ export async function getProduct(id_product) {
 export async function postProduct(data) {
     try {
         const { response } = await axiosInstance.post(`/products/create-product/`, data);
-        console.log(response)
         return data
     } catch (error) {
         console.error("Error creating product data:", error);
