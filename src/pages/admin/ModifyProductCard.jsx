@@ -84,19 +84,11 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProductData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
     setProduct(prev => ({
       ...prev,
       [name]: value,
     }))
-    console.log(currentDetailId, numberDetail)
     console.log(product)
-    console.log(productData)
-    console.log(details)
-    console.log(detailImagesSaved)
   };
 
   const handleInputChangeDetail = (e) => {
@@ -106,9 +98,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       alert("El precio debe ser valor numérico");
       return;
     }
-    let updatedDetails = [...details]
-    updatedDetails[numberDetail][name] = value;
-    setDetails(updatedDetails);
     setFocus({ ...focus, [name]: true })
     setProduct(prev => {
       prev.detalles = prev.detalles.map((detalle, index) =>
@@ -123,10 +112,8 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleImageUrlClou = (imgUrl) => {
     const imgToSave = id_product ?
-    { url: imgUrl, detalle: currentDetailId } :
-    { url: imgUrl, detalle: 0 };
-    setDetailImagesSaved((prevImages) => [...prevImages, imgToSave]);
-    setDetailImagesInterface((prevImages) => [...prevImages, imgToSave]);
+    { url: imgUrl, detalle: '' } :
+    { url: imgUrl, detalle: null };
     setProduct(prev => {
       const updatedDetalles = prev.detalles.map((detalle, index) =>
         index === numberDetail ? { ...detalle, imagenes: [...detalle.imagenes, imgToSave]} : detalle );
@@ -166,16 +153,16 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     updatedImagesInterface.splice(index, 1);
     setDetailImagesInterface(updatedImagesInterface);
 
-    const updatedImagesSaved = detailImagesSaved.filter(
-      (img) => img.id_imagen !== removedImage.id_imagen
-    );
-    setDetailImagesSaved(updatedImagesSaved);
+    // const updatedImagesSaved = detailImagesSaved.filter(
+    //   (img) => img.id_imagen !== removedImage.id_imagen
+    // );
+    // setDetailImagesSaved(updatedImagesSaved);
 
     setProduct(prev => {
       const updatedDetalles = prev.detalles.map((detalle, index) => {
         if (index === numberDetail) {
           const updatedImagenes = detalle.imagenes.filter(
-            (img) => img.id_imagen !== removedImage.id_imagen
+            (img) => img.url !== removedImage.url
           );
           return { ...detalle, imagenes: updatedImagenes };
         }
@@ -188,19 +175,11 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const handleAddDetail = (e) => {
     e.preventDefault()
     const idNewDetail = details.length
-    setNewDetail({
+    const newDetailItem = {
       nombre: "",
       precio: "",
       unidad: "",
       color: "",
-      producto: id_product,
-    })
-    console.log(idNewDetail)
-    const newDetailItem = {
-      nombre: "NUEVO DETALLE",
-      precio: "",
-      unidad: "",
-      color: "NA",
       producto: id_product,
       id_detalle: null,
       imagenes: []
@@ -212,17 +191,19 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       detalles: [...prev.detalles, newDetailItem]
     }));
     setNumberDetail(idNewDetail)
-    setDetailImagesInterface([])
-    setCurrentDetailId(null)
   };
 
   const handleRemoveDetail = (id, e) => {
     e.preventDefault()
-    const updatedDetails = details.filter((detail) => detail.id_detalle !== id);
-    const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id);
-    setDetails(updatedDetails);
-    setDetailImagesSaved(updatedImages);
-    setShowAddDetailButton(true)
+    // const updatedDetails = details.filter((detail) => detail.id_detalle !== id);
+    // const updatedImages = detailImagesSaved.filter((img) => img.detalle !== id);
+    // setDetails(updatedDetails);
+    // setDetailImagesSaved(updatedImages);
+    // setShowAddDetailButton(true)
+    setProduct((prev) => ({
+      ...prev,
+      detalles: [...prev.detalles, newDetailItem]
+    }));
     setNewDetail({
       nombre: "nombre",
       precio: "0",
@@ -234,17 +215,19 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   };
 
   const handleReviewEmptySpaces = () => {
-    if (!productData.nombre || !productData.fabricante || !productData.categoria) {
+    let response = true
+    if (!product.nombre || !product.fabricante || !product.categoria) {
       alert('Por favor, completa los campos obligatorios que contienen "*"');
-      return false;
+      response = false;
     }
-    details.forEach((detail) => {
+
+    product.detalles.forEach((detail) => {
       if (!detail.nombre || !detail.precio || !detail.unidad) {
         alert('Por favor, completa los campos obligatorios que contienen "*" para todos los detalles');
-        return false;
+        response = false;
       }
     });
-    return true;
+    return response
   }
 
   function TabPanel(props) {
@@ -270,7 +253,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   async function fetchData(id_product) {
     const allResponseData = await getProduct(id_product);
     let  responseData= JSON.parse(JSON.stringify(allResponseData))
-    
+    console.log(allResponseData, "primera rta")
     const firstDetail = responseData.detalles.length > 0 ? responseData.detalles[0] : {};
     setProductData({
       nombre: responseData.nombre,
@@ -318,21 +301,16 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    */
   async function handleUpdate() {
     let makeUpdate = handleReviewEmptySpaces()
-     
-    if (makeUpdate) {
-      const data = {
-        producto: productData,
-        detalles: details,
-        imagenes: detailImagesSaved,
-      };
-      const response = await updateProduct(id_product, data);
+    console.log("DATA", product)
+    if (makeUpdate === true) {
+      const response = await updateProduct(id_product, product);
       if (!response) {
         alert("El producto ha sido actualizado correctamente.");
       } else {
         alert("La actualización del producto ha fallado, vuelve a intentarlo.");
       }
       setNewDetail({
-        nombre: "NUEVO DETALLE",
+        nombre: "",
         precio: "",
         unidad: "",
         color: "",
@@ -367,13 +345,13 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   async function handleCreate() {
     let makeCreation = handleReviewEmptySpaces()
 
-    if (makeCreation) {
+    if (makeCreation === true) {
       const data = {
         producto: productData,
         detalles: details,
         imagenes: detailImagesSaved,
       };
-      console.log(data)
+      console.log("data",data)
       const response = await postProduct(data);
       if (response) {
         alert("El producto ha sido creado correctamente.");
@@ -395,7 +373,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       delete: handleDelete,
       create: handleCreate
     })
-  }, [productData, details, detailImagesSaved])
+  }, [product])
 
   /**
    * handles the retrieval of all categories and the interaction with details-images data
@@ -408,7 +386,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     else {
       setProduct({
         detalles: [{
-          nombre: "NUEVO DETALLE",
+          nombre: "",
           precio: "",
           unidad: "",
           color: "",
@@ -468,7 +446,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             fullWidth
             label="Nombre del Producto*"
             name="nombre"
-            value={productData.nombre}
+            value={product.nombre}
             onChange={handleInputChange}
             variant="outlined"
             sx={{ marginBottom: 2 }}
@@ -477,7 +455,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             fullWidth
             label="Fabricante*"
             name="fabricante"
-            value={productData.fabricante}
+            value={product.fabricante}
             onChange={handleInputChange}
             variant="outlined"
             sx={{ marginBottom: 2 }}
@@ -486,7 +464,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             fullWidth
             label="Descripción"
             name="descripcion"
-            value={productData.descripcion ? productData.descripcion : ""}
+            value={product.descripcion ? product.descripcion : ""}
             onChange={handleInputChange}
             variant="outlined"
             sx={{ marginBottom: 2 }}
@@ -496,7 +474,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
             fullWidth
             labelId="Categoria"
             id="demo-simple-select"
-            value={productData.categoria}
+            value={product.categoria.id_categoria}
             onChange={handleCategory}
             sx={{ marginBottom: 2 }}
           >
@@ -522,7 +500,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
               aria-label="Vertical tabs example"
               sx={{ borderRight: 1, borderColor: "divider" }}
             >
-              {details.map((detail, index) => {
+              {product.detalles.map((detail, index) => {
                 return (
                   <Tab
                     key={index}
@@ -536,7 +514,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
           </Grid>
           <Grid container direction={"column"} spacing={2} padding={"16px"} alignItems={"center"}>
             <Grid item xs sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              {details.map((detail, index) => {
+              {product.detalles.map((detail, index) => {
                 return (
                   <TabPanel key={index} value={numberDetail} index={index} >
                     <TextField
@@ -594,9 +572,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
               
             </Grid>
             <Grid item sx={{ width: "330px", height: "390px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              {detailImagesInterface.length > 0 ? (
+              {product.detalles[numberDetail].imagenes.length > 0 ? (
                 <CustomCarousel autoPlay={autoPlay} onImageChange={handleImageChange} >
-                  {detailImagesInterface.map((image, index) => (
+                  {product.detalles[numberDetail].imagenes.map((image, index) => (
                     <img
                       key={index}
                       src={image.url}
