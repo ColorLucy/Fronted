@@ -15,6 +15,7 @@ import { ItemCart } from "../../components/ItemCart";
 import numeral from "numeral";
 import { CartContext } from "../../context/CartContext";
 import axiosInstance from '../../utils/axiosInstance';
+import Swal from 'sweetalert2';
 
 const steps = ['Información', 'Método de envío', 'Pago'];
 
@@ -280,12 +281,28 @@ export default function Order() {
   };
 
   const enviarPedido = async () => {
-    try {
-      const orderData = JSON.parse(localStorage.getItem('order'));
-      const cartProductsData = JSON.parse(localStorage.getItem('cartProducts'));
-      const userData = JSON.parse(localStorage.getItem('user'));
+    let orderData, cartProductsData, userData;
 
-      const pedido = {
+    try {
+        orderData = JSON.parse(localStorage.getItem('order'));
+        cartProductsData = JSON.parse(localStorage.getItem('cartProducts'));
+        userData = JSON.parse(localStorage.getItem('user'));
+
+        console.log('orderData:', orderData);
+        console.log('cartProductsData:', cartProductsData);
+        console.log('userData:', userData);
+    } catch (error) {
+        console.error('Error parsing localStorage data:', error);
+        Swal.fire('Error', 'No se pudieron obtener los datos del pedido.', 'error');
+        return;
+    }
+
+    if (!orderData || !cartProductsData || !userData) {
+        Swal.fire('Error', 'Datos incompletos en el pedido.', 'error');
+        return;
+    }
+
+    const pedido = {
         phone_number: orderData.phoneNumber,
         address: orderData.address,
         tipo_envio: orderData.tipoEnvio,
@@ -293,25 +310,45 @@ export default function Order() {
         total: orderData.total,
         user: userData.id,
         cantidad_productos: orderData.cantidad_productos,
-        productos: cartProductsData.map(producto => {
-          const detalles = Array.isArray(producto.detalles) ? producto.detalles[0] : producto.detalles;
-          return {
-            detalle: detalles.id_detalle,
-            cantidad: producto.amount
-          };
-        })
-      };
+        productos: cartProductsData.map(producto => ({
+          detalle: producto.id_detalle,
+          cantidad: producto.amount
+      }))
+    };
 
-      console.log('Datos del pedido:', pedido);
-      const response = await axiosInstance.post('/shopping/create-pedido/', pedido);
-      console.log('Pedido enviado con éxito:', response.data);
-      clearCart();
-      return response.data;
+    try {
+        console.log('Datos del pedido:', pedido);
+        const response = await axiosInstance.post('/shopping/create-pedido/', pedido);
+        console.log('Pedido enviado con éxito:', response.data);
+        clearCart();
+        Swal.fire({
+            title: "Pedido enviado",
+            html: `
+            <div style="display: flex;">
+              <div style="flex: 1; text-align: left;">
+                ${userData.name}<br>
+                ${response.data.phone_number}<br>
+                ${response.data.address}<br>
+              </div>
+              <div style="flex: 1; text-align: left; font-size: 14px;">
+                Fecha del pedido: ${new Date(response.data.fecha_pedido).toLocaleString()}<br>
+                Tipo de envío: ${response.data.tipo_envio}<br>
+                Cantidad de productos: ${response.data.cantidad_productos}<br>
+                <strong>Total: $ ${response.data.total}</strong><br>
+                <strong>Su pedido sera completado en 3 días hábiles</strong><br>
+              </div>
+            </div>`,   
+            icon: "success"
+        });
+        return response.data;
     } catch (error) {
-      console.error('Error al enviar el pedido:', error);
-      return { error: error.message };
+        console.log('Pedido fallido:', pedido);
+        Swal.fire('Error', 'Ocurrió un error inesperado, intentalo de nuevo más tarde :(', 'error');
+        console.error('Error al enviar el pedido:', error);
+        return { error: error.message };
     }
-  };
+};
+
 
   React.useEffect(() => {
     const orderData = JSON.parse(localStorage.getItem('order'));
@@ -327,9 +364,9 @@ export default function Order() {
   React.useEffect(() => {
     const newSubtotal = cartItems.reduce(
       (previous, current) =>
-        previous + current.amount * parseFloat(current.detalles[0].precio),
-      0
+        previous + current.amount * parseFloat(current.precio),0
     );
+    
     setSubtotal(newSubtotal);
     setCantidadProductos(cartItems.reduce((prev, curr) => prev + curr.amount, 0));
 
@@ -367,7 +404,7 @@ export default function Order() {
 
   const handleSaveOrderInfo = (data) => {
     // Agregar el tipo de envío seleccionado al objeto data
-    const updatedData = { ...data, tipoEnvio, subtotal, total, cantidad_productos : cartItems.length};
+    const updatedData = { ...data, tipoEnvio, subtotal: Number(subtotal), total: Number(total), cantidad_productos: cartItems.length };
     // Guardar el objeto actualizado en el localStorage
     localStorage.setItem('order', JSON.stringify(updatedData));
     setOrderInfo(updatedData);
@@ -382,13 +419,13 @@ export default function Order() {
   };
 
   return (
-    <Box sx={{ display: 'flex'}}>
+    <Box sx={{ display: 'flex', minHeight: "calc(100dvh - 180px)"}}>
       <Modal open={openModal} onClose={handleClose}>
         <Box>
           <OrderForm onSave={handleSaveOrderInfo} />
         </Box>
       </Modal>
-      <Box sx={{ flex: '1 1 50%'}}>
+      <Box sx={{ flex: '1 1 50%',  minHeight: "calc(100dvh - 180px)"}}>
         <Stepper nonLinear activeStep={activeStep} sx={{ mt: 2, width: '100%', overflow: 'hidden' }}>
           {steps.map((label, index) => (
             <Step key={label} completed={completed[index]}>
@@ -398,15 +435,15 @@ export default function Order() {
             </Step>
           ))}
         </Stepper>
-        <div>
+        <div style={{height: "calc(100% - 90px)", display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
           {activeStep === 0 && (
-            <div>
+            <div >
               {loading ? (           
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                   <CircularProgress />
                 </Box>
               ) : userData ? (
-                <div style={{minHeight:'400px'}}>
+                <div style={{}}>
                   <Card variant="outlined" sx={{ mt: 2, mb: 2, ml: 4, mr: 4, p: 2 }}>
                   <div>
                     <Typography variant="h6" gutterBottom component="span" sx={{ fontWeight: 'bold' }}>
@@ -677,11 +714,11 @@ export default function Order() {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <StoreIcon sx={{ fontSize: 48 }} />
                     <Box sx={{ ml: 2 }}>
-                      <Typography fontSize={14} color='gray'>
+                      <Typography fontSize={14}>
                         Tienda: Cra. 16 #10-93, Bretana, Cali, Valle del Cauca, Colombia
                       </Typography>
-                      <Typography fontSize={14} color='gray' sx={{ mt: 1 }}>
-                        Horario de atención: 10:00am-07:00pm (Lunes a Sábado)
+                      <Typography fontSize={14} sx={{ mt: 1 }}>
+                        Horario de atención: 07:00am-05:30pm (Lunes a Viernes) y 08:00am-02:00pm (Sábados)
                       </Typography>
                     </Box>
                   </Box>
@@ -704,12 +741,12 @@ export default function Order() {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <LocalShippingIcon sx={{ fontSize: 48 }} />
                     <Box sx={{ ml: 2 }}>
-                      <Typography variant="body1">
-                        Envíos en todo Cali
+                      <Typography fontSize={14}>
+                        Envíos gratis en todo Cali
                       </Typography>
-                      <Typography variant="body1" sx={{ mt: 1 }}>
+                      {/* <Typography variant="body1" sx={{ mt: 1 }}>
                         Costo de envío: $5.000
-                      </Typography>
+                      </Typography> */}
                     </Box>
                   </Box>
                   <RadioGroup
@@ -752,25 +789,29 @@ export default function Order() {
               </Card>
             </Box>
           )}
-          <Box  sx={{  display: 'flex', flexDirection: 'row', bottom: 0, overflow: 'hidden' }}>
+          <Box  sx={{  display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
             <Button
-              color="inherit"
+              variant="contained"
+              color="primary"
               disabled={activeStep === 0}
               onClick={handleBack}
               sx={{ mr: 1 }}
             >
               Atrás
             </Button>
-            <Button onClick={handleNext} disabled={isNextButtonDisabled} sx={{ mr: 1 }}>
+            {/* <Button onClick={handleNext} disabled={isNextButtonDisabled} sx={{ mr: 1 }}>
               Siguiente
-            </Button>
+            </Button> */}
             {activeStep !== steps.length &&
               (completed[activeStep] ? (
-                <Typography variant="caption" sx={{ display: 'inline-block' }}>
+                <Typography variant="caption" sx={{ display: 'inline-block', textAlign: 'center', marginBlock: 'auto' }}>
                   Paso {activeStep + 1} completado
                 </Typography>
               ) : (
-                <Button onClick={handleComplete} disabled={isNextButtonDisabled}>
+                <Button variant="contained"
+                color="primary"
+                onClick={handleComplete} 
+                disabled={isNextButtonDisabled}>
                   {completedSteps() === totalSteps() - 1
                     ? 'Finalizar'
                     : 'Completar paso'}

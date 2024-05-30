@@ -1,18 +1,20 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ReplyIcon from "@mui/icons-material/Reply";
-import { CircularProgress, Grid, Paper, InputLabel } from "@mui/material";
-import { styled } from '@mui/material/styles';
+import { Alert, CircularProgress, Grid, Paper, Snackbar, InputLabel } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { deleteProduct, getCategories, getProduct, postProduct, updateProduct } from "../../utils/crudProducts";
+import Product from "../user/Product";
 import CustomCarousel from "./ImagesSlider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -39,7 +41,8 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const [numberDetail, setNumberDetail] = useState(0);
   const [detailImagesInterface, setDetailImagesInterface] = useState([]);
   const [detailImagesSaved, setDetailImagesSaved] = useState([]);
-  const [showAddDetailButton, setShowAddDetailButton] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Cargando Producto...");
   const [currentDetailId, setCurrentDetailId] = useState();
   const [focus, setFocus] = useState({ nombre: false, precio: false, unidad: false, color: false })
   const [product, setProduct] = useState();
@@ -50,6 +53,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     categoria: "",
   });
 
+
+  const [openAlert, setOpenAlert] = useState(false);
+  const [alertSeverity, setAlertSeverety] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
   const [newDetail, setNewDetail] = useState({
     nombre: "",
     precio: "",
@@ -96,7 +103,9 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     e.preventDefault();
     const { name, value } = e.target;
     if (name === "precio" && isNaN(Number(value))) {
-      alert("El precio debe ser valor numérico");
+      setAlertSeverety("error")
+      setAlertMessage("El precio debe ser valor numérico")
+      setOpenAlert(true)
       return;
     }
     setFocus({ ...focus, [name]: true })
@@ -118,7 +127,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     setProduct(prev => {
       const updatedDetalles = prev.detalles.map((detalle, index) =>
         index === numberDetail ? { ...detalle, imagenes: [...detalle.imagenes, imgToSave]} : detalle );
-      return { ...prev, detalles: updatedDetalles}
+      return { ...prev, detalles: updatedDetalles }
     })
   };
 
@@ -180,7 +189,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       id_detalle: null,
       imagenes: []
     };
-    setShowAddDetailButton(false);
     setDetails(prevDetails => [...prevDetails, newDetail]);
     setProduct((prev) => ({
       ...prev,
@@ -200,6 +208,10 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
     numberDetail > 0 ? changeDetailIndex(numberDetail-1) : 
     alert("El detalle ha sido quitado")
+
+    setAlertSeverety("info")
+    setAlertMessage("El detalle ha sido quitado")
+    setOpenAlert(true)
   };
 
   const handleReviewEmptySpaces = () => {
@@ -291,12 +303,19 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     let makeUpdate = handleReviewEmptySpaces()
     console.log("DATA", product)
     if (makeUpdate === true) {
+      setLoading(true)
+      setLoadingMessage("Actualizando el producto...")
       const response = await updateProduct(id_product, product);
+      setLoading(false)
+      
       if (!response) {
-        alert("El producto ha sido actualizado correctamente.");
+        setAlertSeverety("success")
+        setAlertMessage("El producto ha sido actualizado correctamente.")
       } else {
-        alert("La actualización del producto ha fallado, vuelve a intentarlo.");
+        setAlertSeverety("error")
+        setAlertMessage("La actualización del producto ha fallado, vuelve a intentarlo.")
       }
+      setOpenAlert(true)
       setNewDetail({
         nombre: "",
         precio: "",
@@ -304,7 +323,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
         color: "",
         producto: id_product,
       })
-      setShowAddDetailButton(true)
     }
   }
 
@@ -316,13 +334,19 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     let ok = confirm("¿Confirmas la eliminación del producto?");
 
     if (ok) {
+      setLoading(true)
+      setLoadingMessage("Eliminando el producto...")
+      setOpenAlert(true)
       const response = await deleteProduct(id_product);
+      setLoading(false)
       if (!response) {
-        alert("El producto ha sido eliminado exitosamente");
-        navigate("/admin/");
+        setAlertSeverety("info")
+        setAlertMessage("El producto ha sido eliminado exitosamente")
+        setTimeout(() => navigate("/admin/"), "3000");
         cleanTextFields();
       } else {
-        alert("Producto no eliminado, vuelve a intentarlo");
+        setAlertSeverety("error")
+        setAlertMessage("Producto no eliminado, vuelve a intentarlo")
       }
     }
   }
@@ -330,31 +354,37 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   * handles the creation of a product by sending a POST request to the server
   * @param {Event} e - the event from the form or button click that triggers the function
   */
-  async function handleCreate() {
+  async function handleCreate(e) {
     let makeCreation = handleReviewEmptySpaces()
-
+    
     if (makeCreation === true) {
+      setLoading(true)
+      setLoadingMessage("Creando el producto...")
       const data = {
         producto: productData,
         detalles: details,
         imagenes: detailImagesSaved,
       };
-      console.log("data",data)
       const response = await postProduct(data);
+      setLoading(false)
       if (response) {
-        alert("El producto ha sido creado correctamente.");
+        setAlertSeverety("success")
+        setAlertMessage("El producto ha sido creado correctamente.")
       } else {
-        alert("La creación del producto ha fallado, vuelve a intentarlo.");
+        setAlertSeverety("error")
+        setAlertMessage("La creación del producto ha fallado, vuelve a intentarlo.")
       }
+      setOpenAlert(true)
       setNewDetail({
         nombre: "",
         precio: "",
         unidad: "",
         color: "",
       })
-      setShowAddDetailButton(false)
+      setTimeout(() => navigate("/admin/"), "3000");
     }
   }
+    
   useEffect(() => {
     setModifyProduct({
       update: handleUpdate,
@@ -414,21 +444,34 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     };
   }
 
-  if (!product) {
+  if (!product || loading) {
     return (
       <div style={{ textAlign: "center", height: "calc(100dvh - 180px)" }}>
         <CircularProgress style={{ margin: "100px" }} />
         <Typography>
-          Cargando Producto...
+          {loadingMessage}
         </Typography>
       </div>
     );
   }
+  const handleCloseOpenAlert = (event, reason) => {
+    if (reason === 'clickaway') return;
+    setOpenAlert(false);
+  }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "flex-start", justifyContent: "center", gap: "20px" }}>
-      <Grid item sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "20px", maxWidth: "600px", width: "40%" }}
-      >
+      <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseOpenAlert}>
+        <Alert
+          onClose={handleCloseOpenAlert}
+          severity={alertSeverity}
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
+      <Grid item sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "20px", maxWidth: "600px", width: "40%" }}>
         <Paper elevation={4} square={false} sx={{ display: "flex", flexDirection: "column", padding: "20px", width: "100%" }}>
           <TextField
             fullWidth
@@ -556,8 +599,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
               })}
               <Button variant="outlined" color="error" onClick={(e) => product.detalles.length > 1 ? handleRemoveDetail(currentDetailId, e) : alert("El producto debe tener al menos un detalle")} size="small" >
                 Eliminar este detalle
-              </Button>
-              
+              </Button>       
             </Grid>
             <Grid item sx={{ width: "330px", height: "390px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               {product.detalles[numberDetail].imagenes.length > 0 ? (
