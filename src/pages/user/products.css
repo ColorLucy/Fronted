@@ -7,7 +7,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  min-height: calc(100vh - 278px);
+  min-height: calc(100dvh - 240px);
   gap: 15px;
   min-width: 80%;
 }
@@ -117,8 +117,9 @@
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 960px) {
   .productItem {
     width: calc(25% - 15px);
   }
+
 }

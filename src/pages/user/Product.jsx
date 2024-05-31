@@ -51,9 +51,8 @@ const Bread_crumb = ({ categoria, nombreProducto, fabricanteProducto }) => {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/productos/?categoriaId=${
-          categoria.id_categoria
-        }&categoriaName=${encodeURIComponent(categoria.nombre)}`}
+        href={`/productos/?categoriaId=${categoria.id_categoria
+          }&categoriaName=${encodeURIComponent(categoria.nombre)}`}
       >
         {categoria.nombre}
       </Link>
@@ -158,9 +157,9 @@ const Product = ({ productData, detailId }) => {
         const detailSelected = detailsUnitys.includes(unityURL)
           ? colorsText.includes(colorURL)
             ? data.detalles.find(
-                (detail) =>
-                  detail.unidad === unityURL && detail.color === colorURL
-              )
+              (detail) =>
+                detail.unidad === unityURL && detail.color === colorURL
+            )
             : data.detalles.find((detail) => detail.unidad === unityURL)
           : data.detalles[0];
         setSelectedDetail(detailSelected);
@@ -207,9 +206,9 @@ const Product = ({ productData, detailId }) => {
       const detailSelected = detailsUnitys.includes(unityURL)
         ? colorsText.includes(colorURL)
           ? data.detalles.find(
-              (detail) =>
-                detail.unidad === unityURL && detail.color === colorURL
-            )
+            (detail) =>
+              detail.unidad === unityURL && detail.color === colorURL
+          )
           : productData.detalles.find((detail) => detail.unidad === unityURL)
         : productData.detalles[detailId];
       setSelectedDetail(detailSelected);
@@ -298,7 +297,7 @@ const Product = ({ productData, detailId }) => {
         display: "flex",
         flexDirection: "column",
         p: 2,
-        minHeight: "calc(100dvh - 180px)",
+        minHeight: "calc(100dvh - 180px)"
       }}
     >
       <Bread_crumb
@@ -308,7 +307,6 @@ const Product = ({ productData, detailId }) => {
       />
       <Grid
         container
-        spacing={2}
         height={"100%"}
         justifyContent={"center"}
         gap={"10px"}
@@ -368,7 +366,7 @@ const Product = ({ productData, detailId }) => {
                 elevation={0}
                 sx={{
                   position: "relative",
-                  height: isMobileOrTablet ? 300 : 604,
+                  height: "fit-content",
                 }}
               >
                 <img
@@ -386,15 +384,13 @@ const Product = ({ productData, detailId }) => {
         </Grid>
         <Grid
           item
-          xs={12}
-          md={5}
           gap={"10px"}
           display={"flex"}
           flexDirection={"column"}
           justifyContent={"center"}
           component={Paper}
           elevation={4}
-          sx={{ maxWidth: "400px !important", padding: "16px", margin: "auto" }}
+          sx={{ maxWidth: "400px !important", padding: "16px", height: "min-content" }}
         >
           <Typography variant="h3">{selectedDetail.nombre} </Typography>
           <Typography variant="h5" color="text.secondary">
