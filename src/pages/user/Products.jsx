@@ -124,7 +124,6 @@ function Products() {
             ))}
           </motion.div>
         )}
-
         <Pagination
           page={page}
           count={pagesCount}
