@@ -1,9 +1,10 @@
 import axios from "axios";
 import dayjs from "dayjs";
 import { jwtDecode } from "jwt-decode";
+import axiosRetry from "axios-retry";
 
-const baseURL = "https://colorlucyserver.onrender.com";
-//const baseURL = "http://127.0.0.1:8000";
+//const baseURL = "https://colorlucyserver.onrender.com";
+const baseURL = "http://127.0.0.1:8000";
 
 let authTokens = localStorage.getItem("authTokens")
   ? JSON.parse(localStorage.getItem("authTokens"))
@@ -60,5 +61,14 @@ axiosInstance.interceptors.response.use((response) => {
     }
   }
   return Promise.reject(error);
+});
+axiosRetry(axiosInstance, {
+  retries: 1, 
+  retryDelay: (retryCount) => {
+    return retryCount * 250; 
+  },
+  retryCondition: (error) => {
+    return !(error.response.status === 403 || error.response.status === 401);
+  },
 });
 export default axiosInstance;
