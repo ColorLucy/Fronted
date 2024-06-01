@@ -24,7 +24,6 @@ const SignIn = () => {
         axiosInstance
           .post("/auth/login/", loginData)
           .then(({ data }) => {
-            console.log(data);
             localStorage.setItem('user', JSON.stringify(data.user));
             localStorage.setItem('accessToken', data.access);
             navigate('/profile'); 
