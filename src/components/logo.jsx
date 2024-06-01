@@ -79,7 +79,7 @@ const item = {
 export default function Logo({ imgSize, minLen, img }) {
 
     const wordColor = 'Color'.split('').map((letter, index) => (
-        <span translate='no' key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index] }}>{letter}</span>
+        <span translate='no' key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index], unicodeBidi: "bidi-override", direction: "ltr" }}>{letter}</span>
     ));
     const isMobileOrTablet = useMediaQuery('(max-width: 960px)') || minLen;
     const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1 : 2);
@@ -100,6 +100,7 @@ export default function Logo({ imgSize, minLen, img }) {
                         userSelect: "none",
                         position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
                         fontWeight: "400px", fontStyle: "normal",
+                        unicodeBidi: "bidi-override", direction: "ltr" 
                     }}> Lucy</span>
                 </div>
             </div>
