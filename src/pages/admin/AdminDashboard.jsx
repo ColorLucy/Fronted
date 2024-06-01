@@ -27,12 +27,15 @@ import ListItemText from '@mui/material/ListItemText';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/material/styles';
-import { cloneElement, useState } from 'react';
+import { cloneElement, useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 import Logo from '../../components/logo';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import { BarColors } from "../../components/NavigationBar";
+import { Badge } from '@mui/material';
+import axiosInstance from '../../utils/axiosInstance';
 const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
@@ -113,6 +116,39 @@ function AdminDashboard({ children }) {
     delete: null,
     create: null
   })
+  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+  const [visitedNotificationsPage, setVisitedNotificationsPage] = useState(false);
+  const locationPage = useLocation();
+
+  useEffect(() => {
+    const eventSource = new EventSource(`${axiosInstance.defaults.baseURL}/shopping/sse/`);
+
+    eventSource.onmessage = function(event) {
+      
+      setUnreadNotificationCount(prevCount => prevCount + 1);
+
+      const viewedNotifications = JSON.parse(localStorage.getItem('viewedNotifications')) || [];
+
+      localStorage.setItem('viewedNotifications', JSON.stringify(viewedNotifications));
+    };
+
+    return () => {
+      eventSource.close();
+    };
+  }, []);  
+
+  useEffect(() => {
+    if (locationPage.pathname === '/admin/notifications/' && !visitedNotificationsPage) {
+      setUnreadNotificationCount(0);
+      const viewedNotifications = JSON.parse(localStorage.getItem('viewedNotifications')) || [];
+      localStorage.setItem('viewedNotifications', JSON.stringify(viewedNotifications));
+      setVisitedNotificationsPage(true);
+      console.log('viewedNotifications:', viewedNotifications);  
+    } 
+
+  }, [locationPage.pathname, visitedNotificationsPage]);
+
+  
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
@@ -125,7 +161,11 @@ function AdminDashboard({ children }) {
   const icons = {
     'Productos': <FormatPaintIcon />,
     'Pedidos': <AssignmentIcon />,
-    'Notificaciones': <NotificationsIcon/>,
+    'Notificaciones': (
+      <Badge color="error" badgeContent={visitedNotificationsPage ? 0 : unreadNotificationCount} invisible={visitedNotificationsPage}>
+        <NotificationsIcon />
+      </Badge>
+    ),
     'Editar Pagina de Inicio': <DisplaySettingsIcon />,
   }
   const pagesUrls = {
