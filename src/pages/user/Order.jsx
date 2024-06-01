@@ -262,22 +262,20 @@ export default function Order() {
   };
 
   const handleWhatsAppOrder = () => {
-      const cartInfo = cartItems.map(
-        (item) =>
-          `${item.nombre}: ${item.fabricante} - ${item.amount
-          } unidades - ${numeral(parseFloat(item.detalles[0].precio)).format(
-            "$0,0"
-          )} la unidad,`
-      );
-      const message = `Hola, soy ${userData.name}, ¿Cuáles métodos de pago tienen?, me gustaría ordenar lo siguiente:\n${cartInfo.join(
-        "\n"
-      )}\nTotal: ${numeral(total).format("$0,0")}`;
-      const whatsappLink = `https://wa.me/573155176725/?text=${encodeURIComponent(
-        message
-      )}`;
+    const cartInfo = cartItems.map(
+      (item) =>
+        `${item.nombre} - ${item.amount} unidades - ${numeral(
+          parseFloat(item.precio)
+        ).format("$0,0")} la unidad,`
+    );
+    const message = `Hola, soy ${userData.name}, ¿Cuáles métodos de pago tienen?, me gustaría ordenar lo siguiente:\n${cartInfo.join(
+      "\n"
+    )}\nTotal: ${numeral(total).format("$0,0")}`;
+    const whatsappLink = `https://wa.me/573155176725/?text=${encodeURIComponent(
+      message
+    )}`;
 
-      window.open(whatsappLink, "_blank");
-      handleDialogClose();
+    window.open(whatsappLink, "_blank");
   };
 
   const enviarPedido = async () => {
@@ -310,7 +308,7 @@ export default function Order() {
         total: orderData.total,
         user: userData.id,
         cantidad_productos: orderData.cantidad_productos,
-        productos: cartProductsData.map(producto => ({
+        productos_write: cartProductsData.map(producto => ({
           detalle: producto.id_detalle,
           cantidad: producto.amount
       }))
@@ -772,7 +770,7 @@ export default function Order() {
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <WarningIcon sx={{ fontSize: 48, color: 'orange' }} />
                     <Typography variant="body1" sx={{ ml: 2 }}>
-                      Para más métodos de pago, debes realizar tu pedido directamente con un asesor de Color Lucy. <a href='' onClick={handleWhatsAppOrder}>(click aquí)</a>
+                      Para más métodos de pago, debes realizar tu pedido directamente con un asesor de Color Lucy. <a href='#' onClick={handleWhatsAppOrder}>(click aquí)</a>
                     </Typography>
                   </Box>
                 </CardContent>
