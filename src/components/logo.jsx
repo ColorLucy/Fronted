@@ -79,7 +79,7 @@ const item = {
 export default function Logo({ imgSize, minLen, img }) {
 
     const wordColor = 'Color'.split('').map((letter, index) => (
-        <span translate='no' key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index], unicodeBidi: "bidi-override", direction: "ltr" }}>{letter}</span>
+        <span translate='no' lang="es" key={index} style={{ textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)', color: colors[index], unicodeBidi: "bidi-override", direction: "ltr" }}>{letter}</span>
     ));
     const isMobileOrTablet = useMediaQuery('(max-width: 960px)') || minLen;
     const expandedPalette = generateIntermediateColors(colors, isMobileOrTablet ? 1 : 2);
@@ -95,6 +95,7 @@ export default function Logo({ imgSize, minLen, img }) {
                         fontWeight: "400px", fontStyle: "normal", userSelect: "none"
                     }}>{wordColor} </div>
                     <span translate="no"
+                    lang="es"
                     style={{
                         textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
                         userSelect: "none",
