@@ -65,7 +65,6 @@ const Orders = ({ modifyTitle, search }) => {
 
   async function fetchOrders() {
     const datos = await getOrders();
-    console.log(datos);
     setOrderCount(datos.length);
     setData(datos);
   }
