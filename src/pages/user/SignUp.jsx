@@ -54,7 +54,7 @@ const SignUp = () => {
         localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
         localStorage.setItem('user', JSON.stringify(data.user));
         navigate("/")
-      }).catch(e => showSignUpError(true))
+      }).catch(e => {showSignUpError(true); console.log(e)})
     setLoading(false)
 
   };
@@ -66,7 +66,7 @@ const SignUp = () => {
       localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate("/")
-    }).catch(e => showSignUpError(true))
+    }).catch(e => setShowSignUpError(true))
     setLoading(false)
   }
   return (
