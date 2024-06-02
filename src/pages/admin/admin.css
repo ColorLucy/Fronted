@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  
+  overflow: auto;
   background: -webkit-linear-gradient(227deg, #edc208,#d7194a,#0aa64d,#0367a6,#0367a6);                     
   background: linear-gradient(227deg, #edc208,#d7194a,#0aa64d,#0367a6,#0367a6);  
   backdrop-filter: blur(10px);                                    
