@@ -18,6 +18,7 @@ import HomeEdit from "./pages/admin/HomeEdit";
 import Notifications from "./pages/admin/Notifications";
 import ModifyProductCard from "./pages/admin/ModifyProductCard";
 import Orders from "./pages/admin/Orders";
+import OrderDetail from "./pages/admin/OrderDetail";
 import ProductDashboard from "./pages/admin/ProductDashboard";
 import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
@@ -52,6 +53,14 @@ const Admin = () => {
               </AdminDashboard>
             )}
             path="product/edit/:id_product"
+          />
+          <Route
+            Component={() => (
+              <AdminDashboard>
+                <OrderDetail />
+              </AdminDashboard>
+            )}
+            path="order/view/:id_order"
           />
         </Routes>
       </CartProvider>
