@@ -90,19 +90,19 @@ const MisPedidos = () => {
                   <Grid container alignItems={"center"} justifyContent={"center"}>
                     <Grid item xs={4}>
                       <Paper sx={{ p: 2 }}>
-                        <ItemTittle>Fecha del pedido</ItemTittle>
+                        <ItemTitle>Fecha del pedido</ItemTitle>
                         {pedido.fecha_pedido}
                       </Paper>
                     </Grid>
                     <Grid item xs={4}>
                       <Paper sx={{ p: 2 }}>
-                        <ItemTittle>Total</ItemTittle>
+                        <ItemTitle>Total</ItemTitle>
                           { numeral(pedido.total).format("$0,0") }
                       </Paper>
                     </Grid>
                     <Grid item xs={4}>
                       <Paper sx={{ p: 2 }}>
-                        <ItemTittle>ID Pedido</ItemTittle>
+                        <ItemTitle>ID Pedido</ItemTitle>
                         # {pedido.id_pedido}
                       </Paper>
                     </Grid>
