@@ -163,7 +163,7 @@ function AdminDashboard({ children }) {
     Pedidos: <AssignmentIcon />,
     Notificaciones: (
       <Badge
-        color="error"
+        color="primary"
         badgeContent={notificationCount}
         invisible={notificationCount === 0}
       >
