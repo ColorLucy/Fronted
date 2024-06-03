@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Grid, IconButton, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import "./imagesSlider.css";
 
 function CustomCarousel({ children, autoPlay, onImageChange }) {
@@ -114,24 +113,24 @@ function CustomCarousel({ children, autoPlay, onImageChange }) {
         </button>
       </div>
       <div className="container">
-      <div className="container__slider__links">
-        {children.map((item, index) => {
-          return (
-            <button
-              key={index}
-              className={
-                activeIndex === index
-                  ? "container__slider__links-small container__slider__links-small-active"
-                  : "container__slider__links-small"
-              }
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveIndex(index);
-              }}
-            ></button>
-          );
-        })}
-      </div>
+        <div className="container__slider__links">
+          {children.map((item, index) => {
+            return (
+              <button
+                key={index}
+                className={
+                  activeIndex === index
+                    ? "container__slider__links-small container__slider__links-small-active"
+                    : "container__slider__links-small"
+                }
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveIndex(index);
+                }}
+              ></button>
+            );
+          })}
+        </div>
       </div>
     </>
   );

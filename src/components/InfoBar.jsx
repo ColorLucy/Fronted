@@ -33,7 +33,7 @@ export default function InfoBar() {
           left: 0,
           right: 0,
           padding: "16px 0",
-  
+
           columnGap: "20px",
         }}
         justifyContent="center"
@@ -54,7 +54,7 @@ export default function InfoBar() {
           </Typography>
         </Grid>
         {/* Información de contacto */}
-        <Grid item alignContent={"center"}color={"white"}>
+        <Grid item alignContent={"center"} color={"white"}>
           {/* Teléfono 1 */}
           <Typography
             variant="body1"
