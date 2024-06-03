@@ -44,6 +44,7 @@ export async function getHomeInfo() {
       .catch((error) => {
         localStorage.removeItem("home_data")
         localStorage.removeItem("home_data_time")
+        dataInfo = homeData ? JSON.parse(homeData): {};
       });
   }
   return dataInfo;
@@ -67,6 +68,7 @@ export async function getStartImages() {
       .catch((error) => {
         localStorage.removeItem("start_Imgs")
         localStorage.removeItem("start_Imgs_time")
+        dataInfo = startImgs ? JSON.parse(startImgs): [];
       });
   }
   return dataInfo;
@@ -84,7 +86,6 @@ export async function getCombinationsImages() {
 export async function getProductsImages() {
   try {
     const { data } = await axiosInstance.get(`/info/api/home/products/`);
-    // console.log(data);
     return data;
   } catch (error) {
     return []

@@ -1,4 +1,3 @@
-import axios from "axios";
 import "jwt-decode";
 import { jwtDecode } from "jwt-decode";
 import { createContext, useEffect, useState } from "react";

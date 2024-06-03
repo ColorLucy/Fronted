@@ -22,7 +22,6 @@ import {
 
 export default function Home() {
   const isMobileOrTablet = useMediaQuery("(max-width: 960px)");
-
   const [textInfo, setTextInfo] = useState({});
   const [startImages, setStartImages] = useState([]);
   const [loadingStart, setLoadingStart] = useState(true);
@@ -32,7 +31,6 @@ export default function Home() {
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [alliesImages, setAlliesImages] = useState([]);
   const [loadingAllies, setLoadingAllies] = useState(true);
-
   const [scrollY, setScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState({
     combinaciones: false,
@@ -49,9 +47,7 @@ export default function Home() {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -101,10 +97,14 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTextInfo = async () => {
+      const homeData = localStorage.getItem('home_data');
+      setTextInfo(homeData ? JSON.parse(homeData)[0]: {})
       const data = await getHomeInfo();
       setTextInfo(data[0]);
     };
     const fetchStartImages = async () => {
+      const startImgs = localStorage.getItem('start_Imgs');
+      setStartImages(startImgs ? JSON.parse(startImgs): [])
       const data = await getStartImages();
       setStartImages(data);
       setLoadingStart(false);

@@ -1,37 +1,43 @@
+import { Box, Button, Grid, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Box, Button, IconButton, Grid, Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import {
-  Item,
-  Item2,
-  ItemTittle,
-  ItemTittle2,
-  ItemDynamic,
-} from "./OrderItems";
+import { Item, Item2, ItemDynamic, ItemTitle, ItemTitle2 } from "./OrderItems";
 
 const OrderComponent = ({ instance, handleProductState }) => {
   const [stateProduct, setStateProduct] = useState("");
 
-  const instance_obj = {
-    id_order: instance.id_order,
-    date: instance.date,
-    total: instance.total,
-    state: instance.state,
+  /**
+   *
+   * @param {String} str
+   * @returns
+   */
+  const toTitleCase = (str) => {
+    return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase();
+  };
 
-    productName: instance.productName,
-    detail: instance.detail,
-    image: instance.image,
-    price: instance.price,
-    quantity: instance.quantity,
+  const instance_obj = {
+    id_order: instance.id_pedido,
+    date: new Date(Date.parse(instance.fecha_pedido)).toLocaleString("es-co", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    }),
+    total: instance.total,
+    state: toTitleCase(instance.estado),
+    productName: "Lija",
+    detail: "La mejor Lija",
+    image: "Imagen",
+    price: "35000",
+    quantity: instance.cantidad_productos,
     subtotal: instance.subtotal,
 
-    clientName: instance.clientName,
-    email: instance.email,
-    direction: instance.direction,
-    tel: instance.tel,
-    formOfPayment: instance.formOfPayment,
-
-    costoEnvioPreguntar: instance.costoEnvioPreguntar,
+    clientName: instance.user,
+    direction: instance.address,
+    tel: instance.phone_number,
+    shippingType: instance.tipo_envio,
+    costoEnvioPreguntar: "0",
   };
 
   useEffect(() => {
@@ -44,9 +50,9 @@ const OrderComponent = ({ instance, handleProductState }) => {
         <Grid item xs={12}>
           <Box
             display="flex"
-            height={600}
+            height={700}
             width={900}
-            my={4}
+            my={0}
             mx="auto"
             alignItems="stretch"
             justifyContent="center"
@@ -55,50 +61,50 @@ const OrderComponent = ({ instance, handleProductState }) => {
             sx={{ border: "2px solid grey" }}
           >
             <Grid container spacing={0}>
-              <Grid item xs={3}>
+              <Grid item xs={4}>
                 <Paper sx={{ p: 2 }}>
-                  <ItemTittle>Fecha del pedido</ItemTittle>
+                  <ItemTitle>Fecha del pedido</ItemTitle>
                   {instance_obj.date}
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={8 / 3}>
                 <Paper sx={{ p: 2 }}>
-                  <ItemTittle>Total</ItemTittle>
+                  <ItemTitle>Total</ItemTitle>
                   {instance_obj.total}
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={8 / 3}>
                 <Paper sx={{ p: 2 }}>
-                  <ItemTittle>ID Pedido</ItemTittle># {instance_obj.id_order}
+                  <ItemTitle>ID Pedido</ItemTitle># {instance_obj.id_order}
                 </Paper>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={8 / 3}>
                 <Paper sx={{ p: 2 }}>
-                  <ItemTittle>Estado</ItemTittle>
+                  <ItemTitle>Estado</ItemTitle>
                   <ItemDynamic state={stateProduct}>{stateProduct}</ItemDynamic>
                 </Paper>
               </Grid>
-              <Grid container spacing={0} marginLeft={"32px"}>
+              <Grid container spacing={0} p={2}>
                 <Grid item xs={4}>
-                  <ItemTittle2>Producto</ItemTittle2>
+                  <ItemTitle2>Producto</ItemTitle2>
                   <div>foto</div>
                   {instance_obj.image}
                   <div>foto</div>
-                  <ItemTittle2>{instance_obj.productName}</ItemTittle2>
-                  <ItemTittle2>{instance_obj.detail}</ItemTittle2>
+                  <ItemTitle2>{instance_obj.productName}</ItemTitle2>
+                  <ItemTitle2>{instance_obj.detail}</ItemTitle2>
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={8} p={2}>
                   <Grid container spacing={0}>
                     <Grid item xs={4}>
-                      <ItemTittle2> Precio </ItemTittle2>
+                      <ItemTitle2> Precio </ItemTitle2>
                       <Item2>$ {instance_obj.price} </Item2>
                     </Grid>
                     <Grid item xs={4}>
-                      <ItemTittle2> Cantidad </ItemTittle2>
+                      <ItemTitle2> Cantidad </ItemTitle2>
                       <Item2> {instance_obj.quantity} </Item2>
                     </Grid>
                     <Grid item xs={4}>
-                      <ItemTittle2> Subtotal </ItemTittle2>
+                      <ItemTitle2> Subtotal </ItemTitle2>
                       <Item2>$ {instance_obj.subtotal} </Item2>
                     </Grid>
                   </Grid>
@@ -123,7 +129,7 @@ const OrderComponent = ({ instance, handleProductState }) => {
                 </Grid>
                 <Grid marginTop={"4px"} item xs={3}>
                   <Item2> Forma de pago </Item2>
-                  <Item> {instance_obj.formOfPayment} </Item>
+                  <Item> {instance_obj.shippingType} </Item>
                 </Grid>
               </Grid>
               <Grid
