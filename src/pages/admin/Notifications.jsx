@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Switch, Card, CardActionArea, CardContent, List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider, CircularProgress } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import image from '../../../public/logoTemp.webp';
 import { theme } from "../../styles/theme";
