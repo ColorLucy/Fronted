@@ -13,7 +13,7 @@ import {
   Typography,
   Paper
 } from "@mui/material";
-import { ItemTittle } from "../../components/OrderItems"
+import { ItemTitle } from "../../components/OrderItems"
 import "../../pages/user/shoppingcart.css";
 import homeColorLucyImg from "../../../public/homeColorLucy1.png";
 import axiosInstance from "../../utils/axiosInstance";
