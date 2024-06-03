@@ -11,13 +11,13 @@ export const Item2 = ({ children }) => (
   <Typography align="left">{children}</Typography>
 );
 
-export const ItemTittle = ({ children }) => (
+export const ItemTitle = ({ children }) => (
   <Typography fontWeight="bold" variant="inherit" color="green" gutterBottom>
     {children}
   </Typography>
 );
 
-export const ItemTittle2 = ({ children }) => (
+export const ItemTitle2 = ({ children }) => (
   <Typography fontWeight="bold" align="left" gutterBottom>
     {children}
   </Typography>
