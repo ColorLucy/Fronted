@@ -1,33 +1,28 @@
-import React, { useEffect, useState } from "react";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
 import MenuIcon from "@mui/icons-material/Menu";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
   TablePagination,
-  Box,
-  Button,
-  IconButton,
-  TextField,
-  InputAdornment,
-  styled,
-  Paper,
-  Menu,
-  MenuItem,
+  TableRow,
+  styled
 } from "@mui/material";
-import styles from "./ProductDashboard.module.css";
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "../../styles/theme";
-import { consultarProductos } from "../../utils/products";
-import Logo from "../../components/logo";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { theme } from "../../styles/theme";
 import { deleteProduct } from "../../utils/crudProducts";
+import { consultarProductos } from "../../utils/products";
 
 const StyledHeaderTableCell = styled(TableCell)({
   color: "White",
@@ -79,7 +74,7 @@ const ProductDashboard = ({ modifyTitle, search }) => {
   };
 
 
-useEffect(()=> modifyTitle("Productos"), [])
+  useEffect(() => modifyTitle("Productos"), [])
   const handleViewProduct = (nombre, id_producto) => {
     window.open(
       window.location.origin +

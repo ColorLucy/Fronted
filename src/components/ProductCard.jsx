@@ -9,8 +9,8 @@ import Typography from "@mui/material/Typography";
 import numeral from "numeral";
 import React, { useContext } from "react";
 import homeColorLucyImg from "../../public/homeColorLucy1.png";
-import { convertirColor } from "../utils/colors";
 import { CartContext } from "../context/CartContext";
+import { convertirColor } from "../utils/colors";
 function obtenerColoresDeProducto(detalles) {
   const colores = new Set();
   detalles.forEach((detalle) => {

@@ -26,10 +26,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 import { styled } from "@mui/material/styles";
 import { cloneElement, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import Logo from "../../components/logo";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
@@ -116,50 +117,12 @@ function AdminDashboard({ children }) {
     delete: null,
     create: null,
   });
-  const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
-  const [visitedNotificationsPage, setVisitedNotificationsPage] =
-    useState(false);
-  const locationPage = useLocation();
+  const [alertMessage, setAlertMessage] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
 
-  useEffect(() => {
-    const eventSource = new EventSource(
-      `${axiosInstance.defaults.baseURL}/shopping/sse/`
-    );
-
-    eventSource.onmessage = function (event) {
-      setUnreadNotificationCount((prevCount) => prevCount + 1);
-
-      const viewedNotifications =
-        JSON.parse(localStorage.getItem("viewedNotifications")) || [];
-
-      localStorage.setItem(
-        "viewedNotifications",
-        JSON.stringify(viewedNotifications)
-      );
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (
-      locationPage.pathname === "/admin/notifications/" &&
-      !visitedNotificationsPage
-    ) {
-      setUnreadNotificationCount(0);
-      const viewedNotifications =
-        JSON.parse(localStorage.getItem("viewedNotifications")) || [];
-      localStorage.setItem(
-        "viewedNotifications",
-        JSON.stringify(viewedNotifications)
-      );
-      setVisitedNotificationsPage(true);
-      console.log("viewedNotifications:", viewedNotifications);
-    }
-  }, [locationPage.pathname, visitedNotificationsPage]);
-
+  const handleNotificationClick = () => {
+    setNotificationCount(0);
+  };
   const navigate = useNavigate();
 
   const handleDrawerClose = () => {
@@ -169,16 +132,42 @@ function AdminDashboard({ children }) {
     navigate("/admin/add-product/");
   };
 
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8000/ws/notifications/');
+
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        setAlertMessage(data.message);
+        setNotificationCount(prevCount => prevCount + 1);
+    };
+
+    socket.onopen = function(event) {
+        console.log('Conectado al WebSocket');
+    };
+
+    socket.onclose = function(event) {
+        console.log('Desconectado del WebSocket');
+    };
+
+    socket.onerror = function(error) {
+        console.error('WebSocket error:', error);
+    };
+
+      return () => {
+          socket.close();
+      };
+  }, []);
+
   const icons = {
     Productos: <FormatPaintIcon />,
     Pedidos: <AssignmentIcon />,
     Notificaciones: (
       <Badge
-        color="error"
-        badgeContent={visitedNotificationsPage ? 0 : unreadNotificationCount}
-        invisible={visitedNotificationsPage}
+        color="primary"
+        badgeContent={notificationCount}
+        invisible={notificationCount === 0}
       >
-        <NotificationsIcon />
+        <NotificationsIcon onClick={handleNotificationClick}/>
       </Badge>
     ),
     "Editar Pagina de Inicio": <DisplaySettingsIcon />,
@@ -225,6 +214,13 @@ function AdminDashboard({ children }) {
           <IconButton onClick={handleDrawerClose}>
             {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
+          {alertMessage && (
+                <Snackbar open={true} autoHideDuration={6000} onClose={() => setAlertMessage("")} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                    <Alert onClose={() => setAlertMessage("")} severity="info" sx={{ width: '100%' }}>
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
+            )}
 
           {title === "Productos" ? (
             <Box

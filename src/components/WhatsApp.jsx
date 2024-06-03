@@ -8,8 +8,7 @@ const Whatsapp = () => {
     const isMobileOrTablet = useMediaQuery('(max-width: 960px)');
 
     const handleClick = () => {
-        // Redireccionar a un chat en WhatsApp
-        window.location.href = 'https://api.whatsapp.com/send?phone=573155176725';
+        window.open('https://api.whatsapp.com/send?phone=573155176725', '_blank');
     };
 
     return (
