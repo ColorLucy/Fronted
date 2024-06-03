@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Alert, Box, Button, FilledInput, FormControl, Grow, IconButton, InputAdornment, InputLabel, Snackbar, TextField } from '@mui/material';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { BarColors } from '../../components/NavigationBar';
 import axiosInstance from '../../utils/axiosInstance';
 
 const SignIn = () => {
@@ -22,16 +23,16 @@ const SignIn = () => {
 
     const handleSignIn = () => {
         axiosInstance
-          .post("/auth/login/", loginData)
-          .then(({ data }) => {
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('accessToken', data.access);
-            navigate('/profile'); 
-          })
-          .catch((error) => {
-            console.error("Error al iniciar sesión:", error);
-            setShowLoginError(true); 
-          });
+            .post("/auth/login/", loginData)
+            .then(({ data }) => {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                localStorage.setItem('accessToken', data.access);
+                navigate('/profile');
+            })
+            .catch((error) => {
+                console.error("Error al iniciar sesión:", error);
+                setShowLoginError(true);
+            });
     };
     // Manejador de éxito del inicio de sesión con Google
     const onGoogleLoginSuccess = async (response) => {
@@ -47,8 +48,8 @@ const SignIn = () => {
                 setShowLoginError(true); // Muestra el error de inicio de sesión
             });
     };
-    
-    
+
+
 
     return (
         <div className='adminPage' style={{ height: "calc(100vh - 180px)" }}>
@@ -68,6 +69,7 @@ const SignIn = () => {
             <div className='cardLoginAdmin'>
                 <h2 style={{ color: "black", margin: "0" }}>Inicio de Sesión</h2>
                 <p style={{ color: "grey", fontSize: "10px", margin: "0", marginBottom: "20px" }}>Ingresa tu información para iniciar sesión</p>
+                <BarColors cantIntermediate={4} />
                 <Box
                     component="form"
                     sx={{
@@ -117,14 +119,14 @@ const SignIn = () => {
                 </Box>
                 {/* Componente GoogleLogin para el inicio de sesión con Google */}
                 <GoogleLogin
-                onSuccess={onGoogleLoginSuccess} // Manejador de éxito
-                onError={() => {
-                    setShowLoginError(true); // Manejador de error
-                }}
-    size='large'
-    width={"100%"}
-/>
-                
+                    onSuccess={onGoogleLoginSuccess} // Manejador de éxito
+                    onError={() => {
+                        setShowLoginError(true); // Manejador de error
+                    }}
+                    size='large'
+                    width={"100%"}
+                />
+
             </div>
         </div>
     )

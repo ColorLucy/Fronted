@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Routes, Route} from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import MenuPerfil from './MenuPerfil'; // Importa el componente del menú
 import MiPerfil from './MiPerfil';
 import MisPedidos from './MisPedidos';
-import MenuPerfil from './MenuPerfil'; // Importa el componente del menú
 
 const Profile = () => {
     const navigate = useNavigate();

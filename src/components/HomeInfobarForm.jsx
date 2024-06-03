@@ -1,12 +1,11 @@
+import SaveIcon from "@mui/icons-material/Save";
+import { Box, Button, Grid, TextField } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { useEffect, useState } from "react";
-import SaveIcon from "@mui/icons-material/Save";
-import { Box, Grid, Typography, TextField, Button } from "@mui/material";
-import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../styles/theme";
-import { updateInfobar } from "../utils/information";
 import { getModifiedValues } from "../utils/formModifiedValues";
+import { updateInfobar } from "../utils/information";
 
 const validationSchema = yup.object({
   title: yup.string("Ingresa el Título de Contacto").notRequired(),
