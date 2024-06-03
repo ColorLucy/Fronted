@@ -138,6 +138,7 @@ export default function Order() {
   const isMobileOrTablet = useMediaQuery("(max-width: 960px)");
   const [subtotal, setSubtotal] = React.useState(0);
   const [total, setTotal] = React.useState(0);
+  const [loadingPedido, setLoadingPedido] = React.useState(false);
 
   React.useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -337,16 +338,19 @@ export default function Order() {
 
   const enviarPedido = async () => {
     let orderData, cartProductsData, userData;
-
+    setLoadingPedido(true);
+  
     try {
       orderData = JSON.parse(localStorage.getItem("order"));
       cartProductsData = JSON.parse(localStorage.getItem("cartProducts"));
       userData = JSON.parse(localStorage.getItem("user"));
-
+  
       console.log("orderData:", orderData);
       console.log("cartProductsData:", cartProductsData);
       console.log("userData:", userData);
+
     } catch (error) {
+      setLoadingPedido(false);
       console.error("Error parsing localStorage data:", error);
       Swal.fire(
         "Error",
@@ -355,12 +359,13 @@ export default function Order() {
       );
       return;
     }
-
+  
     if (!orderData || !cartProductsData || !userData) {
+      setLoadingPedido(false);
       Swal.fire("Error", "Datos incompletos en el pedido.", "error");
       return;
     }
-
+  
     const pedido = {
       phone_number: orderData.phoneNumber,
       address: orderData.address,
@@ -374,10 +379,15 @@ export default function Order() {
         cantidad: producto.amount,
       })),
     };
-
+  
     try {
       console.log("Datos del pedido:", pedido);
-      const data = postOrder(pedido);
+      const data = await postOrder(pedido); 
+      if (data.error) {
+        setLoadingPedido(false);
+        throw new Error(data.error);
+      }
+      setLoadingPedido(false);
       console.log("Pedido enviado con éxito:", data);
       clearCart();
       Swal.fire({
@@ -386,16 +396,16 @@ export default function Order() {
             <div style="display: flex;">
               <div style="flex: 1; text-align: left;">
                 ${userData.name}<br>
-                ${data.phone_number}<br>
-                ${data.address}<br>
+                ${pedido.phone_number}<br>
+                ${pedido.address}<br>
               </div>
               <div style="flex: 1; text-align: left; font-size: 14px;">
                 Fecha del pedido: ${new Date(
                   data.fecha_pedido
                 ).toLocaleString()}<br>
-                Tipo de envío: ${data.tipo_envio}<br>
-                Cantidad de productos: ${data.cantidad_productos}<br>
-                <strong>Total: $ ${data.total}</strong><br>
+                Tipo de envío: ${pedido.tipo_envio}<br>
+                Cantidad de productos: ${pedido.cantidad_productos}<br>
+                <strong>Total: $ ${pedido.total}</strong><br>
                 <strong>Su pedido sera completado en 3 días hábiles</strong><br>
               </div>
             </div>`,
@@ -403,6 +413,7 @@ export default function Order() {
       });
       return data;
     } catch (error) {
+      setLoadingPedido(false);
       console.log("Pedido fallido:", pedido);
       Swal.fire(
         "Error",
@@ -497,7 +508,7 @@ export default function Order() {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight: "calc(100dvh - 180px)" }}>
+    <Box sx={{ display: "flex", minHeight: "calc(100dvh - 180px)", flexGrow: 1, }}>
       <Modal open={openModal} onClose={handleClose}>
         <Box>
           <OrderForm onSave={handleSaveOrderInfo} />
@@ -530,7 +541,7 @@ export default function Order() {
           }}
         >
           {activeStep === 0 && (
-            <div>
+            <div> 
               {loading ? (
                 <Box
                   sx={{
@@ -543,89 +554,30 @@ export default function Order() {
                   <CircularProgress />
                 </Box>
               ) : userData ? (
-                <div style={{}}>
-                  <Card
-                    variant="outlined"
-                    sx={{ mt: 2, mb: 2, ml: 4, mr: 4, p: 2 }}
-                  >
-                    <div>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        component="span"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        Nombre:
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        component="span"
-                        sx={{ marginLeft: 1 }}
-                      >
-                        {userData.name}
-                      </Typography>
-                    </div>
-                    <div>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        component="span"
-                        sx={{ fontWeight: "bold" }}
-                      >
-                        Correo:
-                      </Typography>
-                      <Typography
-                        variant="h6"
-                        gutterBottom
-                        component="span"
-                        sx={{ marginLeft: 1 }}
-                      >
-                        {userData.email}
-                      </Typography>
-                    </div>
+                <Card variant="outlined" sx={{ mt: 2, mb: 2, ml: 4, mr: 4, p: 2 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <Typography variant="h6" gutterBottom component="div" sx={{ display: 'flex', alignItems: 'center', fontSize: 'clamp(13px, 3vw, 18px)' }}>
+                      <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Nombre:</span>
+                      <span>{userData.name}</span>
+                    </Typography>
+                    <Typography variant="h6" gutterBottom component="div" sx={{ display: 'flex', alignItems: 'center', fontSize: 'clamp(13px, 3vw, 18px)' }}>
+                      <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Correo:</span>
+                      <span>{userData.email}</span>
+                    </Typography>
                     {orderInfo && (
                       <>
-                        <div>
-                          <Typography
-                            variant="h6"
-                            gutterBottom
-                            component="span"
-                            sx={{ fontWeight: "bold" }}
-                          >
-                            Celular:
-                          </Typography>
-                          <Typography
-                            variant="h6"
-                            gutterBottom
-                            component="span"
-                            sx={{ marginLeft: 1 }}
-                          >
-                            {orderInfo.phoneNumber}
-                          </Typography>
-                        </div>
-                        <div>
-                          <Typography
-                            variant="h6"
-                            gutterBottom
-                            component="span"
-                            sx={{ fontWeight: "bold" }}
-                          >
-                            Dirección:
-                          </Typography>
-                          <Typography
-                            variant="h6"
-                            gutterBottom
-                            component="span"
-                            sx={{ marginLeft: 1 }}
-                          >
-                            {orderInfo.address}
-                          </Typography>
-                        </div>
+                        <Typography variant="h6" gutterBottom component="div" sx={{ display: 'flex', alignItems: 'center', fontSize: 'clamp(13px, 3vw, 18px)' }}>
+                          <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Celular:</span>
+                          <span>{orderInfo.phoneNumber}</span>
+                        </Typography>
+                        <Typography variant="h6" gutterBottom component="div" sx={{ display: 'flex', alignItems: 'center', fontSize: 'clamp(13px, 3vw, 18px)' }}>
+                          <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Dirección:</span>
+                          <span>{orderInfo.address}</span>
+                        </Typography>
                       </>
                     )}
-                  </Card>
-                </div>
+                  </div>
+                </Card>
               ) : (
                 <Box sx={{ width: "100%", typography: "body1" }}>
                   <TabContext value={value}>
@@ -971,7 +923,7 @@ export default function Order() {
                     <Typography variant="body1" sx={{ ml: 2 }}>
                       Para más métodos de pago, debes realizar tu pedido
                       directamente con un asesor de Color Lucy.{" "}
-                      <a href="#" onClick={handleWhatsAppOrder}>
+                      <a style={{color: "blue", textDecoration: "underline", cursor: "pointer"}} onClick={handleWhatsAppOrder}>
                         (click aquí)
                       </a>
                     </Typography>
@@ -1004,20 +956,22 @@ export default function Order() {
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
+              marginBottom: "20px",
             }}
           >
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={activeStep === 0}
-              onClick={handleBack}
-              sx={{ mr: 1 }}
-            >
-              Atrás
-            </Button>
-            {/* <Button onClick={handleNext} disabled={isNextButtonDisabled} sx={{ mr: 1 }}>
-              Siguiente
-            </Button> */}
+            {loadingPedido ? ( 
+              <CircularProgress sx={{margin:'10px'}} />
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                disabled={activeStep === 0}
+                onClick={handleBack}
+                sx={{ mr: 1 }}
+              >
+                Atrás
+              </Button>
+            )}
             {activeStep !== steps.length &&
               (completed[activeStep] ? (
                 <Typography
@@ -1035,7 +989,7 @@ export default function Order() {
                   variant="contained"
                   color="primary"
                   onClick={handleComplete}
-                  disabled={isNextButtonDisabled}
+                  disabled={isNextButtonDisabled} 
                 >
                   {completedSteps() === totalSteps() - 1
                     ? "Finalizar"
