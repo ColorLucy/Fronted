@@ -1,9 +1,8 @@
-import React, { Fragment } from 'react'
 import { useMediaQuery } from '@mui/material';
-import logo from "/logoTemp.webp"
-import { motion } from "framer-motion";
-import "./components.css"
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import "./components.css";
+import logo from "/logoTemp.webp";
 const colors = ['#EDC208', '#D7194A', '#0AA64D', '#0367A6', '#C63CA2'];
 
 
@@ -95,14 +94,14 @@ export default function Logo({ imgSize, minLen, img }) {
                         fontWeight: "400px", fontStyle: "normal", userSelect: "none"
                     }}>{wordColor} </div>
                     <span translate="no"
-                    lang="es"
-                    style={{
-                        textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
-                        userSelect: "none",
-                        position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
-                        fontWeight: "400px", fontStyle: "normal",
-                        unicodeBidi: "bidi-override", direction: "ltr" 
-                    }}> Lucy</span>
+                        lang="es"
+                        style={{
+                            textShadow: '-0.5px 0.5px 2.5px rgba(0, 0, 0, 0.75)',
+                            userSelect: "none",
+                            position: "relative", top: "8px", color: '#0367A6', margin: "4px", fontFamily: "Pacifico, cursive",
+                            fontWeight: "400px", fontStyle: "normal",
+                            unicodeBidi: "bidi-override", direction: "ltr"
+                        }}> Lucy</span>
                 </div>
             </div>
 

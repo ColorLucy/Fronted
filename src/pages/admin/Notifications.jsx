@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Typography, Switch, Card, CardActionArea, CardContent, List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider } from '@mui/material';
+import { Avatar, Box, Card, CardActionArea, CardContent, Divider, List, ListItem, ListItemAvatar, ListItemText, Switch, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { CheckCircleOutline, RadioButtonUnchecked } from '@mui/icons-material';
-import { theme } from "../../styles/theme";
-import dayjs from 'dayjs';
-import axiosInstance from '../../utils/axiosInstance';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import image from '../../../public/logoTemp.webp';
+import { theme } from "../../styles/theme";
+import axiosInstance from '../../utils/axiosInstance';
 
 export default function Notifications({ modifyTitle }) {
     const [notifications, setNotifications] = useState([]);
@@ -33,8 +31,8 @@ export default function Notifications({ modifyTitle }) {
         // Aquí puedes realizar cualquier acción que desees al hacer clic en la notificación
     };
 
-    const filteredNotifications = showUnread 
-        ? notifications.filter(notification => !notification.read) 
+    const filteredNotifications = showUnread
+        ? notifications.filter(notification => !notification.read)
         : notifications;
 
     return (
@@ -63,7 +61,7 @@ export default function Notifications({ modifyTitle }) {
     );
 }
 
-function CardNotification({ notification}) {
+function CardNotification({ notification }) {
     const navigate = useNavigate();
 
     const handleCardClick = () => {
@@ -86,9 +84,9 @@ function CardNotification({ notification}) {
                             ? <CheckCircleOutline color="action" />
                             : <RadioButtonUnchecked color="primary" />
                         } */}
-                        <Typography 
-                            variant="caption" 
-                            color="primary" 
+                        <Typography
+                            variant="caption"
+                            color="primary"
                             sx={{ marginTop: 1 }}
                         >
                             Color lucy

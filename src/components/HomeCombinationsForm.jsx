@@ -1,25 +1,24 @@
-import { useFormik } from "formik";
-import * as yup from "yup";
-import { useEffect, useState } from "react";
 import PhotoIcon from "@mui/icons-material/Photo";
 import SaveIcon from "@mui/icons-material/Save";
 import {
   Box,
-  Grid,
-  Typography,
-  TextField,
   Button,
   CircularProgress,
+  Grid,
+  TextField
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "../styles/theme";
+import { useFormik } from "formik";
+import { useEffect, useState } from "react";
+import * as yup from "yup";
 import ImagesSlider from "../pages/admin/ImagesSlider";
+import { theme } from "../styles/theme";
+import { getModifiedValues } from "../utils/formModifiedValues";
 import {
   getCombinationsImages,
-  updateHomeText,
   updateCombinationsImage,
+  updateHomeText,
 } from "../utils/information";
-import { getModifiedValues } from "../utils/formModifiedValues";
 
 const validationSchema = yup.object({
   combinations_title: yup
@@ -127,8 +126,7 @@ const HomeCombinationsForm = () => {
               error
             );
             window.alert(
-              `La actualización de la imagen ${
-                i + 1
+              `La actualización de la imagen ${i + 1
               } ha fallado, vuelva a intentarlo`
             );
           });

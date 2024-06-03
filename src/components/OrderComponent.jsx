@@ -1,12 +1,11 @@
+import { Box, Button, Grid, Paper } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Box, Button, IconButton, Grid, Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import {
   Item,
   Item2,
+  ItemDynamic,
   ItemTittle,
   ItemTittle2,
-  ItemDynamic,
 } from "./OrderItems";
 
 const OrderComponent = ({ instance, handleProductState }) => {
