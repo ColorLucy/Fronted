@@ -1,4 +1,5 @@
-import { Avatar, Box, Card, CardActionArea, CardContent, Divider, List, ListItem, ListItemAvatar, ListItemText, Switch, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, Switch, Card, CardActionArea, CardContent, List, ListItem, ListItemAvatar, ListItemText, Avatar, Divider, CircularProgress } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,7 @@ import axiosInstance from '../../utils/axiosInstance';
 export default function Notifications({ modifyTitle }) {
     const [notifications, setNotifications] = useState([]);
     const [showUnread, setShowUnread] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         modifyTitle("Notificaciones");
@@ -16,19 +18,16 @@ export default function Notifications({ modifyTitle }) {
         axiosInstance.get(`/shopping/notifications/`)
             .then(response => {
                 setNotifications(response.data);
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error fetching notifications:', error);
+                setLoading(false);
             });
     }, []);
 
     const handleSwitchChange = () => {
         setShowUnread(!showUnread);
-    };
-
-    const handleClick = (notification) => {
-        console.log("Clicked notification:", notification);
-        // Aquí puedes realizar cualquier acción que desees al hacer clic en la notificación
     };
 
     const filteredNotifications = showUnread
@@ -47,15 +46,21 @@ export default function Notifications({ modifyTitle }) {
                     />
                 </Box>
                 <Divider />
-                <List>
-                    {filteredNotifications.map((notification, index) => (
-                        <CardNotification
-                            key={index}
-                            notification={notification}
-                            handleClick={() => handleClick(notification)}
-                        />
-                    ))}
-                </List>
+                {loading ? (
+                    <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
+                        <CircularProgress />
+                        <Typography variant="body2" mt={2}>Cargando notificaciones...</Typography>
+                    </Box>
+                ) : (
+                    <List>
+                        {filteredNotifications.map((notification, index) => (
+                            <CardNotification
+                                key={index}
+                                notification={notification}
+                            />
+                        ))}
+                    </List>
+                )}
             </Box>
         </ThemeProvider>
     );
