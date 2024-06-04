@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useAsyncError, useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import numeral from "numeral";
 import {
   Button,
@@ -14,6 +15,7 @@ import {
   Paper
 } from "@mui/material";
 import { ItemTitle } from "../../components/OrderItems"
+import OrderComponent from "../../components/ClientOrdersHistory";
 import "../../pages/user/shoppingcart.css";
 import homeColorLucyImg from "../../../public/homeColorLucy1.png";
 import axiosInstance from "../../utils/axiosInstance";
@@ -23,7 +25,9 @@ const MisPedidos = () => {
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Cargando Pedidos...");
   const [basicInformation, setBasicInformation] = useState([]);
-  const client = JSON.parse(localStorage.getItem('user'))
+  const client = JSON.parse(localStorage.getItem('user'));
+  const [viewOrderDetails, setViewOrderDetails] = useState(false);
+  const [idOrderToViewDetails, setIdOrderToViewDetails] = useState();
 
   useEffect(() => {
     fetchHistory(client.id)
@@ -44,9 +48,14 @@ const MisPedidos = () => {
       id_pedido: order.id_pedido,
       productos: order.productos
     }));
-    console.log(basicInformacionOrders)
     setBasicInformation(basicInformacionOrders)
     setHistoryData(data)
+    console.log(data)
+  }
+
+  const handleViewOrderDetails = (e, order_id) => {
+    setIdOrderToViewDetails(order_id)
+    setViewOrderDetails(true)
   }
 
   if (!historyData || loading) {
@@ -58,6 +67,33 @@ const MisPedidos = () => {
         </Typography>
       </div>
     );
+  }
+
+  if(viewOrderDetails) {
+    return (
+      <div display="flex">
+        <Grid container spacing={0}>
+          <Grid item xs={12} >
+            <Typography align="center" justify="center" paddingTop={10}>
+              <Button
+                variant="text"
+                color="success"
+                startIcon={<ArrowBackIcon />}
+                onClick={(e) => setViewOrderDetails(false)}
+              >
+                Pedidos
+              </Button>
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <OrderComponent
+              instance={historyData.filter((order) => order.id_pedido === idOrderToViewDetails)[0]}
+              client={client}
+            />
+          </Grid>
+        </Grid>
+      </div>
+    )
   }
 
   return (   
@@ -107,41 +143,43 @@ const MisPedidos = () => {
                       </Paper>
                     </Grid>
                     {pedido.productos.map((producto, index) => (
-                      <React.Fragment key={index}>
-                        <Grid item xs={3}>
-                          <CardContent>
-                            <CardMedia
-                              component="img"
-                              height="50px"
-                              width="80px !important"
-                              src={
-                                producto.detalle.imagenes.length > 0
-                                  ? producto.detalle.imagenes[0]
-                                  : homeColorLucyImg
-                              }
-                              loading="lazy"
-                              alt={producto.nombre}
-                              sx={{ objectFit: "contain" }}
-                            />
-                          </CardContent>
-                        </Grid>
-                        <Grid item xs={3}>
-                          <Typography fontSize={"15px"}> { producto.detalle.nombre } </Typography>
-                          <Typography fontSize={"12px"}> COLOR: { producto.detalle.color } </Typography>
-                          <Typography fontSize={"12px"}> { producto.detalle.unidad } </Typography>
-                          <Typography fontSize={"14px"} color={"gray"}> 1 ud. { numeral(producto.detalle.precio).format("$0,0") } </Typography> 
-                        </Grid>
-                        <Grid item xs={3} sx={{ display: "flex" }}>
-                          <Typography color={"gray"} alignSelf={"center"} sx={{ margin: "0px 15px 0 15px" }}>
-                          Total uds. { producto.cantidad }
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={3} display={"flex"} justifyContent={"center"}>
-                          <Typography>
-                            {numeral(producto.cantidad * producto.detalle.precio).format("$0,0")}
-                          </Typography>
-                        </Grid>
-                      </React.Fragment>
+                      <Grid container spacing={0} marginLeft={"32px"} marginTop={"5px"} alignItems={"center"}>
+                        <React.Fragment key={index} >
+                          <Grid item xs={3}>
+                            <CardContent>
+                              <CardMedia
+                                component="img"
+                                height="70px"
+                                width="80px !important"
+                                src={
+                                  producto.detalle.imagenes.length > 0
+                                    ? producto.detalle.imagenes[0]
+                                    : homeColorLucyImg
+                                }
+                                loading="lazy"
+                                alt={producto.nombre}
+                                sx={{ objectFit: "contain" }}
+                              />
+                            </CardContent>
+                          </Grid>
+                          <Grid item xs={3}>
+                            <Typography fontSize={"15px"}> { producto.detalle.nombre } </Typography>
+                            <Typography fontSize={"13px"}> Color: { producto.detalle.color } </Typography>
+                            <Typography fontSize={"13px"}> { producto.detalle.unidad } </Typography>
+                            <Typography fontSize={"14px"} color={"gray"}> 1 ud. { numeral(producto.detalle.precio).format("$0,0") } </Typography> 
+                          </Grid>
+                          <Grid item xs={3} sx={{ display: "flex" }}>
+                            <Typography color={"gray"} alignSelf={"center"} sx={{ margin: "0px 15px 0 15px" }}>
+                            Total uds. { producto.cantidad }
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={3} display={"flex"} justifyContent={"center"}>
+                            <Typography>
+                              {numeral(producto.cantidad * producto.detalle.precio).format("$0,0")}
+                            </Typography>
+                          </Grid>
+                        </React.Fragment>
+                      </Grid>
                     ))}
                   </Grid>
                 </CardActionArea>
@@ -157,7 +195,7 @@ const MisPedidos = () => {
                       <Button
                         variant="outlined"
                         color="success"
-                        onClick={() => alert("To do...")}
+                        onClick={(e) => handleViewOrderDetails(e, pedido.id_pedido)}
                       >
                         Ver detalles del pedido
                       </Button>
