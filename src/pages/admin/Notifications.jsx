@@ -16,7 +16,14 @@ export default function Notifications({ modifyTitle }) {
 
         axiosInstance.get(`/shopping/notifications/`)
             .then(response => {
-                setNotifications(response.data);
+                const dataWithDaysAgo = response.data.map(notification => {
+                    const createdAt = new Date(notification.created_at);
+                    const now = new Date();
+                    const differenceInTime = now - createdAt;
+                    const daysAgo = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
+                    return { ...notification, daysAgo };
+                });
+                setNotifications(dataWithDaysAgo);
                 setLoading(false);
             })
             .catch(error => {
@@ -36,14 +43,14 @@ export default function Notifications({ modifyTitle }) {
     return (
         <ThemeProvider theme={theme}>
             <Box sx={{ padding: 2 }}>
-                <Box display="flex" justifyContent="flex-start" alignItems="center" mb={2}>
+                {/* <Box display="flex" justifyContent="flex-start" alignItems="center" mb={2}>
                     <Typography variant="body1">Mostrar solo las no leídas</Typography>
                     <Switch
                         checked={showUnread}
                         onChange={handleSwitchChange}
                         inputProps={{ 'aria-label': 'Mostrar solo las no leídas' }}
                     />
-                </Box>
+                </Box> */}
                 <Divider />
                 {loading ? (
                     <Box display="flex" flexDirection="column" alignItems="center" mt={4}>
@@ -68,8 +75,15 @@ export default function Notifications({ modifyTitle }) {
 function CardNotification({ notification }) {
     const navigate = useNavigate();
 
+    const extractIdFromMessage = (message) => {
+        const match = message.match(/ID:\s*(\d+)/);
+        return match ? match[1] : null;
+    };
+
+    const id = extractIdFromMessage(notification.message);
+
     const handleCardClick = () => {
-        navigate("/admin/orders/");
+        navigate(`/admin/order/view/${id}`);
     };
 
     return (
