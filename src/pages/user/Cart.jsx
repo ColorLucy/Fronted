@@ -69,7 +69,10 @@ function Cart() {
   };
 
   return (
-    <Box sx={{ minHeight: "calc(100dvh - 200px)" }}>
+    <Box sx={{ minHeight: 'calc(100dvh - 200px)',margin: '20px',
+      '&::-webkit-scrollbar': {
+        width: '20px',
+      }}}>
       <Box
         sx={{
           display: "flex",
@@ -93,71 +96,70 @@ function Cart() {
             sx={{
               maxHeight: "350px",
               overflowY: "auto",
-              overflowX: "hidden",
+              // overflowX: "hidden",
+              // '&::-webkit-scrollbar': {
+              //   width: '10px',
+              // }
             }}
           >
             {cartItems.map((item, i) => (
               <ItemCart key={i} item={item} />
             ))}
           </Box>
-          <Grid container>
+          <Grid sx={{ display: "flex", justifyContent: "end" , marginRight: '20px', marginTop: '10px' }} >
+            <Typography
+              sx={{fontWeight: "bold"}}
+            >
+              TOTAL: {numeral(total).format("$0,0")}
+            </Typography>
+          </Grid>
             <Grid
               item
               xs={9}
-              sx={{ display: "flex", justifyContent: "flex-end" }}
+              sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-end" }}
             >
               <Button
                 variant="contained"
                 color="success"
                 sx={{
-                  marginTop: "10px",
-                  marginRight: "20px",
-                  height: "40px",
-                  width: "232px",
-                  backgroundColor: "#2e7d32",
-                  color: "white",
+                  marginTop: '10px',
+                  marginRight: '10px',
+                  height: { xs: '40px', sm: '45px', md: '50px' },
+                  width: { xs: '100%', sm: 'auto', md: '232px' },
+                  backgroundColor: '#2e7d32',
+                  color: 'white',
                 }}
                 onClick={() => {
                   handleDialogOpen();
                   setCartOpen(false);
                 }}
               >
-                <WhatsApp sx={{ color: "white", marginRight: "2px" }} />
-                <Typography color="white">Enviar a un asesor</Typography>
+                <WhatsApp sx={{ color: 'white', marginRight: '2px' }} />
+                <Typography color="white" sx={{ fontSize: { xs: '12px', sm: '14px', md: '16px' }}} >
+                  Enviar a un asesor
+                </Typography>
               </Button>
               <Link
                 to="/pedido"
                 style={{
-                  textDecoration: "none",
+                  textDecoration: 'none',
                 }}
               >
                 <Button
                   variant="contained"
                   color="primary"
                   sx={{
-                    marginTop: "10px",
-                    height: "40px",
-                    width: "232px",
+                    marginTop: '10px',
+                    height: { xs: '40px', sm: '45px', md: '50px' },
+                    width: { xs: '100%', sm: 'auto', md: '232px' },
                   }}
-                  onClick={() => setCartOpen(false)}
                 >
-                  <Typography color="white">Finalizar compra</Typography>
+                  <Typography color="white" sx={{ fontSize: { xs: '12px', sm: '14px', md: '16px' }}}>
+                    Finalizar compra
+                  </Typography>
                 </Button>
               </Link>
             </Grid>
-            <Grid
-              item
-              xs={3}
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <Typography
-                className="total"
-                sx={{ marginTop: "10px", marginRight: "30px" }}
-              >
-                TOTAL: {numeral(total).format("$0,0")}
-              </Typography>
-            </Grid>
-          </Grid>
         </>
       )}
 
