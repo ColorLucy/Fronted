@@ -125,9 +125,18 @@ const ShoppingCart = () => {
               style={{ textDecoration: "none", color: "black" }}
               to={"/carrito"}
             >
-              VER CARRITO
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => setCartOpen(false)}
+                sx={{
+                  marginBottom: "15px",
+                }}>
+                <Typography color="white">VER CARRITO</Typography>
+              </Button>
             </Link>
-            <Box onClick={() => setCartOpen(false)} >
+            <Box onClick={() => setCartOpen(false)}
+                 sx={{ cursor: 'pointer' }} >
               <svg
                 width="15"
                 height="15"
@@ -169,7 +178,7 @@ const ShoppingCart = () => {
                 }}
               >
                 <Box sx={{ flex: 1, maxWidth: "150px" }}>
-                  <Typography className="total" sx={{ marginTop: "10px" }}>
+                  <Typography className="total" sx={{ marginTop: "10px" , fontWeight: "bold"}}>
                     Total: {numeral(total).format("$0,0")}
                   </Typography>
                 </Box>
@@ -188,7 +197,6 @@ const ShoppingCart = () => {
                     sx={{
                       display: "flex",
                       padding: "5px 10px",
-
                       borderRadius: "5px",
                       backgroundColor: "#2e7d32",
                       color: "white",
@@ -212,8 +220,9 @@ const ShoppingCart = () => {
                       color="primary"
                       sx={{
                         marginTop: "10px",
-                        height: "40px",
-                        width: "100%",
+                        display: "flex",
+                        padding: "5px 10px",
+                        borderRadius: "5px",
                       }}
                       onClick={() => setCartOpen(false)}
                     >
