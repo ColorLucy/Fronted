@@ -3,6 +3,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import MenuPerfil from './MenuPerfil'; // Importa el componente del menú
 import MiPerfil from './MiPerfil';
 import MisPedidos from './MisPedidos';
+import DetallePedido from './DetallePedido';
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -29,6 +30,7 @@ const Profile = () => {
                 <Routes>
                     <Route path="mi-perfil" element={<MiPerfil />} />
                     <Route path="mis-pedidos" element={<MisPedidos />} />
+                    <Route path="mis-pedidos/:detalleId" element={<DetallePedido />} />
                 </Routes>
             </div>
         </div>
