@@ -26,7 +26,7 @@ const SignIn = () => {
             .post("/auth/login/", loginData)
             .then(({ data }) => {
                 localStorage.setItem('user', JSON.stringify(data.user));
-                localStorage.setItem('accessToken', data.access);
+                localStorage.setItem('authTokens', JSON.stringify({ access: data.access, refresh: data.refresh }));
                 navigate('/profile');
             })
             .catch((error) => {

@@ -38,8 +38,9 @@ export const AuthProvider = ({ children }) => {
   let [loading, setLoading] = useState(true);
   let [loginError, setLoginError] = useState(false);
   const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const back = queryParams.get('back');
   const navigate = useNavigate();
-
   let loginUser = async (e, data) => {
     localStorage.clear();
     e.preventDefault();
@@ -56,15 +57,16 @@ export const AuthProvider = ({ children }) => {
       //axiosInstance.defaultConfig.headers.authorization = `Bearer ${response.data.access}`
       localStorage.setItem("authTokens", JSON.stringify(response.data));
       localStorage.setItem('user', JSON.stringify(response.data.user));
-      navigate("/admin");
+      navigate(back ? back : "/admin");
     }
   };
 
-  let logoutUser = () => {
+  let logoutUser = (backURL) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    navigate("/admin/login");
+    console.log(location)
+    navigate(`/admin/login?back=${backURL}`);
   };
   const triggerLoginRedirect = () => {
     setShowLoginRedirect(true);
@@ -92,7 +94,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <>
       {!authTokens && location?.pathname !== "/admin/login" && (
-        <Navigate replace to="/admin/login?invalid=true" />
+        <Navigate replace to={`/admin/login?invalid=true&back=${location?.pathname + location?.search}`} />
       )}
       <AuthContext.Provider value={contextData}>
         {loading ? null : children}
