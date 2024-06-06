@@ -29,7 +29,7 @@ import Typography from "@mui/material/Typography";
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { styled } from "@mui/material/styles";
-import { cloneElement, useState, useEffect } from "react";
+import { cloneElement, useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../components/logo";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -119,6 +119,7 @@ function AdminDashboard({ children }) {
   });
   const [alertMessage, setAlertMessage] = useState("");
   const [notificationCount, setNotificationCount] = useState(0);
+  const socketRef = useRef(null);
 
   const handleNotificationClick = () => {
     setNotificationCount(0);
@@ -133,24 +134,13 @@ function AdminDashboard({ children }) {
   };
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:8000/ws/notifications/');
+    const socket = new WebSocket('wss://colorlucy-api.onrender.com/ws/notifications/');
+    // const socket = new WebSocket('ws://127.0.0.1:8000/ws/notifications/');
 
     socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         setAlertMessage(data.message);
         setNotificationCount(prevCount => prevCount + 1);
-    };
-
-    socket.onopen = function(event) {
-        console.log('Conectado al WebSocket');
-    };
-
-    socket.onclose = function(event) {
-        console.log('Desconectado del WebSocket');
-    };
-
-    socket.onerror = function(error) {
-        console.error('WebSocket error:', error);
     };
 
       return () => {
@@ -215,13 +205,12 @@ function AdminDashboard({ children }) {
             {!open ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
           {alertMessage && (
-                <Snackbar open={true} autoHideDuration={6000} onClose={() => setAlertMessage("")} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Snackbar open={true} autoHideDuration={9000} onClose={() => setAlertMessage("")} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
                     <Alert onClose={() => setAlertMessage("")} severity="info" sx={{ width: '100%' }}>
                         {alertMessage}
                     </Alert>
                 </Snackbar>
             )}
-
           {title === "Productos" ? (
             <Box
               sx={{

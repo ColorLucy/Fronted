@@ -290,6 +290,15 @@ const Product = ({ productData, detailId }) => {
     window.open(whatsappLink, "_blank");
   };
 
+  const handleAddToCart = () => {
+    const productToAdd = {
+      ...selectedDetail,
+      nombre_producto: nombre_producto,
+    };
+    addItemToCart(productToAdd);
+    console.log("Producto agregado:", productToAdd);
+  };
+
   return (
     <Box
       sx={{
@@ -470,10 +479,7 @@ const Product = ({ productData, detailId }) => {
                 sx={{ paddingInline: "10px" }}
                 startIcon={<AddShoppingCartIcon />}
                 fullWidth
-                onClick={() => {
-                  addItemToCart(selectedDetail);
-                  console.log("mi producto agregado: ", selectedDetail);
-                }}
+                onClick={handleAddToCart}
               >
                 AÑADIR AL CARRITO
               </Button>
