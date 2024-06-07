@@ -11,7 +11,6 @@ export default function InfoBar() {
       try {
         const data = await getInfoBarInfo();
         setInfo(data[0]);
-        // console.log("Data: ", data.title);
       } catch (error) {
         console.error("Error: ", error);
       }

@@ -1,45 +1,43 @@
-import * as React from "react";
-import {
-  Box,
-  Stepper,
-  Step,
-  StepButton,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Tab,
-  TextField,
-  IconButton,
-  InputAdornment,
-  Drawer,
-  useMediaQuery,
-  Modal,
-  Alert,
-  CircularProgress,
-  FormHelperText,
-  FormControl,
-} from "@mui/material";
-import StoreIcon from "@mui/icons-material/Store";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import StoreIcon from "@mui/icons-material/Store";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import WarningIcon from "@mui/icons-material/Warning";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import {
+  Alert,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CircularProgress,
+  Drawer,
+  FormControlLabel,
+  IconButton,
+  InputAdornment,
+  Modal,
+  Radio,
+  RadioGroup,
+  Step,
+  StepButton,
+  Stepper,
+  Tab,
+  TextField,
+  Typography,
+  useMediaQuery
+} from "@mui/material";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import { ItemCart } from "../../components/ItemCart";
 import numeral from "numeral";
+import * as React from "react";
+import Swal from "sweetalert2";
+import { ItemCart } from "../../components/ItemCart";
 import { CartContext } from "../../context/CartContext";
 import axiosInstance from "../../utils/axiosInstance";
 import { postOrder } from "../../utils/orders";
-import Swal from "sweetalert2";
 
 const steps = ["Información", "Método de envío", "Pago"];
 
@@ -280,7 +278,6 @@ export default function Order() {
     axiosInstance
       .post("/auth/login/", loginData)
       .then(({ data }) => {
-        console.log(data);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("accessToken", data.access);
         window.location.reload();
@@ -324,11 +321,10 @@ export default function Order() {
           parseFloat(item.precio)
         ).format("$0,0")} la unidad,`
     );
-    const message = `Hola, soy ${
-      userData.name
-    }, ¿Cuáles métodos de pago tienen?, me gustaría ordenar lo siguiente:\n${cartInfo.join(
-      "\n"
-    )}\nTotal: ${numeral(total).format("$0,0")}`;
+    const message = `Hola, soy ${userData.name
+      }, ¿Cuáles métodos de pago tienen?, me gustaría ordenar lo siguiente:\n${cartInfo.join(
+        "\n"
+      )}\nTotal: ${numeral(total).format("$0,0")}`;
     const whatsappLink = `https://wa.me/573155176725/?text=${encodeURIComponent(
       message
     )}`;
@@ -339,16 +335,11 @@ export default function Order() {
   const enviarPedido = async () => {
     let orderData, cartProductsData, userData;
     setLoadingPedido(true);
-  
+
     try {
       orderData = JSON.parse(localStorage.getItem("order"));
       cartProductsData = JSON.parse(localStorage.getItem("cartProducts"));
       userData = JSON.parse(localStorage.getItem("user"));
-  
-      console.log("orderData:", orderData);
-      console.log("cartProductsData:", cartProductsData);
-      console.log("userData:", userData);
-
     } catch (error) {
       setLoadingPedido(false);
       console.error("Error parsing localStorage data:", error);
@@ -359,13 +350,13 @@ export default function Order() {
       );
       return;
     }
-  
+
     if (!orderData || !cartProductsData || !userData) {
       setLoadingPedido(false);
       Swal.fire("Error", "Datos incompletos en el pedido.", "error");
       return;
     }
-  
+
     const pedido = {
       phone_number: orderData.phoneNumber,
       address: orderData.address,
@@ -379,16 +370,14 @@ export default function Order() {
         cantidad: producto.amount,
       })),
     };
-  
+
     try {
-      console.log("Datos del pedido:", pedido);
-      const data = await postOrder(pedido); 
+      const data = await postOrder(pedido);
       if (data.error) {
         setLoadingPedido(false);
         throw new Error(data.error);
       }
       setLoadingPedido(false);
-      console.log("Pedido enviado con éxito:", data);
       clearCart();
       Swal.fire({
         title: "Pedido enviado",
@@ -401,8 +390,8 @@ export default function Order() {
               </div>
               <div style="flex: 1; text-align: left; font-size: 14px;">
                 Fecha del pedido: ${new Date(
-                  data.fecha_pedido
-                ).toLocaleString()}<br>
+          data.fecha_pedido
+        ).toLocaleString()}<br>
                 Tipo de envío: ${pedido.tipo_envio}<br>
                 Cantidad de productos: ${pedido.cantidad_productos}<br>
                 <strong>Total: $ ${pedido.total}</strong><br>
@@ -414,7 +403,6 @@ export default function Order() {
       return data;
     } catch (error) {
       setLoadingPedido(false);
-      console.log("Pedido fallido:", pedido);
       Swal.fire(
         "Error",
         "Ocurrió un error inesperado, intentalo de nuevo más tarde :(",
@@ -541,7 +529,7 @@ export default function Order() {
           }}
         >
           {activeStep === 0 && (
-            <div> 
+            <div>
               {loading ? (
                 <Box
                   sx={{
@@ -743,8 +731,8 @@ export default function Order() {
                             e.target.value.length < 6
                               ? "Por seguridad, la contraseña debe tener al menos 6 caracteres."
                               : !/\d/.test(e.target.value)
-                              ? "La contraseña debe incluir al menos un número."
-                              : false
+                                ? "La contraseña debe incluir al menos un número."
+                                : false
                           );
                         }}
                         error={passwordError}
@@ -923,7 +911,7 @@ export default function Order() {
                     <Typography variant="body1" sx={{ ml: 2 }}>
                       Para más métodos de pago, debes realizar tu pedido
                       directamente con un asesor de Color Lucy.{" "}
-                      <a style={{color: "blue", textDecoration: "underline", cursor: "pointer"}} onClick={handleWhatsAppOrder}>
+                      <a style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }} onClick={handleWhatsAppOrder}>
                         (click aquí)
                       </a>
                     </Typography>
@@ -959,8 +947,8 @@ export default function Order() {
               marginBottom: "20px",
             }}
           >
-            {loadingPedido ? ( 
-              <CircularProgress sx={{margin:'10px'}} />
+            {loadingPedido ? (
+              <CircularProgress sx={{ margin: '10px' }} />
             ) : (
               <Button
                 variant="contained"
@@ -989,7 +977,7 @@ export default function Order() {
                   variant="contained"
                   color="primary"
                   onClick={handleComplete}
-                  disabled={isNextButtonDisabled} 
+                  disabled={isNextButtonDisabled}
                 >
                   {completedSteps() === totalSteps() - 1
                     ? "Finalizar"

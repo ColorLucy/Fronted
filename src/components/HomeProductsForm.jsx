@@ -59,7 +59,6 @@ const HomeProductsForm = () => {
         let newImages = [];
         let newImagesFile = [];
         for (const item of data) {
-          // console.log("Item", item);
           initialImages.push(item.url);
           newImages.push(item.url);
           newImagesFile.push(null);
@@ -67,7 +66,6 @@ const HomeProductsForm = () => {
         setInitialProductsImageURL(initialImages);
         setNewProductsImageURL(newImages);
         setNewImageFile(newImagesFile);
-        // console.log(data);
       }
       setLoadingImages(false);
     };
@@ -84,7 +82,6 @@ const HomeProductsForm = () => {
     if (Object.keys(values).length) {
       await updateHomeText(1, values)
         .then(() => {
-          // console.log("Información actualizada exitosamente: ", data);
           window.alert(
             `La información ha sido actualizada correctamente: ${data}`
           );
@@ -138,15 +135,11 @@ const HomeProductsForm = () => {
    */
   const handleProductsImageChange = (event, index) => {
     event.preventDefault();
-    //console.log(index);
-    // console.log(event.target.files);
     try {
       let newImageURL = URL.createObjectURL(event.target.files[0]);
-      // console.log(productsImages[index].url);
       productsImages[index].url = newImageURL; // Image to show in the carousel
       newProductsImageURL[index] = newImageURL;
       newImageFile[index] = event.target.files[0];
-      // console.log("New URL: ", productsImages[index].url);
     } catch (error) {
       console.error("No se seleccionó ninguna imagen", error);
     }
@@ -159,18 +152,6 @@ const HomeProductsForm = () => {
    */
   const handleTest = async (event) => {
     event.preventDefault();
-    for (const image of productsImages) {
-      console.log(image);
-    }
-    console.log(initialProductsImageURL);
-    console.log(newProductsImageURL);
-    for (let i = 0; i < initialProductsImageURL.length; i++) {
-      console.log(
-        `Imagen ${i + 1}`,
-        initialProductsImageURL[i] === newProductsImageURL[i]
-      );
-    }
-    console.log("Image Files", newImageFile);
     window.alert("Testeado con éxito");
   };
 

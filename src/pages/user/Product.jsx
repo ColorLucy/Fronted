@@ -296,7 +296,6 @@ const Product = ({ productData, detailId }) => {
       nombre_producto: nombre_producto,
     };
     addItemToCart(productToAdd);
-    console.log("Producto agregado:", productToAdd);
   };
 
   return (

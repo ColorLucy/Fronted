@@ -67,7 +67,6 @@ const SearchBar = () => {
           setLoadingSearch(false);
         } catch (error) {
           if (axios.isCancel(error)) {
-            console.log('Solicitud cancelada:', error.message);
             setLoadingSearch(true);
           } else {
             console.error('Error al obtener los resultados de búsqueda:', error);

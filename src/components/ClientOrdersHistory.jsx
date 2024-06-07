@@ -39,7 +39,6 @@ const OrderComponent = ({instance, client}) => {
 
     useEffect(() => {
         setStateProduct("-");
-        console.log(instance, "instance")
     },[]);    
 
     return (
