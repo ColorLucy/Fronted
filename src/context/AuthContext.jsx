@@ -54,7 +54,6 @@ export const AuthProvider = ({ children }) => {
       setAuthTokens(response.data);
       setUser(jwtDecode(response.data.access));
       axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${response.data.access}`;
-      //axiosInstance.defaultConfig.headers.authorization = `Bearer ${response.data.access}`
       localStorage.setItem("authTokens", JSON.stringify(response.data));
       localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate(back ? back : "/admin");
@@ -65,7 +64,6 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    console.log(location)
     navigate(`/admin/login?back=${backURL}`);
   };
   const triggerLoginRedirect = () => {

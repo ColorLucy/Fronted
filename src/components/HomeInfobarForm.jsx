@@ -43,13 +43,11 @@ const HomeInfobarForm = () => {
     if (Object.keys(values).length) {
       await updateInfobar(1, values)
         .then(() => {
-          console.log("Información actualizada exitosamente: ", data);
           window.alert(
             `La información ha sido actualizada correctamente: ${data}`
           );
         })
         .catch((error) => {
-          console.log("Ocurrió un error al actualizar la información: ", error);
           window.alert(
             "La actualización de la información ha fallado, vuelva a intentarlo"
           );

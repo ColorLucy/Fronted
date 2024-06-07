@@ -95,7 +95,6 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
         index === numberDetail ? { ...detalle, [name]: value } : detalle)
       return prev
     })
-    console.log(product)
   };
 
   const handleImageChange = (index) => {

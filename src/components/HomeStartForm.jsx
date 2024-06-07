@@ -92,13 +92,11 @@ const HomeStartForm = () => {
     if (Object.keys(values).length) {
       await updateHomeText(1, values)
         .then(() => {
-          console.log("Información actualizada exitosamente: ", data);
           window.alert(
             `La información ha sido actualizada correctamente: ${data}`
           );
         })
         .catch((error) => {
-          console.log("Ocurrió un error al actualizar la información: ", error);
           window.alert(
             "La actualización de la información ha fallado, vuelva a intentarlo"
           );
@@ -143,14 +141,11 @@ const HomeStartForm = () => {
    */
   const handleStartImageChange = (event, index) => {
     event.preventDefault();
-    // console.log(event.target.files);
     try {
       let newImageURL = URL.createObjectURL(event.target.files[0]);
-      // console.log(startImages[index].url);
       startImages[index].url = newImageURL; // Image to show in the carousel
       newStartImageURL[index] = newImageURL;
       newImageFile[index] = event.target.files[0];
-      // console.log("New URL: ", startImages[index].url);
     } catch (error) {
       console.error("No se seleccionó ninguna imagen", error);
     }
@@ -163,18 +158,6 @@ const HomeStartForm = () => {
    */
   const handleTest = async (event) => {
     event.preventDefault();
-    for (const image of startImages) {
-      console.log(image);
-    }
-    console.log(initialStartImageURL);
-    console.log(newStartImageURL);
-    for (let i = 0; i < initialStartImageURL.length; i++) {
-      console.log(
-        `Imagen ${i + 1}`,
-        initialStartImageURL[i] === newStartImageURL[i]
-      );
-    }
-    console.log("Image Files", newImageFile);
     window.alert("Testeado con éxito");
     // window.location.reload();
     /*updateDataRequest();
