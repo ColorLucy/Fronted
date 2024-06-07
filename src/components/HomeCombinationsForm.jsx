@@ -66,7 +66,6 @@ const HomeCombinationsForm = () => {
         let newImages = [];
         let newImagesFile = [];
         for (const item of data) {
-          // console.log("Item", item);
           initialImages.push(item.url);
           newImages.push(item.url);
           newImagesFile.push(null);
@@ -74,7 +73,6 @@ const HomeCombinationsForm = () => {
         setInitialCombinationsImageURL(initialImages);
         setNewCombinationsImageURL(newImages);
         setNewImageFile(newImagesFile);
-        // console.log(data);
       }
       setLoadingImages(false);
     };
@@ -91,7 +89,6 @@ const HomeCombinationsForm = () => {
     if (Object.keys(values).length) {
       await updateHomeText(1, values)
         .then(() => {
-          console.log("Información actualizada exitosamente: ", data);
           window.alert(
             `La información ha sido actualizada correctamente: ${data}`
           );
@@ -145,15 +142,11 @@ const HomeCombinationsForm = () => {
    */
   const handleCombinationsImageChange = (event, index) => {
     event.preventDefault();
-    //console.log(index);
-    // console.log(event.target.files);
     try {
       let newImageURL = URL.createObjectURL(event.target.files[0]);
-      // console.log(combinationsImages[index].url);
       combinationsImages[index].url = newImageURL; // Image to show in the carousel
       newCombinationsImageURL[index] = newImageURL;
       newImageFile[index] = event.target.files[0];
-      // console.log("New URL: ", combinationsImages[index].url);
     } catch (error) {
       console.error("No se seleccionó ninguna imagen", error);
     }
@@ -166,18 +159,6 @@ const HomeCombinationsForm = () => {
    */
   const handleTest = async (event) => {
     event.preventDefault();
-    for (const image of combinationsImages) {
-      console.log(image);
-    }
-    console.log(initialCombinationsImageURL);
-    console.log(newCombinationsImageURL);
-    for (let i = 0; i < initialCombinationsImageURL.length; i++) {
-      console.log(
-        `Imagen ${i + 1}`,
-        initialCombinationsImageURL[i] === newCombinationsImageURL[i]
-      );
-    }
-    console.log("Image Files", newImageFile);
     window.alert("Testeado con éxito");
     // window.location.reload();
     /*updateDataRequest();

@@ -9,7 +9,6 @@ export default function Orders({ modifyTitle }) {
   const { id_order } = useParams();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState([]);
-  const [stateProduct, setStateProduct] = useState("Pendiente");
 
   const orders = [
     {
@@ -32,10 +31,6 @@ export default function Orders({ modifyTitle }) {
     },
   ];
 
-  const handleProductState = (state) => {
-    setStateProduct(state);
-  };
-
   const fetchOrder = async () => {
     const datos = await getOrder(id_order);
     setOrder([datos]);
@@ -56,10 +51,7 @@ export default function Orders({ modifyTitle }) {
           <Grid container spacing={0}>
             {order.map((order, index) => (
               <Grid key={index} item xs={12}>
-                <OrderComponent
-                  instance={order}
-                  handleProductState={handleProductState}
-                />
+                <OrderComponent instance={order} />
               </Grid>
             ))}
           </Grid>

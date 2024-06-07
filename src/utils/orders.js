@@ -18,11 +18,29 @@ export async function postOrder(order) {
   }
 }
 
+export async function patchOrder(id, order) {
+  try {
+    const { data } = await axiosInstance.patch(`/shopping/orders/${id}`, order);
+    return data;
+  } catch (error) {
+    console.error(`Error updating order ${id}:`, error);
+  }
+}
+
 export async function getOrder(id) {
   try {
     const { data } = await axiosInstance.get(`/shopping/orders/${id}`);
     return data;
   } catch (error) {
     console.error(`Error fetching order ${id}:`, error);
+  }
+}
+
+export async function getUserInfo(id) {
+  try {
+    const { data } = await axiosInstance.get(`/auth/user/${id}`);
+    return data;
+  } catch (error) {
+    console.error(`Error fetching user ${id}:`, error);
   }
 }

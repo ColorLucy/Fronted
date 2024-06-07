@@ -59,7 +59,6 @@ const HomeAlliesForm = () => {
         let newImages = [];
         let newImagesFile = [];
         for (const item of data) {
-          // console.log("Item", item);
           initialImages.push(item.url);
           newImages.push(item.url);
           newImagesFile.push(null);
@@ -67,7 +66,6 @@ const HomeAlliesForm = () => {
         setInitialAlliesImageURL(initialImages);
         setNewAlliesImageURL(newImages);
         setNewImageFile(newImagesFile);
-        // console.log(data);
       }
       setLoadingImages(false);
     };
@@ -84,7 +82,6 @@ const HomeAlliesForm = () => {
     if (Object.keys(values).length) {
       await updateHomeText(1, values)
         .then(() => {
-          console.log("Información actualizada exitosamente: ", data);
           window.alert(
             `La información ha sido actualizada correctamente: ${data}`
           );
@@ -138,15 +135,11 @@ const HomeAlliesForm = () => {
    */
   const handleAlliesImageChange = (event, index) => {
     event.preventDefault();
-    //console.log(index);
-    // console.log(event.target.files);
     try {
       let newImageURL = URL.createObjectURL(event.target.files[0]);
-      // console.log(alliesImages[index].url);
       alliesImages[index].url = newImageURL; // Image to show in the carousel
       newAlliesImageURL[index] = newImageURL;
       newImageFile[index] = event.target.files[0];
-      // console.log("New URL: ", alliesImages[index].url);
     } catch (error) {
       console.error("No se seleccionó ninguna imagen", error);
     }
@@ -159,18 +152,6 @@ const HomeAlliesForm = () => {
    */
   const handleTest = async (event) => {
     event.preventDefault();
-    for (const image of alliesImages) {
-      console.log(image);
-    }
-    console.log(initialAlliesImageURL);
-    console.log(newAlliesImageURL);
-    for (let i = 0; i < initialAlliesImageURL.length; i++) {
-      console.log(
-        `Imagen ${i + 1}`,
-        initialAlliesImageURL[i] === newAlliesImageURL[i]
-      );
-    }
-    console.log("Image Files", newImageFile);
     window.alert("Testeado con éxito");
   };
 
