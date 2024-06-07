@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import {
   Table,
   TableBody,
@@ -12,10 +10,7 @@ import {
   TableRow,
   TablePagination,
   Box,
-  Button,
   IconButton,
-  TextField,
-  InputAdornment,
   styled,
   Paper,
   Menu,
@@ -24,7 +19,6 @@ import {
 } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
-import Logo from "../../components/logo";
 import { useNavigate } from "react-router-dom";
 import { getOrders } from "../../utils/orders";
 
@@ -211,13 +205,6 @@ const Orders = ({ modifyTitle, search }) => {
                             onClick={() => handleViewOrder(row.id_pedido)}
                           >
                             <VisibilityIcon sx={{ mr: "0.5rem" }} /> Ver
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => {
-                              handleCompleteOrder(row.id_pedido);
-                            }}
-                          >
-                            <DeleteForeverIcon sx={{ mr: "0.5rem" }} /> Eliminar
                           </MenuItem>
                         </Menu>
                       </StyledBodyTableCell>

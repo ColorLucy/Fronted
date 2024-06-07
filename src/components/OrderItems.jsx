@@ -26,12 +26,17 @@ export const ItemTitle2 = ({ children }) => (
 export const ItemDynamic = ({ children, state }) => {
   let color = "purple";
   if (state === "Completado") {
-    color = "green";
+    color = "blue";
   } else if (state === "Cancelado") {
     color = "red";
   }
   return (
-    <Typography variant="inherit" align="center" sx={{ color }}>
+    <Typography
+      fontWeight="bold"
+      variant="inherit"
+      align="center"
+      sx={{ color }}
+    >
       {children}
     </Typography>
   );
