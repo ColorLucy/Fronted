@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useAsyncError, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import numeral from "numeral";
 import {
   Button,
@@ -15,7 +14,6 @@ import {
   Paper
 } from "@mui/material";
 import { ItemTitle } from "../../components/OrderItems"
-import OrderComponent from "../../components/ClientOrdersHistory";
 import "../../pages/user/shoppingcart.css";
 import homeColorLucyImg from "../../../public/homeColorLucy1.png";
 import axiosInstance from "../../utils/axiosInstance";
@@ -26,8 +24,7 @@ const MisPedidos = () => {
   const [loadingMessage, setLoadingMessage] = useState("Cargando Pedidos...");
   const [basicInformation, setBasicInformation] = useState([]);
   const client = JSON.parse(localStorage.getItem('user'));
-  const [viewOrderDetails, setViewOrderDetails] = useState(false);
-  const [idOrderToViewDetails, setIdOrderToViewDetails] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHistory(client.id)
@@ -50,12 +47,11 @@ const MisPedidos = () => {
     }));
     setBasicInformation(basicInformacionOrders)
     setHistoryData(data)
-    console.log(data)
   }
 
-  const handleViewOrderDetails = (e, order_id) => {
-    setIdOrderToViewDetails(order_id)
-    setViewOrderDetails(true)
+  const handleViewOrderDetails = (e, orderId) => {
+    const order = historyData.find((order) => order.id_pedido === orderId);
+    navigate(`/profile/mis-pedidos/${orderId}`, { state: {order}});
   }
 
   if (!historyData || loading) {
@@ -67,33 +63,6 @@ const MisPedidos = () => {
         </Typography>
       </div>
     );
-  }
-
-  if(viewOrderDetails) {
-    return (
-      <div display="flex">
-        <Grid container spacing={0}>
-          <Grid item xs={12} >
-            <Typography align="center" justify="center" paddingTop={10}>
-              <Button
-                variant="text"
-                color="success"
-                startIcon={<ArrowBackIcon />}
-                onClick={(e) => setViewOrderDetails(false)}
-              >
-                Pedidos
-              </Button>
-            </Typography>
-          </Grid>
-          <Grid item xs={12}>
-            <OrderComponent
-              instance={historyData.filter((order) => order.id_pedido === idOrderToViewDetails)[0]}
-              client={client}
-            />
-          </Grid>
-        </Grid>
-      </div>
-    )
   }
 
   return (   
@@ -122,7 +91,7 @@ const MisPedidos = () => {
           {basicInformation.map((pedido, indexPedido) => (
             <React.Fragment key={indexPedido} >
               <Grid container maxWidth={"900px"} spacing={1} sx={{ mb: 8, border: "1px dotted grey"}}>
-                <CardActionArea  sx={{ display: "flex" }}>
+                <CardActionArea sx={{ display: "flex", cursor: "default", pointerEvents: "none"}}>
                   <Grid container alignItems={"center"} justifyContent={"center"}>
                     <Grid item xs={4}>
                       <Paper sx={{ p: 2 }}>

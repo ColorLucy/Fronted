@@ -35,6 +35,7 @@ export default function AdminLogin() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const isInvalid = queryParams.get('invalid') === 'true';
+  const back = queryParams.get('back');
   let { loginUser, logoutUser, loginError, setLoginError } = useContext(AuthContext)
   const [showLoginRedirect, setShowLoginRedirect] = useState(isInvalid);
 
@@ -50,7 +51,7 @@ export default function AdminLogin() {
         TransitionComponent={Grow}
         onClose={() => {
           setShowLoginRedirect(false);
-          logoutUser();
+          logoutUser(back);
         }}
       >
         <Alert
@@ -75,7 +76,7 @@ export default function AdminLogin() {
       </Snackbar>
       <div className='cardLoginAdmin'>
         <Logo />
-        <BarColors cantIntermediate={3}/>
+        <BarColors cantIntermediate={3} />
         <h2 style={{ color: "black", margin: "0", marginTop: "40px" }}>Hola, bienvenido!</h2>
         <p style={{ color: "grey", fontSize: "10px", margin: "0" }}>Ingresa tus credenciales para continuar</p>
         <Box
