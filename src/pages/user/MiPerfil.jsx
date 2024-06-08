@@ -54,7 +54,7 @@ const MiPerfil = () => {
                 margin: '0 auto'    // Centra el contenedor en la página
             }}
         >
-            <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '20px' }}>Mi Perfil</Typography>
+            <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '10px' }}>Mi Perfil</Typography>
             <Paper sx={{ padding: '20px', width: '100%', backgroundColor: '#f7f7f7' }}>
                 <Typography variant="h6" sx={{ marginBottom: '20px' }}>Datos personales</Typography>
                 <Box sx={{ maxWidth: '500px', marginBottom: '20px' }}>

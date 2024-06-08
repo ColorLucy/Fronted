@@ -28,6 +28,8 @@ const Profile = () => {
             <MenuPerfil userName={userName} handleLogout={handleLogout} /> {/* Renderiza el menú */}
             <div className="cardUserProfile" style={{ width: "75%" }}>
                 <Routes>
+                    {/* Ruta por defecto que muestra MiPerfil */}
+                    <Route path="/" element={<MiPerfil />} />
                     <Route path="mi-perfil" element={<MiPerfil />} />
                     <Route path="mis-pedidos" element={<MisPedidos />} />
                     <Route path="mis-pedidos/:detalleId" element={<DetallePedido />} />
