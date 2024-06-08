@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, Box, IconButton, Typography, Paper } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
@@ -7,12 +7,26 @@ const MiPerfil = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [userInfo, setUserInfo] = useState({
-        name: 'Usuario Ejemplo',
-        email: 'usuario@example.com',
-        phone: '123-456-7890',
-        password: 'Contraseña',
-        confirmPassword: 'Contraseña',
+        name: '',
+        email: '',
+        phone: '',
+        password: '',
+        confirmPassword: '',
     });
+
+    useEffect(() => {
+        // Recuperar datos del usuario del almacenamiento local
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            setUserInfo({
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                password: '',
+                confirmPassword: '',
+            });
+        }
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
