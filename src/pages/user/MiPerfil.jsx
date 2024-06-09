@@ -9,7 +9,6 @@ const MiPerfil = () => {
     const [userInfo, setUserInfo] = useState({
         name: '',
         email: '',
-        phone: '',
         password: '',
         confirmPassword: '',
     });
@@ -21,7 +20,6 @@ const MiPerfil = () => {
             setUserInfo({
                 name: user.name,
                 email: user.email,
-                phone: user.phone,
                 password: '',
                 confirmPassword: '',
             });
@@ -43,8 +41,7 @@ const MiPerfil = () => {
     };
 
     const handleSave = () => {
-        // Aquí puedes agregar la lógica para guardar los cambios, por ejemplo, enviándolos a un servidor.
-        setEditMode(false);
+           setEditMode(false);
     };
 
     const togglePasswordVisibility = (field) => {
@@ -61,11 +58,11 @@ const MiPerfil = () => {
                 padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',  // Centra el contenido horizontalmente
+                alignItems: 'center', 
                 gap: '20px',
                 borderRadius: '8px',
-                maxWidth: '600px',  // Limita el ancho máximo del contenedor principal
-                margin: '0 auto'    // Centra el contenedor en la página
+                maxWidth: '600px',  
+                margin: '0 auto'    
             }}
         >
             <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '10px' }}>Mi Perfil</Typography>
@@ -90,16 +87,7 @@ const MiPerfil = () => {
                         fullWidth
                     />
                 </Box>
-                <Box sx={{ maxWidth: '500px', marginBottom: '20px' }}>
-                    <TextField
-                        label="Teléfono"
-                        name="phone"
-                        value={userInfo.phone}
-                        onChange={handleChange}
-                        disabled={!editMode}
-                        fullWidth
-                    />
-                </Box>
+                
                 {editMode && (
                     <>
                         <Box sx={{ maxWidth: '500px', marginBottom: '20px' }}>
