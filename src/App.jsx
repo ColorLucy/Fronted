@@ -23,6 +23,7 @@ import ProductDashboard from "./pages/admin/ProductDashboard";
 import AboutUs from "./pages/user/AboutUs";
 import Home from "./pages/user/Home";
 import Cart from "./pages/user/Cart";
+import Pqrs from "./pages/user/Pqrs";
 import Order from "./pages/user/Order";
 import Product from "./pages/user/Product";
 import Products from "./pages/user/Products";
@@ -121,6 +122,7 @@ const Homepage = () => {
           <Route path="/profile/*" element={<Profile />} />
           <Route path="/home" element={<Home />} />
           <Route path="/carrito" element={<Cart />} />
+          <Route path="/pqrs-colorlucy" element={<Pqrs />} />
           <Route path="/nosotros" element={<AboutUs />} />
           <Route path="/registro" element={<SignUp />} />
           <Route path="/productos" element={<Products />} />
