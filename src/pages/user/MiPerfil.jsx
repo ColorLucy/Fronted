@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Box, IconButton, Typography, Paper } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import axiosInstance from '../../utils/axiosInstance';
 
 const MiPerfil = () => {
     const [editMode, setEditMode] = useState(false);
@@ -41,7 +42,11 @@ const MiPerfil = () => {
     };
 
     const handleSave = () => {
-           setEditMode(false);
+        const { id } = JSON.parse(localStorage.getItem('user'));
+        axiosInstance.put(`auth/user/${id}/`, userInfo)
+            .then(({ data }) => console.log(data))
+            .catch((e) => console.log(e))
+        setEditMode(false);
     };
 
     const togglePasswordVisibility = (field) => {
@@ -87,7 +92,6 @@ const MiPerfil = () => {
                         fullWidth
                     />
                 </Box>
-                
                 {editMode && (
                     <>
                         <Box sx={{ maxWidth: '500px', marginBottom: '20px' }}>
