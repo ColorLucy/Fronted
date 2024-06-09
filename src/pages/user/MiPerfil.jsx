@@ -150,7 +150,7 @@ const MiPerfil = () => {
                     ) : (
                         <Button
                             variant="contained"
-                            color="secondary"
+                            color="primary"
                             onClick={handleEdit}
                         >
                             Editar
