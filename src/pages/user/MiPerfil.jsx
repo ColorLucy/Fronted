@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Box, IconButton, Typography, Paper } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import axiosInstance from '../../utils/axiosInstance';
 
 const MiPerfil = () => {
     const [editMode, setEditMode] = useState(false);
@@ -43,7 +44,10 @@ const MiPerfil = () => {
     };
 
     const handleSave = () => {
-        // Aquí puedes agregar la lógica para guardar los cambios, por ejemplo, enviándolos a un servidor.
+        const { id } = JSON.parse(localStorage.getItem('user'));
+        axiosInstance.put(`auth/user/${id}/`, userInfo)
+            .then(({ data }) => console.log(data))
+            .catch((e) => console.log(e))
         setEditMode(false);
     };
 
@@ -87,16 +91,6 @@ const MiPerfil = () => {
                         name="email"
                         value={userInfo.email}
                         disabled
-                        fullWidth
-                    />
-                </Box>
-                <Box sx={{ maxWidth: '500px', marginBottom: '20px' }}>
-                    <TextField
-                        label="Teléfono"
-                        name="phone"
-                        value={userInfo.phone}
-                        onChange={handleChange}
-                        disabled={!editMode}
                         fullWidth
                     />
                 </Box>
