@@ -137,10 +137,10 @@ const NavigationBar = () => {
   const styles = user ? { ...stringAvatar(user.name) } : null;
   useEffect(() => {
     const now = new Date().getTime();
-    const storedCategories = localStorage.getItem('categories');
-    const storedTime = localStorage.getItem('categories_time');
+    const storedCategories = localStorage.getItem("categories");
+    const storedTime = localStorage.getItem("categories_time");
     const lastFetchTime = storedTime ? parseInt(storedTime, 10) : 0;
-    if (storedCategories && (now - lastFetchTime) < 28800000) {
+    if (storedCategories && now - lastFetchTime < 28800000) {
       setCategories(JSON.parse(storedCategories));
       setLoading(false);
     } else {
@@ -148,18 +148,17 @@ const NavigationBar = () => {
         .get("/products/view-categories/")
         .then((response) => {
           setCategories(response.data);
-          localStorage.setItem('categories', JSON.stringify(response.data));
-          localStorage.setItem('categories_time', now.toString());
+          localStorage.setItem("categories", JSON.stringify(response.data));
+          localStorage.setItem("categories_time", now.toString());
           setLoading(false);
         })
         .catch((error) => {
           setLoading(true);
-          localStorage.removeItem("categories")
-          localStorage.removeItem("categories_time")
+          localStorage.removeItem("categories");
+          localStorage.removeItem("categories_time");
           console.error("Error al obtener los datos de categorias:", error);
         });
     }
-
   }, []);
 
   const toggleProductos = () => {
@@ -183,13 +182,17 @@ const NavigationBar = () => {
       style={{ backgroundColor: "#F2F3F4" }}
     >
       <Toolbar
-        sx={{ justifyContent: "space-between", padding: "0px !important", gap: "10px" }}
+        sx={{
+          justifyContent: "space-between",
+          padding: "0px !important",
+          gap: "10px",
+        }}
       >
         {!isMobileOrTablet && (
           <>
             <Logo imgSize="50px" />
             <Search />
-            <Box sx={{ display: "flex", alignItems: "center", color: "black", }}>
+            <Box sx={{ display: "flex", alignItems: "center", color: "black" }}>
               <Button
                 variant={locationPath === "" ? "contained" : ""}
                 component={Link}
@@ -209,6 +212,13 @@ const NavigationBar = () => {
                 onClick={handleToggleDrawer}
               >
                 Productos
+              </Button>
+              <Button
+                variant={locationPath === "pqrs-colorlucy" ? "contained" : ""}
+                component={Link}
+                to="/pqrs-colorlucy"
+              >
+                P.Q.R.S
               </Button>
               <Drawer
                 anchor="left"
@@ -237,51 +247,59 @@ const NavigationBar = () => {
               >
                 <div style={{ width: 250, marginTop: "5px" }}>
                   {loading ? (
-                    <div style={{ display: 'flex', width: 250, height: "100vh", justifyContent: "center", alignItems: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        width: 250,
+                        height: "100vh",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <CircularProgress style={{ color: "white" }} />
                     </div>
-                  )
-                    : (
-                      <>
+                  ) : (
+                    <>
+                      <MenuItem
+                        onClick={handleToggleDrawer}
+                        component={Link}
+                        to="/productos"
+                        sx={{
+                          "&:hover": { backgroundColor: "#ffffff1a" },
+                          color: "white",
+                        }}
+                      >
+                        <Typography variant="button">
+                          Todos los productos
+                        </Typography>
+                      </MenuItem>
+                      {categories.map((category, index) => (
                         <MenuItem
+                          key={index}
                           onClick={handleToggleDrawer}
                           component={Link}
-                          to="/productos"
+                          to={`/productos/?categoriaId=${
+                            category.id_categoria
+                          }&categoriaName=${encodeURIComponent(
+                            category.nombre
+                          )}`}
                           sx={{
-                            "&:hover": { backgroundColor: "#ffffff1a" },
+                            "&:hover": {
+                              backgroundColor: "#ffffff1a",
+                              color: "white",
+                            },
                             color: "white",
+                            marginLeft: "16px",
                           }}
                         >
                           <Typography variant="button">
-                            Todos los productos
+                            {category.nombre.charAt(0).toUpperCase() +
+                              category.nombre.slice(1).toLowerCase()}
                           </Typography>
                         </MenuItem>
-                        {categories.map((category, index) => (
-                          <MenuItem
-                            key={index}
-                            onClick={handleToggleDrawer}
-                            component={Link}
-                            to={`/productos/?categoriaId=${category.id_categoria
-                              }&categoriaName=${encodeURIComponent(
-                                category.nombre
-                              )}`}
-                            sx={{
-                              "&:hover": {
-                                backgroundColor: "#ffffff1a",
-                                color: "white",
-                              },
-                              color: "white",
-                              marginLeft: "16px",
-                            }}
-                          >
-                            <Typography variant="button">
-                              {category.nombre.charAt(0).toUpperCase() +
-                                category.nombre.slice(1).toLowerCase()}
-                            </Typography>
-                          </MenuItem>
-                        ))}
-                      </>
-                    )}
+                      ))}
+                    </>
+                  )}
                 </div>
               </Drawer>
               <ShoppingCart />
@@ -345,7 +363,18 @@ const NavigationBar = () => {
               </div>
               <List>
                 <ListItem>
-                  <Avatar {...styles} component={Link} to="/profile" sx={{ width: 38, height: 38, marginRight: "10px", bgcolor: stringToColor(user?.name), textDecoration: "None" }} />
+                  <Avatar
+                    {...styles}
+                    component={Link}
+                    to="/profile"
+                    sx={{
+                      width: 38,
+                      height: 38,
+                      marginRight: "10px",
+                      bgcolor: stringToColor(user?.name),
+                      textDecoration: "None",
+                    }}
+                  />
                 </ListItem>
                 <ListItem
                   selected={locationPath === ""}
@@ -366,6 +395,16 @@ const NavigationBar = () => {
                   sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
                 >
                   <ListItemText primary="Nosotros" />
+                </ListItem>
+                <ListItem
+                  selected={locationPath === "pqrs-colorlucy"}
+                  component={Link}
+                  to="/pqrs-colorlucy"
+                  onClick={handleToggleDrawer}
+                  style={{ color: "white" }}
+                  sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
+                >
+                  <ListItemText primary="P.Q.R.S" />
                 </ListItem>
                 <ListItem
                   selected={locationPath === "productos"}
@@ -393,10 +432,9 @@ const NavigationBar = () => {
                         key={category.id_categoria}
                         onClick={handleToggleDrawer}
                         component={Link}
-                        to={`/productos/?categoriaId=${category.id_categoria
-                          }&categoriaName=${encodeURIComponent(
-                            category.nombre
-                          )}`}
+                        to={`/productos/?categoriaId=${
+                          category.id_categoria
+                        }&categoriaName=${encodeURIComponent(category.nombre)}`}
                         style={{ color: "white" }}
                         sx={{ "&:hover": { backgroundColor: "#ffffff1a" } }}
                       >
