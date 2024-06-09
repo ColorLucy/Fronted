@@ -1,6 +1,6 @@
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Alert, CircularProgress, Grid, Paper, Snackbar, InputLabel } from "@mui/material";
+import {Alert, CircularProgress, Grid, Paper, Snackbar, InputLabel, Switch, FormControlLabel} from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -21,11 +21,11 @@ import { all } from "axios";
 /**
  * Manages CRUD operations for editing and deleting products, and CRUD for adding/removing details and images.
  * This function encapsulates all product editing functionality.
- * 
- * @description This function handles various operations related to products, details and images. Orchestra 
+ *
+ * @description This function handles various operations related to products, details and images. Orchestra
  * User interface interactions and backend API communications for editing product information, managing details and handling images.
- * 
- * @returns {JSX.Element} A JSX element that permits manipulate products data 
+ *
+ * @returns {JSX.Element} A JSX element that permits manipulate products data
  */
 const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const navigate = useNavigate();
@@ -44,6 +44,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
   const [openAlert, setOpenAlert] = useState(false);
   const [alertSeverity, setAlertSeverety] = useState("success");
   const [alertMessage, setAlertMessage] = useState("");
+  const [isAvailable, setIsAvailable] = useState(true);
   const [newDetail, setNewDetail] = useState({
     nombre: "",
     precio: "",
@@ -63,6 +64,16 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     whiteSpace: 'nowrap',
     width: 1,
   });
+
+  const handleAvailabilityChange = (event, id_detalle) => {
+    setIsAvailable(false)
+    setProduct(product => {
+      let detallesAct = product.detalles
+      detallesAct.find(detalle=>detalle.id_detalle === id_detalle).disponible=event.target.checked
+      return {...product, detalles: detallesAct}})
+    setIsAvailable(true)
+
+  };
 
   const handleCategory = (e) => {
     const { value } = e.target;
@@ -103,8 +114,8 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleImageUrlClou = (imgUrl) => {
     const imgToSave = id_product ?
-    { url: imgUrl, detalle: '' } :
-    { url: imgUrl, detalle: null };
+      { url: imgUrl, detalle: '' } :
+      { url: imgUrl, detalle: null };
     setProduct(prev => {
       const updatedDetalles = prev.detalles.map((detalle, index) =>
         index === numberDetail ? { ...detalle, imagenes: [...detalle.imagenes, imgToSave]} : detalle );
@@ -139,7 +150,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
 
   const handleRemoveImage = (index, e) => {
     const removedImage = detailImagesInterface[index];
-    
+
     const updatedImagesInterface = [...detailImagesInterface];
     updatedImagesInterface.splice(index, 1);
     setDetailImagesInterface(updatedImagesInterface);
@@ -185,8 +196,8 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       detalles: [...updatedDetails]
     }));
 
-    numberDetail > 0 ? changeDetailIndex(numberDetail-1) : 
-    alert("El detalle ha sido quitado")
+    numberDetail > 0 ? changeDetailIndex(numberDetail-1) :
+      alert("El detalle ha sido quitado")
 
     setAlertSeverety("info")
     setAlertMessage("El detalle ha sido quitado")
@@ -231,6 +242,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    */
   async function fetchData(id_product) {
     const allResponseData = await getProduct(id_product);
+    console.log(allResponseData)
     let  responseData= JSON.parse(JSON.stringify(allResponseData))
     const firstDetail = responseData.detalles.length > 0 ? responseData.detalles[0] : {};
 
@@ -239,7 +251,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
       images = images.concat(detail.imagenes);
     })
     setDetailImagesSaved(images);
-    
+
     let imgData = [];
     images.forEach((img) => {
       if (img.detalle === firstDetail.id_detalle) {
@@ -253,7 +265,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
         delete detail.imagenes;
       }
     })
-    
+
     setCurrentDetailId(firstDetail.id_detalle);
     setNewDetail({
       nombre: "",
@@ -272,13 +284,13 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
    */
   async function handleUpdate() {
     let makeUpdate = handleReviewEmptySpaces()
-    
+
     if (makeUpdate === true) {
       setLoading(true)
       setLoadingMessage("Actualizando el producto...")
       const response = await updateProduct(id_product, product);
       setLoading(false)
-      
+
       if (!response) {
         setAlertSeverety("success")
         setAlertMessage("El producto ha sido actualizado correctamente.")
@@ -322,12 +334,12 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
     }
   }
   /**
-  * handles the creation of a product by sending a POST request to the server
-  * @param {Event} e - the event from the form or button click that triggers the function
-  */
+   * handles the creation of a product by sending a POST request to the server
+   * @param {Event} e - the event from the form or button click that triggers the function
+   */
   async function handleCreate() {
     let makeCreation = handleReviewEmptySpaces()
-    
+
     if (makeCreation === true) {
       setLoading(true)
       setLoadingMessage("Creando el producto...")
@@ -511,7 +523,7 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
           </Grid>
           <Grid container direction={"column"} spacing={2} padding={"16px"} alignItems={"center"}>
             <Grid item xs sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-              {product.detalles.map((detail, index) => {
+              {isAvailable && product.detalles.map((detail, index) => {
                 return (
                   <TabPanel key={index} value={numberDetail} index={index} >
                     <TextField
@@ -560,13 +572,27 @@ const ModifyProductCard = ({ modifyTitle, setModifyProduct }) => {
                       variant="outlined"
                       sx={{ marginBottom: 2 }}
                     />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={detail.disponible}
+                          onChange={(e)=>handleAvailabilityChange(e,detail.id_detalle)}
+                          name="available"
+                          color="primary"
+                        />
+                      }
+                      label="Producto disponible"
+                    />
                   </TabPanel>
                 );
               })}
-              <Button variant="outlined" color="error" onClick={(e) => product.detalles.length > 1 ? handleRemoveDetail(currentDetailId, e) : alert("El producto debe tener al menos un detalle")} size="small" >
-                Eliminar este detalle
-              </Button>       
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <Button variant="outlined" color="error" onClick={(e) => product.detalles.length > 1 ? handleRemoveDetail(currentDetailId, e) : alert("El producto debe tener al menos un detalle")} size="small">
+                  Eliminar este detalle
+                </Button>
+              </Box>
             </Grid>
+
             <Grid item sx={{ width: "330px", height: "390px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
               {product.detalles[numberDetail].imagenes.length > 0 ? (
                 <CustomCarousel autoPlay={autoPlay} onImageChange={handleImageChange} >

@@ -397,7 +397,8 @@ function AdminDashboard({ children }) {
               </ListItemButton>
               {text === "Editar Pagina de Inicio" && (
                 <Collapse in={openHomeE} timeout="auto" unmountOnExit>
-                  <List component="div" disablePadding>
+                  <List component="div" disableP
+                        ing>
                     {Object.entries(editSections).map(
                       ([textEdit, icon], index) => (
                         <ListItemButton
@@ -437,3 +438,4 @@ function AdminDashboard({ children }) {
 }
 
 export default AdminDashboard;
+
