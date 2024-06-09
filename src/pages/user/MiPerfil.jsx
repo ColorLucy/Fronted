@@ -10,7 +10,6 @@ const MiPerfil = () => {
     const [userInfo, setUserInfo] = useState({
         name: '',
         email: '',
-        phone: '',
         password: '',
         confirmPassword: '',
     });
@@ -22,7 +21,6 @@ const MiPerfil = () => {
             setUserInfo({
                 name: user.name,
                 email: user.email,
-                phone: user.phone,
                 password: '',
                 confirmPassword: '',
             });
@@ -65,11 +63,11 @@ const MiPerfil = () => {
                 padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',  // Centra el contenido horizontalmente
+                alignItems: 'center', 
                 gap: '20px',
                 borderRadius: '8px',
-                maxWidth: '600px',  // Limita el ancho máximo del contenedor principal
-                margin: '0 auto'    // Centra el contenedor en la página
+                maxWidth: '600px',  
+                margin: '0 auto'    
             }}
         >
             <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '10px' }}>Mi Perfil</Typography>
