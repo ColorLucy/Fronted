@@ -125,15 +125,17 @@ const Product = ({ productData, detailId }) => {
           `/products/product-details/${id_producto}/`
         );
         setProduct(data);
-        setDetails(data.detalles);
+        setDetails(data.detalles.filter(d => d.disponible));
         const detailsUnitys = data.detalles
+          .filter(d => d.disponible)
           .map((detalle) => detalle.unidad)
           .filter((value, index, array) => array.indexOf(value) === index);
         setDetailsUnity(detailsUnitys);
         setUnity(
-          detailsUnitys.includes(unityURL) ? unityURL : data.detalles[0].unidad
+          detailsUnitys.includes(unityURL) ? unityURL : data.detalles.find(d => d.disponible).unidad
         );
         const colorsText = data.detalles
+          .filter(d => d.disponible)
           .map((detalle) => detalle.color)
           .filter(
             (value, index, array) =>
@@ -145,14 +147,14 @@ const Product = ({ productData, detailId }) => {
         );
         setDetailsUnityColors(
           colorsAvailable(
-            data.detalles,
+            data.detalles.filter(d => d.disponible),
             detailsUnitys.includes(unityURL)
               ? unityURL
-              : data.detalles[0].unidad
+              : data.detalles.find(d => d.disponible).unidad
           )
         );
         setColor(
-          colorsText.includes(colorURL) ? colorURL : data.detalles[0].color
+          colorsText.includes(colorURL) ? colorURL : data.detalles.find(d => d.disponible).color
         );
         const detailSelected = detailsUnitys.includes(unityURL)
           ? colorsText.includes(colorURL)
@@ -161,7 +163,7 @@ const Product = ({ productData, detailId }) => {
                 detail.unidad === unityURL && detail.color === colorURL
             )
             : data.detalles.find((detail) => detail.unidad === unityURL)
-          : data.detalles[0];
+          : data.detalles.find(d => d.disponible);
         setSelectedDetail(detailSelected);
         navigate(urlDetail(detailSelected));
       } catch (error) {
@@ -170,8 +172,9 @@ const Product = ({ productData, detailId }) => {
     };
     if (productData) {
       setProduct(productData);
-      setDetails(productData.detalles);
+      setDetails(productData.detalles.filter(d => d.disponible));
       const detailsUnitys = productData.detalles
+        .filter(d => d.disponible)
         .map((detalle) => detalle.unidad)
         .filter((value, index, array) => array.indexOf(value) === index);
       setDetailsUnity(detailsUnitys);
@@ -181,6 +184,7 @@ const Product = ({ productData, detailId }) => {
           : productData.detalles[detailId].unidad
       );
       const colorsText = productData.detalles
+        .filter(d => d.disponible)
         .map((detalle) => detalle.color)
         .filter(
           (value, index, array) =>
@@ -192,7 +196,7 @@ const Product = ({ productData, detailId }) => {
       );
       setDetailsUnityColors(
         colorsAvailable(
-          productData.detalles,
+          productData.detalles.filter(d => d.disponible),
           detailsUnitys.includes(unityURL)
             ? unityURL
             : productData.detalles[detailId].unidad
@@ -501,3 +505,4 @@ const Product = ({ productData, detailId }) => {
 };
 
 export default Product;
+

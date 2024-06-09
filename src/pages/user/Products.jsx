@@ -117,6 +117,7 @@ function Products() {
             animate="visible"
             variants={container}>
             {productos.map((producto, index) => (
+              producto.detalles.every(detalles => !detalles.disponible) ? <></>:
               <motion.div key={index} className="productItem" custom={index}
                 animate="visible" variants={item}>
                 <ProductCard product={producto} key={producto.id} />
