@@ -7,6 +7,7 @@ import {
   Typography,
   Snackbar,
   Alert,
+  useMediaQuery,
 } from "@mui/material";
 
 function Pqrs() {
@@ -66,6 +67,7 @@ function Pqrs() {
   const handleCloseAlert = () => {
     setAlert({ ...alert, open: false });
   };
+  const isMobileOrTablet = useMediaQuery("(max-width: 960px)");
 
   useEffect(() => {
     const { nombre, apellido, correo, telefono, asunto, mensaje } = formData;
@@ -82,10 +84,12 @@ function Pqrs() {
   return (
     <Grid
       container
+      display={"flex"}
+      flexWrap={"nowrap"}
       spacing={1}
       alignContent={"flex-start"}
       padding={10}
-      direction={{ xs: "column", sm: "row" }}
+      direction={isMobileOrTablet ? "column" : "row"}
     >
       <Grid item xs={6} sm={12} alignContent={"flex-start"}>
         <Typography variant="h4">
