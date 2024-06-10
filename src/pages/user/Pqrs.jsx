@@ -36,7 +36,31 @@ function Pqrs() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //proceso para enviar form
+    fetch("https://formsubmit.co/d51c79fb35d34bf937e3da538acba962", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+        setAlert({
+          open: true,
+          severity: "success",
+          message: "Correo enviado exitosamente!",
+        });
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setAlert({
+          open: true,
+          severity: "error",
+          message: "Hubo un error al enviar el correo. Inténtalo de nuevo.",
+        });
+      });
   };
 
   const handleCloseAlert = () => {
@@ -56,8 +80,14 @@ function Pqrs() {
   }, [formData]);
 
   return (
-    <Grid container spacing={1} alignContent={"flex-start"} padding={10}>
-      <Grid item xs={5} alignContent={"flex-start"}>
+    <Grid
+      container
+      spacing={1}
+      alignContent={"flex-start"}
+      padding={10}
+      direction={{ xs: "column", sm: "row" }}
+    >
+      <Grid item xs={6} sm={12} alignContent={"flex-start"}>
         <Typography variant="h4">
           <strong>PERMITENOS AYUDARTE</strong>
         </Typography>
@@ -79,7 +109,7 @@ function Pqrs() {
           </em>
         </Typography>
       </Grid>
-      <Grid item xs={6}>
+      <Grid item xs={6} sm={12}>
         <form onSubmit={handleSubmit}>
           <TextField
             label="Nombre completo"
