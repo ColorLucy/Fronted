@@ -375,14 +375,15 @@ const Product = ({ productData, detailId }) => {
               ))
             ) : (
               <Paper
+                key={1}
                 elevation={0}
                 sx={{
                   position: "relative",
-                  height: "fit-content",
+                  height: isMobileOrTablet ? 300 : 544,
                 }}
               >
                 <img
-                  src={"/homeColorLucy1.png"}
+                  src={"/pinturas.jpg"}
                   alt={"producto_sin_imagen"}
                   style={{
                     width: "100%",

@@ -8,6 +8,7 @@ const MiPerfil = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [userInfo, setUserInfo] = useState({
+        id: '',
         name: '',
         email: '',
         password: '',
@@ -15,10 +16,10 @@ const MiPerfil = () => {
     });
 
     useEffect(() => {
-        // Recuperar datos del usuario del almacenamiento local
         const user = JSON.parse(localStorage.getItem('user'));
         if (user) {
             setUserInfo({
+                id: user.id,  // Aquí también
                 name: user.name,
                 email: user.email,
                 password: '',
@@ -29,12 +30,10 @@ const MiPerfil = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (editMode && name !== 'email') {
-            setUserInfo({
-                ...userInfo,
-                [name]: value,
-            });
-        }
+        setUserInfo({
+            ...userInfo,
+            [name]: value,
+        });
     };
 
     const handleEdit = () => {
@@ -42,11 +41,18 @@ const MiPerfil = () => {
     };
 
     const handleSave = () => {
-        const { id } = JSON.parse(localStorage.getItem('user'));
-        axiosInstance.put(`auth/user/${id}/`, userInfo)
-            .then(({ data }) => console.log(data))
-            .catch((e) => console.log(e))
-        setEditMode(false);
+        const { id, name, password, confirmPassword } = userInfo;
+        const updateData = { name };
+        if (password && password === confirmPassword) {
+            updateData.password = password;
+        }
+        axiosInstance.put(`auth/user/${id}/`, updateData)
+            .then(({ data }) => {
+                localStorage.setItem('user', JSON.stringify(data));
+                setUserInfo({ ...data, password: '', confirmPassword: '' });
+                setEditMode(false);
+            })
+            .catch((e) => console.log(e));
     };
 
     const togglePasswordVisibility = (field) => {
@@ -63,11 +69,11 @@ const MiPerfil = () => {
                 padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center', 
+                alignItems: 'center',
                 gap: '20px',
                 borderRadius: '8px',
-                maxWidth: '600px',  
-                margin: '0 auto'    
+                maxWidth: '600px',
+                margin: '0 auto'
             }}
         >
             <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '10px' }}>Mi Perfil</Typography>

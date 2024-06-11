@@ -64,87 +64,83 @@ const HomeInfobarForm = () => {
         component="form"
         onSubmit={formik.handleSubmit}
       >
-        <Grid container spacing={2} alignItems="start" justifyContent="center">
-          <Grid
-            container
-            direction="column"
-            className="allies-grid"
-            item
-            xs={2.8}
-            alignItems="center"
-            justifyContent="center"
+        <Grid
+          container alignItems="start" justifyContent="center" flexDirection={"column"} sx={{ alignItems: "center", maxWidth: "500px !important", margin: "auto" }} gap={"1rem"}
+        >
+          <TextField
+            id="title"
+            name="title"
+            label="Título de Contacto"
+            color="lucy_blue"
+            variant="outlined"
+            value={formik.values.title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.title && Boolean(formik.errors.title)}
+            helperText={formik.touched.title && formik.errors.title}
+            placeholder="Título de Contacto"
+            fullWidth
+            sx={{ maxWidth: "500px" }}
+          />
+          <TextField
+            id="phone_one"
+            name="phone_one"
+            label="Teléfono #1"
+            color="lucy_blue"
+            variant="outlined"
+            value={formik.values.phone_one}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.phone_one && Boolean(formik.errors.phone_one)
+            }
+            helperText={formik.touched.phone_one && formik.errors.phone_one}
+            placeholder="Teléfono #1"
+            fullWidth
+            sx={{ maxWidth: "500px" }}
+          />
+          <TextField
+            id="phone_two"
+            name="phone_two"
+            label="Teléfono #2"
+            color="lucy_blue"
+            variant="outlined"
+            value={formik.values.phone_two}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.phone_two && Boolean(formik.errors.phone_two)
+            }
+            helperText={formik.touched.phone_two && formik.errors.phone_two}
+            placeholder="Teléfono #2"
+            fullWidth
+            sx={{ maxWidth: "500px" }}
+          />
+          <TextField
+            id="address"
+            name="address"
+            label="Dirección"
+            color="lucy_blue"
+            variant="outlined"
+            value={formik.values.address}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.address && Boolean(formik.errors.address)}
+            helperText={formik.touched.address && formik.errors.address}
+            placeholder="Dirección"
+            fullWidth
+            sx={{ maxWidth: "500px" }}
+          />
+          <Button
+            id="save-changes-button"
+            color="lucy_blue"
+            variant="contained"
+            type="submit"
+            sx={{ color: "white", marginTop: "1rem" }}
+            startIcon={<SaveIcon />}
           >
-            <TextField
-              id="title"
-              name="title"
-              label="Título de Contacto"
-              color="lucy_blue"
-              variant="outlined"
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.title && Boolean(formik.errors.title)}
-              helperText={formik.touched.title && formik.errors.title}
-              placeholder="Título de Contacto"
-              sx={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="phone_one"
-              name="phone_one"
-              label="Teléfono #1"
-              color="lucy_blue"
-              variant="outlined"
-              value={formik.values.phone_one}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.phone_one && Boolean(formik.errors.phone_one)
-              }
-              helperText={formik.touched.phone_one && formik.errors.phone_one}
-              placeholder="Teléfono #1"
-              sx={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="phone_two"
-              name="phone_two"
-              label="Teléfono #2"
-              color="lucy_blue"
-              variant="outlined"
-              value={formik.values.phone_two}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.phone_two && Boolean(formik.errors.phone_two)
-              }
-              helperText={formik.touched.phone_two && formik.errors.phone_two}
-              placeholder="Teléfono #2"
-              sx={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="address"
-              name="address"
-              label="Dirección"
-              color="lucy_blue"
-              variant="outlined"
-              value={formik.values.address}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.address && Boolean(formik.errors.address)}
-              helperText={formik.touched.address && formik.errors.address}
-              placeholder="Dirección"
-              sx={{ margin: "1rem 0" }}
-            />
-            <Button
-              id="save-changes-button"
-              color="lucy_blue"
-              variant="contained"
-              type="submit"
-              sx={{ color: "white", marginTop: "1rem" }}
-              startIcon={<SaveIcon />}
-            >
-              Guardar Cambios
-            </Button>
-          </Grid>
+            Guardar Cambios
+          </Button>
         </Grid>
       </Box>
     </ThemeProvider>

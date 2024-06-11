@@ -90,6 +90,7 @@ function Pqrs() {
       alignContent={"flex-start"}
       padding={10}
       direction={isMobileOrTablet ? "column" : "row"}
+      minHeight={"calc(100dvh - 170px)"}
     >
       <Grid item xs={6} sm={12} alignContent={"flex-start"}>
         <Typography variant="h4">
