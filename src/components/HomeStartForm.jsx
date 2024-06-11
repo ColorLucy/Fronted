@@ -42,7 +42,7 @@ const HomeStartForm = () => {
   const [newImageFile, setNewImageFile] = useState([]);
 
   const initialValues = {
-    start_title: "",
+    start_title:"",
     start_text_one: "",
     start_text_two: "",
   };
@@ -176,169 +176,162 @@ const HomeStartForm = () => {
         component="form"
         onSubmit={formik.handleSubmit}
       >
-        <Grid container spacing={2} alignItems="start" justifyContent="center">
-          <Grid
-            container
-            direction="column"
-            className="start-grid"
-            item
-            xs={2.8}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <TextField
-              id="start_title"
-              name="start_title"
-              label="Title"
-              color="lucy_yellow"
-              variant="outlined"
-              value={formik.values.start_title}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.start_title && Boolean(formik.errors.start_title)
+        <Grid container alignItems="start" justifyContent="center" flexDirection={"column"} sx={{alignItems: "center", maxWidth: "500px !important", margin: "auto"}} gap={"1rem"} >
+          <TextField
+            id="start_title"
+            name="start_title"
+            label="Title"
+            color="lucy_yellow"
+            variant="outlined"
+            value={formik.values.start_title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.start_title && Boolean(formik.errors.start_title)
+            }
+            helperText={
+              formik.touched.start_title && formik.errors.start_title
+            }
+            placeholder="Title"
+            fullWidth
+            sx={{ maxWidth:"500px"}}
+          />
+          <TextField
+            id="start_text_one"
+            name="start_text_one"
+            label="Texto #1"
+            color="lucy_blue"
+            variant="outlined"
+            value={formik.values.start_text_one}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.start_text_one &&
+              Boolean(formik.errors.start_text_one)
+            }
+            helperText={
+              formik.touched.start_text_one && formik.errors.start_text_one
+            }
+            placeholder="Texto #1"
+            fullWidth
+            sx={{ maxWidth:"500px"}}
+          />
+          <TextField
+            id="start_text_two"
+            name="start_text_two"
+            label="Texto #2"
+            color="lucy_pink"
+            variant="outlined"
+            value={formik.values.start_text_two}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.start_text_two &&
+              Boolean(formik.errors.start_text_two)
+            }
+            helperText={
+              formik.touched.start_text_two && formik.errors.start_text_two
+            }
+            placeholder="Texto #2"
+            fullWidth
+            sx={{ maxWidth:"500px"}}
+          />
+          {loadingStartImages ? (
+            <CircularProgress />
+          ) : startImages.length > 0 ? (
+            <ImagesSlider
+              key={key}
+              autoPlay={autoPlay}
+              onImageChange={(event, index) =>
+                handleImageChange(event, index)
               }
-              helperText={
-                formik.touched.start_title && formik.errors.start_title
-              }
-              placeholder="Title"
-              sx={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="start_text_one"
-              name="start_text_one"
-              label="Texto #1"
-              color="lucy_blue"
-              variant="outlined"
-              value={formik.values.start_text_one}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.start_text_one &&
-                Boolean(formik.errors.start_text_one)
-              }
-              helperText={
-                formik.touched.start_text_one && formik.errors.start_text_one
-              }
-              placeholder="Texto #1"
-              sx={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="start_text_two"
-              name="start_text_two"
-              label="Texto #2"
-              color="lucy_pink"
-              variant="outlined"
-              value={formik.values.start_text_two}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.start_text_two &&
-                Boolean(formik.errors.start_text_two)
-              }
-              helperText={
-                formik.touched.start_text_two && formik.errors.start_text_two
-              }
-              placeholder="Texto #2"
-              sx={{ margin: "1rem 0" }}
-            />
-            {loadingStartImages ? (
-              <CircularProgress />
-            ) : startImages.length > 0 ? (
-              <ImagesSlider
-                key={key}
-                autoPlay={autoPlay}
-                onImageChange={(event, index) =>
-                  handleImageChange(event, index)
-                }
-              >
-                {startImages.map((image, index) => (
-                  <Grid
+            >
+              {startImages.map((image, index) => (
+                <Grid
+                  key={index}
+                  container
+                  direction="column"
+                  item
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <img
                     key={index}
-                    container
-                    direction="column"
-                    item
-                    alignItems="center"
-                    justifyContent="center"
+                    src={image.url}
+                    alt={`Imagen ${index}`}
+                    style={{
+                      maxWidth: "230px",
+                      maxHeight: "300px",
+                      objectFit: "cover",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  />
+                  <span>{`Imagen ${index + 1}`}</span>
+                  <input
+                    id="contained-start-button-file"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                      handleStartImageChange(event, startImageIndex)
+                    }
+                    style={{ display: "none" }}
+                  />
+                  <label
+                    id="contained-start-button-label"
+                    htmlFor="contained-start-button-file"
                   >
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={`Imagen ${index}`}
-                      style={{
-                        maxWidth: "230px",
-                        maxHeight: "300px",
-                        objectFit: "cover",
-                        alignItems: "center",
-                        justifyContent: "center",
+                    <Button
+                      color="lucy_green"
+                      variant="contained"
+                      component="span"
+                      startIcon={<PhotoIcon />}
+                      sx={{
+                        color: "white",
+                        width: "fit-content",
+                        marginTop: "1rem",
                       }}
-                    />
-                    <span>{`Imagen ${index + 1}`}</span>
-                    <input
-                      id="contained-start-button-file"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) =>
-                        handleStartImageChange(event, startImageIndex)
-                      }
-                      style={{ display: "none" }}
-                    />
-                    <label
-                      id="contained-start-button-label"
-                      htmlFor="contained-start-button-file"
                     >
-                      <Button
-                        color="lucy_green"
-                        variant="contained"
-                        component="span"
-                        startIcon={<PhotoIcon />}
-                        sx={{
-                          color: "white",
-                          width: "fit-content",
-                          marginTop: "1rem",
-                        }}
-                      >
-                        Cambiar Foto
-                      </Button>
-                    </label>
-                  </Grid>
-                ))}
-              </ImagesSlider>
-            ) : (
-              <div
-                style={{
-                  width: "fit-content",
-                  height: "100%",
-                  border: "1px dashed #ccc",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0 0.86rem",
-                }}
-              >
-                <div>No hay imágenes para mostrar</div>
-              </div>
-            )}
-            <Button
-              id="save-changes-button"
-              color="lucy_blue"
-              variant="contained"
-              type="submit"
-              sx={{ color: "white", marginTop: "1rem" }}
-              startIcon={<SaveIcon />}
+                      Cambiar Foto
+                    </Button>
+                  </label>
+                </Grid>
+              ))}
+            </ImagesSlider>
+          ) : (
+            <div
+              style={{
+                width: "fit-content",
+                height: "100%",
+                border: "1px dashed #ccc",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 0.86rem",
+              }}
             >
-              Guardar Cambios
-            </Button>
-            <Button
-              id="test-button"
-              sx={{ color: "white", marginTop: "1rem", display: "none" }}
-              color="lucy_pink"
-              variant="contained"
-              onClick={(event) => handleTest(event)}
-            >
-              Prueba
-            </Button>
-          </Grid>
+              <div>No hay imágenes para mostrar</div>
+            </div>
+          )}
+          <Button
+            id="save-changes-button"
+            color="lucy_blue"
+            variant="contained"
+            type="submit"
+            sx={{ color: "white", marginTop: "1rem" }}
+            startIcon={<SaveIcon />}
+          >
+            Guardar Cambios
+          </Button>
+          <Button
+            id="test-button"
+            sx={{ color: "white", marginTop: "1rem", display: "none" }}
+            color="lucy_pink"
+            variant="contained"
+            onClick={(event) => handleTest(event)}
+          >
+            Prueba
+          </Button>
         </Grid>
       </Box>
     </ThemeProvider>
