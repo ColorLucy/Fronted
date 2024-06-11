@@ -177,155 +177,149 @@ const HomeCombinationsForm = () => {
         component="form"
         onSubmit={formik.handleSubmit}
       >
-        <Grid container spacing={2} alignItems="start" justifyContent="center">
-          <Grid
-            container
-            direction="column"
-            className="combinations-grid"
-            item
-            xs={2.8}
-            alignItems="center"
-            justifyContent="center"
-          >
+        <Grid
+          container alignItems="start" justifyContent="center" flexDirection={"column"} sx={{ alignItems: "center", maxWidth: "500px !important", margin: "auto" }} gap={"1rem"}
+        >
 
-            <TextField
-              id="combinations_title"
-              name="combinations_title"
-              label="Title"
-              color="lucy_yellow"
-              variant="outlined"
-              value={formik.values.combinations_title}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.combinations_title &&
-                Boolean(formik.errors.combinations_title)
-              }
-              helperText={
-                formik.touched.combinations_title &&
-                formik.errors.combinations_title
-              }
-              placeholder="Title"
-              sx={{ marginTop: "1rem" }}
-            />
-            <TextField
-              id="combinations_text"
-              name="combinations_text"
-              label="Texto de Combinaciones"
-              color="lucy_blue"
-              variant="outlined"
-              value={formik.values.combinations_text}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.combinations_text &&
-                Boolean(formik.errors.combinations_text)
-              }
-              helperText={
-                formik.touched.combinations_text &&
-                formik.errors.combinations_text
-              }
-              placeholder="Texto de Combinaciones"
-              sx={{ margin: "1rem 0" }}
-            />
-            {loadingImages ? (
-              <CircularProgress />
-            ) : combinationsImages.length > 0 ? (
-              <ImagesSlider
-                key={key}
-                autoPlay={autoPlay}
-                onImageChange={(index) => handleImageChange(index)}
-              >
-                {combinationsImages.map((image, index) => (
-                  <Grid
+          <TextField
+            id="combinations_title"
+            name="combinations_title"
+            label="Title"
+            color="lucy_yellow"
+            variant="outlined"
+            value={formik.values.combinations_title}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.combinations_title &&
+              Boolean(formik.errors.combinations_title)
+            }
+            helperText={
+              formik.touched.combinations_title &&
+              formik.errors.combinations_title
+            }
+            placeholder="Title"
+            fullWidth
+            sx={{ maxWidth:"500px"}}
+          />
+          <TextField
+            id="combinations_text"
+            name="combinations_text"
+            label="Texto de Combinaciones"
+            color="lucy_blue"
+            variant="outlined"
+            value={formik.values.combinations_text}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={
+              formik.touched.combinations_text &&
+              Boolean(formik.errors.combinations_text)
+            }
+            helperText={
+              formik.touched.combinations_text &&
+              formik.errors.combinations_text
+            }
+            placeholder="Texto de Combinaciones"
+            fullWidth
+            sx={{ maxWidth:"500px"}}
+          />
+          {loadingImages ? (
+            <CircularProgress />
+          ) : combinationsImages.length > 0 ? (
+            <ImagesSlider
+              key={key}
+              autoPlay={autoPlay}
+              onImageChange={(index) => handleImageChange(index)}
+            >
+              {combinationsImages.map((image, index) => (
+                <Grid
+                  key={index}
+                  container
+                  direction="column"
+                  item
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <img
                     key={index}
-                    container
-                    direction="column"
-                    item
-                    alignItems="center"
-                    justifyContent="center"
+                    src={image.url}
+                    alt={`Imagen ${index}`}
+                    style={{
+                      maxWidth: "230px",
+                      maxHeight: "300px",
+                      objectFit: "cover",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  />
+                  <span>{`Imagen ${index + 1}`}</span>
+                  <input
+                    id="contained-comb-button-file"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                      handleCombinationsImageChange(
+                        event,
+                        combinationsImageIndex
+                      )
+                    }
+                    style={{ display: "none" }}
+                  />
+                  <label
+                    id="contained-comb-button-label"
+                    htmlFor="contained-comb-button-file"
                   >
-                    <img
-                      key={index}
-                      src={image.url}
-                      alt={`Imagen ${index}`}
-                      style={{
-                        maxWidth: "230px",
-                        maxHeight: "300px",
-                        objectFit: "cover",
-                        alignItems: "center",
-                        justifyContent: "center",
+                    <Button
+                      color="lucy_green"
+                      variant="contained"
+                      component="span"
+                      startIcon={<PhotoIcon />}
+                      sx={{
+                        color: "white",
+                        width: "fit-content",
+                        marginTop: "1rem",
                       }}
-                    />
-                    <span>{`Imagen ${index + 1}`}</span>
-                    <input
-                      id="contained-comb-button-file"
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) =>
-                        handleCombinationsImageChange(
-                          event,
-                          combinationsImageIndex
-                        )
-                      }
-                      style={{ display: "none" }}
-                    />
-                    <label
-                      id="contained-comb-button-label"
-                      htmlFor="contained-comb-button-file"
                     >
-                      <Button
-                        color="lucy_green"
-                        variant="contained"
-                        component="span"
-                        startIcon={<PhotoIcon />}
-                        sx={{
-                          color: "white",
-                          width: "fit-content",
-                          marginTop: "1rem",
-                        }}
-                      >
-                        Cambiar Foto
-                      </Button>
-                    </label>
-                  </Grid>
-                ))}
-              </ImagesSlider>
-            ) : (
-              <div
-                style={{
-                  width: "fit-content",
-                  height: "100%",
-                  border: "1px dashed #ccc",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "0 0.86rem",
-                }}
-              >
-                <div>No hay imágenes para mostrar</div>
-              </div>
-            )}
-            <Button
-              id="save-changes-button"
-              color="lucy_blue"
-              variant="contained"
-              type="submit"
-              sx={{ color: "white", marginTop: "1rem" }}
-              startIcon={<SaveIcon />}
+                      Cambiar Foto
+                    </Button>
+                  </label>
+                </Grid>
+              ))}
+            </ImagesSlider>
+          ) : (
+            <div
+              style={{
+                width: "fit-content",
+                height: "100%",
+                border: "1px dashed #ccc",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0 0.86rem",
+              }}
             >
-              Guardar Cambios
-            </Button>
-            <Button
-              id="test-button"
-              sx={{ color: "white", marginTop: "1rem", display: "none" }}
-              color="lucy_pink"
-              variant="contained"
-              onClick={(event) => handleTest(event)}
-            >
-              Prueba
-            </Button>
-          </Grid>
+              <div>No hay imágenes para mostrar</div>
+            </div>
+          )}
+          <Button
+            id="save-changes-button"
+            color="lucy_blue"
+            variant="contained"
+            type="submit"
+            sx={{ color: "white", marginTop: "1rem" }}
+            startIcon={<SaveIcon />}
+          >
+            Guardar Cambios
+          </Button>
+          <Button
+            id="test-button"
+            sx={{ color: "white", marginTop: "1rem", display: "none" }}
+            color="lucy_pink"
+            variant="contained"
+            onClick={(event) => handleTest(event)}
+          >
+            Prueba
+          </Button>
         </Grid>
       </Box>
     </ThemeProvider>
