@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    navigate(`/admin/login?back=${backURL}`);
+    navigate(back ? `/admin/login?back=${backURL}` : "/admin/login");
   };
   const triggerLoginRedirect = () => {
     setShowLoginRedirect(true);
